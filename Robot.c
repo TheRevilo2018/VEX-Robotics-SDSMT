@@ -1,4 +1,4 @@
-5555555555555#pragma config(Sensor, in1,    LeftPot,        sensorPotentiometer)
+#pragma config(Sensor, in1,    LeftPot,        sensorPotentiometer)
 #pragma config(Sensor, in2,    RightPot,       sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  LimitUp,        sensorTouch)
 #pragma config(Sensor, dgtl2,  LimitDown,      sensorTouch)
