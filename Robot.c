@@ -211,6 +211,32 @@ task usercontrol()
 		// update your motors, etc.
 		// ........................................................................
 
+		//Proto-PID
+		/*
+		void myPID(int setPoint)
+		{
+			int error = setPoint – motorPos; 
+			int previousError = setPoint – motorPos;
+			float integral = 0;
+			double kP = ?;
+			double kI = ?;
+			double kD = ?;
+			while ( some condition )
+			{
+				error = setPoint – motorPos; //distance from current position to end position (sign is direction)
+				integral = integral + error;
+				if (error is outside useful range)
+				{ 
+					integral = 0;
+				}
+				derivative = error – prevError;
+				prevError = error;
+				speed = error*kP + integral*kI + derivative*kD;
+				wait 15 mSec;
+			}
+		}
+		*/
+ 
 		if(abs(vexRT[Ch3]) >= thresh)
 		{
 			motor[LeftOutsideD] = vexRT[Ch3];
@@ -233,6 +259,8 @@ task usercontrol()
 			motor[RightInsideD] = 0;
 		}
 
+		
+		
 		if(vexRT[Btn8U] == 1) // first motor setup
 		{
 			motor[mogo] = 127;	
