@@ -38,111 +38,111 @@
 /*  function is only called once after the cortex has been powered on and    */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
-int numCones = 0;
+int numCones = 1;
 
 
 /*
 task ConeStack ()
 {
-	// lift up cone and use the lift value * numCones in order to find height that adds cone to base
-	// make button that subtracts to numCones if one falls off
-	// will reset the numCones when we drop off the base
-	int ConeSize = 20;
-	// numCones is the current number of stacked cones and ConeSize is the number of ticks it takes to get to next cone
-	// added value is the value we want to go above the previous cone that was already added
-	int coneHeight = numCones * ConeSize;
-	int liftValue = coneHeight + 500;
+// lift up cone and use the lift value * numCones in order to find height that adds cone to base
+// make button that subtracts to numCones if one falls off
+// will reset the numCones when we drop off the base
+int ConeSize = 20;
+// numCones is the current number of stacked cones and ConeSize is the number of ticks it takes to get to next cone
+// added value is the value we want to go above the previous cone that was already added
+int coneHeight = numCones * ConeSize;
+int liftValue = coneHeight + 500;
 
-	motor[intake] = 30;
+motor[intake] = 30;
 
-	// liftng up the lift and rotating the claw thing
-	while(SensorValue[LeftPot] < liftValue)
-	{
-		// 300 is lower value point at which the swinging arm will reach the same time as the lift
-		if(SensorValue[LimitUp] != 1 && SensorValue[LeftPot] > (300 + coneHeight))
-		{
-			motor[Swing] = 127;
-		}
-		else
-		{
-			motor[Swing] = 20;
-		}
+// liftng up the lift and rotating the claw thing
+while(SensorValue[LeftPot] < liftValue)
+{
+// 300 is lower value point at which the swinging arm will reach the same time as the lift
+if(SensorValue[LimitUp] != 1 && SensorValue[LeftPot] > (300 + coneHeight))
+{
+motor[Swing] = 127;
+}
+else
+{
+motor[Swing] = 20;
+}
 
-		if(SensorValue[LeftPot] < SensorValue[RightPot])
-		{
-			motor[LeftInsideL] = 127;
-			motor[RightInsideL] = 127*.8;
-			motor[LeftOutsideL] = 127;
-			motor[RightOutsideL] = 127*.8;
-		}
-		else if(SensorValue[LeftPot] > SensorValue[RightPot])
-		{
-			motor[LeftInsideL] = 127*.8;
-			motor[RightInsideL] = 127;
-			motor[LeftOutsideL] = 127*.8;
-			motor[RightOutsideL] = 127;
-		}
-		else
-		{
-			motor[LeftInsideL] = 127;
-			motor[RightInsideL] = 127;
-			motor[LeftOutsideL] = 127;
-			motor[RightOutsideL] = 127;
-		}
-	}
+if(SensorValue[LeftPot] < SensorValue[RightPot])
+{
+motor[LeftInsideL] = 127;
+motor[RightInsideL] = 127*.8;
+motor[LeftOutsideL] = 127;
+motor[RightOutsideL] = 127*.8;
+}
+else if(SensorValue[LeftPot] > SensorValue[RightPot])
+{
+motor[LeftInsideL] = 127*.8;
+motor[RightInsideL] = 127;
+motor[LeftOutsideL] = 127*.8;
+motor[RightOutsideL] = 127;
+}
+else
+{
+motor[LeftInsideL] = 127;
+motor[RightInsideL] = 127;
+motor[LeftOutsideL] = 127;
+motor[RightOutsideL] = 127;
+}
+}
 
-	// reset all motors to rest
-	motor[LeftInsideL] = 0;
-	motor[RightInsideL] = 0;
-	motor[LeftOutsideL] = 0;
-	motor[RightOutsideL] = 0;
+// reset all motors to rest
+motor[LeftInsideL] = 0;
+motor[RightInsideL] = 0;
+motor[LeftOutsideL] = 0;
+motor[RightOutsideL] = 0;
 
-	// drop cone
-	motor[intake] = -127;
-	wait1Msec(500);
-	motor[intake] = 0;
-	wait1Msec(10);
+// drop cone
+motor[intake] = -127;
+wait1Msec(500);
+motor[intake] = 0;
+wait1Msec(10);
 
-	// resetting the lift to start
-	while(SensorValue[LeftPot] > 0)
-	{
-		// 300 is lower value point at which the swinging arm will reach the same time as the lift
-		if(SensorValue[LimitDown] != 1)
-		{
-			motor[Swing] = -127;
-		}
-		else
-		{
-			motor[Swing] = 0;
-		}
+// resetting the lift to start
+while(SensorValue[LeftPot] > 0)
+{
+// 300 is lower value point at which the swinging arm will reach the same time as the lift
+if(SensorValue[LimitDown] != 1)
+{
+motor[Swing] = -127;
+}
+else
+{
+motor[Swing] = 0;
+}
 
-		if(SensorValue[LeftPot] < SensorValue[RightPot])
-		{
-			motor[LeftInsideL] = -127;
-			motor[RightInsideL] = -127*.8;
-			motor[LeftOutsideL] = -127;
-			motor[RightOutsideL] = -127*.8;
-		}
-		else if(SensorValue[LeftPot] > SensorValue[RightPot])
-		{
-			motor[LeftInsideL] = -127*.8;
-			motor[RightInsideL] = -127;
-			motor[LeftOutsideL] = -127*.8;
-			motor[RightOutsideL] = -127;
-		}
-		else
-		{
-			motor[LeftInsideL] = -127;
-			motor[RightInsideL] = -127;
-			motor[LeftOutsideL] = -127;
-			motor[RightOutsideL] = -127;
-		}
-	}
+if(SensorValue[LeftPot] < SensorValue[RightPot])
+{
+motor[LeftInsideL] = -127;
+motor[RightInsideL] = -127*.8;
+motor[LeftOutsideL] = -127;
+motor[RightOutsideL] = -127*.8;
+}
+else if(SensorValue[LeftPot] > SensorValue[RightPot])
+{
+motor[LeftInsideL] = -127*.8;
+motor[RightInsideL] = -127;
+motor[LeftOutsideL] = -127*.8;
+motor[RightOutsideL] = -127;
+}
+else
+{
+motor[LeftInsideL] = -127;
+motor[RightInsideL] = -127;
+motor[LeftOutsideL] = -127;
+motor[RightOutsideL] = -127;
+}
+}
 
-	numCones++;
+numCones++;
 
-	EndTimeSlice();
-	stopTask(ConeStack);
+EndTimeSlice();
+stopTask(ConeStack);
 }
 
 */
@@ -215,28 +215,161 @@ task usercontrol()
 		/*
 		void myPID(int setPoint)
 		{
-			int error = setPoint – motorPos; 
-			int previousError = setPoint – motorPos;
-			float integral = 0;
-			double kP = ?;
-			double kI = ?;
-			double kD = ?;
-			while ( some condition )
-			{
-				error = setPoint – motorPos; //distance from current position to end position (sign is direction)
-				integral = integral + error;
-				if (error is outside useful range)
-				{ 
-					integral = 0;
-				}
-				derivative = error – prevError;
-				prevError = error;
-				speed = error*kP + integral*kI + derivative*kD;
-				wait 15 mSec;
-			}
+		int error = setPoint  motorPos;
+		int previousError = setPoint  motorPos;
+		float integral = 0;
+		double kP = ?;
+		double kI = ?;
+		double kD = ?;
+		while ( some condition )
+		{
+		error = setPoint  motorPos; //distance from current position to end position (sign is direction)
+		integral = integral + error;
+		if (error is outside useful range)
+		{
+		integral = 0;
+		}
+		derivative = error  prevError;
+		prevError = error;
+		speed = error*kP + integral*kI + derivative*kD;
+		wait 15 mSec;
+		}
 		}
 		*/
- 
+		task autostack()
+		{
+			int coneHeight[12] = { 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100 }; //TODO add specifics
+			int SwingHigh = 3000; //TODO
+			int SwingMid = 1500; //TODO
+
+			while(SensorValue[LeftPot] < coneHeight[numCones] && SensorValue[SwingPot] < SwingHigh)
+			{
+				int CurrentL = SensorValue[LeftPot];
+				int CurrentR = SensorValue[RightPot];
+				int CurrentS = SensorValue[SwingPot];
+				
+
+				if(CurrentL < coneHeight[numCones])
+				{
+					if(CurrentL > CurrentR)
+					{
+						motor[LeftLift] = (abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+						motor[RightLift] = (abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+					}
+					else	if(CurrentL > CurrentR)
+					{
+						motor[LeftLift] = (abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+						motor[RightLift] = (abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+					}
+					else
+					{
+						motor[LeftLift] = (abs(coneHeight[numCones] - CurrentL) ) / 10;
+						motor[RightLift] = (abs(coneHeight[numCones] - CurrentL) ) / 10;
+					}
+				}
+				if(coneHeight[numCones] - CurrentL < 500)
+				{
+					if(CurrentS < SwingHigh)
+					{
+						motor[Swing] = abs(SwingHigh - CurrentS) / 10;
+					}
+					else
+					{
+						motor[Swing] = 20;
+					}
+				}
+				else
+				{
+					if(CurrentS < SwingMid)
+					{
+						motor[Swing] = abs(SwingMid - CurrentS) / 10;
+					}
+					else	if(CurrentS > SwingMid)
+					{
+						motor[Swing] = -1 * abs(SwingMid - CurrentS) / 10;
+					}
+					else
+					{
+						motor[Swing] = 0;
+					}
+				}
+			}
+
+			while(SensorValue[LeftPot] > coneHeight[numCones-1])
+			{
+				int CurrentL = SensorValue[LeftPot];
+				int CurrentR = SensorValue[RightPot];
+
+				if(CurrentL > CurrentR)
+				{
+					motor[LeftLift] = -(abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+					motor[RightLift] = -(abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+				}
+				else	if(CurrentL > CurrentR)
+				{
+					motor[LeftLift] = -(abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+					motor[RightLift] = -(abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+				}
+				else
+				{
+					motor[LeftLift] = -(abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+					motor[RightLift] = -(abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+				}
+			}
+
+			while(SensorValue[LeftPot] > 0 && SensorValue[SwingPot] > SwingMid)
+			{
+				int CurrentL = SensorValue[LeftPot];
+				int CurrentR = SensorValue[RightPot];
+				int CurrentS = SensorValue[SwingPot];
+
+				if(CurrentL < coneHeight[numCones])
+				{
+					if(CurrentL > CurrentR)
+					{
+						motor[LeftLift] = - (abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+						motor[RightLift] = - (abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+					}
+					else	if(CurrentL > CurrentR)
+					{
+						motor[LeftLift] = -(abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+						motor[RightLift] = -(abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+					}
+					else
+					{
+						motor[LeftLift] = -(abs(coneHeight[numCones] - CurrentL) - abs(CurrentL - CurrentR)) / 10;
+						motor[RightLift] = -(abs(coneHeight[numCones] - CurrentL) + abs(CurrentL - CurrentR)) / 10;
+					}
+				}
+
+				if(CurrentS < SwingMid)
+				{
+					motor[Swing] = abs(SwingMid - CurrentS) / 10;
+				}
+				else	if(CurrentS > SwingMid)
+				{
+					motor[Swing] = -1 * abs(SwingMid - CurrentS) / 10;
+				}
+				else
+				{
+					motor[Swing] = 0;
+				}
+			}
+
+			++numCones;
+
+			stopTask(autostack);
+		}
+		
+		//task driveP()
+		//task liftP()
+		{
+			while(true)
+			{
+
+			}
+		}
+
 		if(abs(vexRT[Ch3]) >= thresh)
 		{
 			motor[LeftOutsideD] = vexRT[Ch3];
@@ -259,8 +392,8 @@ task usercontrol()
 			motor[RightInsideD] = 0;
 		}
 
-		
-		
+
+
 		if(vexRT[Btn8U] == 1) // first motor setup
 		{
 			motor[mogo] = 127;	
@@ -273,8 +406,8 @@ task usercontrol()
 		{
 			motor[mogo] = 0;
 		}
-		
-		
+
+
 		if(vexRT[Btn5U] == 1) // second motor setup
 		{
 			motor[Swing] = 127;	
