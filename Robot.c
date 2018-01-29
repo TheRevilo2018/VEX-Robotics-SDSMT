@@ -1,4 +1,4 @@
-\#pragma config(Sensor, in1,    LeftPot,        sensorPotentiometer)
+#pragma config(Sensor, in1,    LeftPot,        sensorPotentiometer)
 #pragma config(Sensor, in2,    RightPot,       sensorPotentiometer)
 #pragma config(Sensor, in3,    SwingPot,       sensorPotentiometer)
 #pragma config(Motor,  port1,           mogo1,         tmotorVex393_HBridge, openLoop)
@@ -55,8 +55,8 @@ task autostack()
 	int coneHeight[12] = { 70, 100, 250, 400, 550, 700, 850, 1000, 1150, 1300, 1450, 1600 };
 	int SwingHigh = 4000;
 	int SwingMid = 2000;
-	int CurrentL;
-	int CurrentS;
+	int CurrentL = SensorValue[LeftPot];
+	int CurrentS = SensorValue[SwingPot];
 
 	// runs until lift reaches target and swing arm reaches top position
 	while(SensorValue[LeftPot] < coneHeight[numCones] -50 || SensorValue[LeftPot] > coneHeight[numCones] + 50  || CurrentS < SwingHigh)
@@ -81,8 +81,8 @@ task autostack()
 			wait1Msec(20);
 		}
 		
-		// if height is not close enough to the target hen hold mid position
-		if(CurrentL - coneHeight[numCones] < 300)
+		// if height is not close enough to the target then hold mid position
+		if (abs(CurrentL - coneHeight[numCones]) > 300)
 		{
 			// if swing arm is below mid position swing up higher
 			if(CurrentS < SwingMid)
@@ -205,7 +205,7 @@ task usercontrol()
 		// subtract one cone from total
 		else if(vexRT[Btn8R] == 1)
 		{
-			--numCones;
+			numCones--;
 		}
 		
 		// stop
