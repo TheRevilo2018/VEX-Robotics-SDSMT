@@ -1,6 +1,8 @@
 #pragma config(Sensor, in1,    LeftPot,        sensorPotentiometer)
 #pragma config(Sensor, in2,    RightPot,       sensorPotentiometer)
 #pragma config(Sensor, in3,    SwingPot,       sensorPotentiometer)
+#pragma config(Sensor, dgtl1,  LeftEnc,        sensorQuadEncoder)
+#pragma config(Sensor, dgtl3,  RightEnc,       sensorQuadEncoder)
 #pragma config(Motor,  port1,           mogo1,         tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           LeftOutsideD,  tmotorVex393HighSpeed_MC29, openLoop)
 #pragma config(Motor,  port3,           LeftInsideD,   tmotorVex393HighSpeed_MC29, openLoop)
@@ -29,6 +31,78 @@ bool stacking = false;
 pre autonomous task
 reset sensor values/initializations here
 *//////////////////////////////////////////////////////////////
+void driveforward(int speed, int target)
+{
+	while(SensorValue(LeftEnc) < target)
+	{
+		motor[LeftInsideD] = (SensorValue(LeftEnc) - target);
+		motor[LeftOutsideD] = (SensorValue(LeftEnc) - target);
+		motor[RightInsideD] = (SensorValue(LeftEnc) - target);
+		motor[RightOutsideD] = (SensorValue(LeftEnc) - target);
+		wait1Msec(20);
+	}
+		motor[LeftInsideD] = -10;
+		motor[LeftOutsideD] = -10;
+		motor[RightInsideD] = -10;
+		motor[RightOutsideD] = -10;
+		wait1Msec(20);
+return;
+}
+
+void drivereverse(int speed, int target)
+{
+	while(SensorValue(LeftEnc) < target)
+	{
+		motor[LeftInsideD] = -(SensorValue(LeftEnc) - target);
+		motor[LeftOutsideD] = -(SensorValue(LeftEnc) - target);
+		motor[RightInsideD] = -(SensorValue(LeftEnc) - target);
+		motor[RightOutsideD] = -(SensorValue(LeftEnc) - target);
+		wait1Msec(20);
+	}
+		motor[LeftInsideD] = 10;
+		motor[LeftOutsideD] = 10;
+		motor[RightInsideD] = 10;
+		motor[RightOutsideD] = 10;
+		wait1Msec(20);
+return;
+}
+
+void rightturn(int speed, int target)
+{
+	while(SensorValue(LeftEnc) < target)
+	{
+		motor[LeftInsideD] = (SensorValue(LeftEnc) - target);
+		motor[LeftOutsideD] = (SensorValue(LeftEnc) - target);
+		motor[RightInsideD] = -(SensorValue(LeftEnc) - target);
+		motor[RightOutsideD] = -(SensorValue(LeftEnc) - target);
+		wait1Msec(20);
+	}
+		motor[LeftInsideD] = -10;
+		motor[LeftOutsideD] = -10;
+		motor[RightInsideD] = 10;
+		motor[RightOutsideD] = 10;
+		wait1Msec(20);
+return;
+}
+
+void leftturn(int speed, int target)
+{
+	while(SensorValue(LeftEnc) < target)
+	{
+		motor[LeftInsideD] = -(SensorValue(LeftEnc) - target);
+		motor[LeftOutsideD] = -(SensorValue(LeftEnc) - target);
+		motor[RightInsideD] = (SensorValue(LeftEnc) - target);
+		motor[RightOutsideD] = (SensorValue(LeftEnc) - target);
+		wait1Msec(20);
+	}
+		motor[LeftInsideD] = 10;
+		motor[LeftOutsideD] = 10;
+		motor[RightInsideD] = -10;
+		motor[RightOutsideD] = -10;
+		wait1Msec(20);
+return;
+}
+
 void pre_auton()
 {
 	bStopTasksBetweenModes = true;
