@@ -32,6 +32,7 @@
 void LeftAutoStack();
 int position = 0;
 int height = 2100;
+int distanceBackward = 0;
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -67,16 +68,43 @@ void pre_auton()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+task DrivePIDBackwards()
+{
+	int error = 0;
+	int prevError = 0;
+	int integral = 0;
+	int derivative = 0;
+	int speed;
+	int kP = 1;
+	int kI = 1;
+	int kD = 1;
+	
+	error = distanceBackward - SensorValue[LeftEnc];
+	prevError = distanceBackward - SensorValue[LeftEnc];
+	
+	while ( abs(error) > 10 )
+	{
+		error = distanceBackward - SensorValue[LeftEnc];
+		integral = integral + error;
+		if (error == 0)
+		{
+			integral = 0;
+		}
+		derivative = error - prevError;
+		prevError = error;
+		speed = error*kP + integral*kI + derivative*kD;
+		motor[LeftFrontDrive] = speed;
+		motor[RightFrontDrive] = speed;
+		motor[LeftRearDrive] = speed;
+		motor[RightRearDrive] = speed;
+		wait1Msec(15);
+	}
+}
 
 task autonomous()
 {
-	// ..........................................................................
-	// Insert user code here.
-	// ..........................................................................
-
-	// Remove this function call once you have "real" code.
-	AutonomousCodePlaceholderForTesting();
-
+	distanceBackward = 1000;
+	startTask(DrivePIDBackwards);
 }
 
 void LeftAutoStack()
@@ -87,19 +115,24 @@ void LeftAutoStack()
 	for(int i = 0; i < 6; i++)
 	{
 		// line up arm with platform
-		position = 2;
+		position = 0;
+		wait1Msec(300);
+		
 		// lower arm
 		height = grabHeight;
-
+		wait1Msec(300);
+		
 		// close claw
 		//SensorValue[Claw] = 1;
 
 		// lift arm
 		height = armHeight[i];
-
+		wait1Msec(300);
+		
 		// swing arm to middle
-		position = 1037;
-
+		position = 1050;
+		wait1Msec(300);
+		
 		// open claw
 		//SensorValue[Claw] = 0;
 	}
@@ -111,7 +144,7 @@ task liftPoint()
 {
 	int difference;
 
-	while(SensorValue[LiftPot] != height)
+	while(true)
 	{
 		difference = abs(SensorValue[LiftPot] - height);
 		if(SensorValue[LiftPot] > height)
@@ -127,31 +160,36 @@ task liftPoint()
 			wait1Msec(20);
 		}
 	}
-
-
 	return;
 }
 
 task swingPoint()
 {
 	int difference;
-	while(SensorValue[SwingPot] != position)
+
+	while(true)
 	{
 		difference = abs(SensorValue[SwingPot] - position);
-
-		if(SensorValue[LiftPot] > position)
+		if(SensorValue[SwingPot] > position + 100)
 		{
-			motor[Swing] = -1 * (difference );
+			motor[Swing] = -1 * (difference * .2);
+			wait1Msec(20);
+		}
+		else if(SensorValue[SwingPot] < position - 100)
+		{
+			motor[Swing] = (difference *.2);
 			wait1Msec(20);
 		}
 		else
 		{
-			motor[Swing] = difference ;
+			motor[Swing] = 0;
 			wait1Msec(20);
 		}
-
 	}
+	return;
 }
+
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -167,6 +205,8 @@ task usercontrol()
 {
 	startTask(liftPoint);
 	startTask(swingPoint);
+	startTask(DrivePIDBackwards);
+
 	// User control code here, inside the loop
 	int y;
 	int x;
@@ -210,31 +250,31 @@ task usercontrol()
 		/*
 		if(vexRT[Btn6U] == 1)
 		{
-			motor[LeftLift] = 127;
-			motor[RightLift] = 127;
+		motor[LeftLift] = 127;
+		motor[RightLift] = 127;
 		}
 		else if(vexRT[Btn6D] == 1)
 		{
-			motor[LeftLift] = -127;
-			motor[RightLift] = -127;
+		motor[LeftLift] = -127;
+		motor[RightLift] = -127;
 		}
 		else
 		{
-			motor[LeftLift] = 0;
-			motor[RightLift] = 0;
+		motor[LeftLift] = 0;
+		motor[RightLift] = 0;
 		}
 
 		if(vexRT[Btn5U] == 1)
 		{
-			motor[Swing] = 127;
+		motor[Swing] = 127;
 		}
 		else if(vexRT[Btn5D] == 1)
 		{
-			motor[Swing] = -127;
+		motor[Swing] = -127;
 		}
 		else
 		{
-			motor[Swing] = 0;
+		motor[Swing] = 0;
 		}
 		*/
 
