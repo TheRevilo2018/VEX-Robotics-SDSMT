@@ -1,3 +1,4 @@
+#pragma config(Sensor, in5,    SwingPot,       sensorPotentiometer)
 #pragma config(Sensor, in6,    TipperPot,      sensorPotentiometer)
 #pragma config(Sensor, in7,    MogoPot,        sensorPotentiometer)
 #pragma config(Sensor, in8,    LiftPot,        sensorPotentiometer)
@@ -23,11 +24,15 @@
 #include "Vex_Competition_Includes.c"
 
 //PROTOTYPES
+void mogoGrab();
+void mogoDrop();
 void drivePID(int driveDistance);
-void turnLeftPID(int driveDistance);
-void turnRightPID(int driveDistance);
+void turnLeft(int driveDistance);
+void turnRight(int driveDistance);
 
 //GLOBALS
+int swingRestPos = 0;
+int swingDropPos = 0;
 int liftHeight = 0;
 int swingHeight = 0;
 
@@ -68,19 +73,59 @@ void pre_auton()
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+task liftToHeight()
+{
+	int error = 0;
+	error = liftHeight - SensorValue[LiftPot];
+	while(true)
+	{
+		error = liftHeight - SensorValue[LiftPot];
+		motor[Lift] = error/5;
+		wait1Msec(15);
+
+	}
+}
+
+task swingToHeight()
+{
+	int error = 0;
+	error = swingHeight - SensorValue[LiftPot];
+	while(true)
+	{
+		error = swingHeight - SensorValue[LiftPot];
+		motor[Lift] = error/5;
+		wait1Msec(15);
+
+	}
+}
+
 //autos
 task autonomous()
 {
 	// ..........................................................................
 	// Insert user code here.
 	// ..........................................................................
-
-	int driveDistance = 250;
-	turnLeftPID(250);
-	//drivePID(driveDistance);
-	//drivePID(-driveDistance);
-	// Remove this function call once you have "real" code.
-	//AutonomousCodePlaceholderForTesting();
+	//swingHeight = 100;
+	//startTask(swingToHeight);
+	//int driveDistance = 250;
+	//liftHeight = 2500;
+	drivePID(200);
+	wait1Msec(1000);
+	drivePID(-200);
+	wait1Msec(1000);
+	drivePID(500);
+	wait1Msec(1000);
+	drivePID(-500);
+	//mogoGrab();
+	//mogoDrop();
+	//startTask(liftToHeight);
+	//wait1Msec(3000);
+	//liftHeight = 4000;
+	//wait1Msec(3000);
+	//liftHeight = 2000;
+	//wait1Msec(2000);
+	//startTask(mogoDrop)
+	//wait1Msec(400)
 }
 
 /*---------------------------------------------------------------------------*/
@@ -92,69 +137,129 @@ task autonomous()
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-task liftPID()
+
+void mogoGrab()
 {
+	//3600 bottom
+	//950 top
 
-}
-void turnLeftPID(int driveDistance)
-{
-	int errorRight = 0;
-	int prevErrorRight = 0;
-	int errorLeft = 0;
-	int prevErrorLeft = 0;
-	int integralRight = 0;
-	int integralLeft = 0;
-	int derivativeRight = 0;
-	int derivativeLeft = 0;
-	int speedRight;
-	int speedLeft;
-	int driveLeft;
-	int driveRight;
-	float kP = .1;
-	float kI = .0003;
-	float kD = .005;
-	driveLeft = -driveDistance;
-	driveRight = driveDistance;
-	SensorValue[LeftEnc] = 0;
-	SensorValue[RightEnc] = 0;
-
-
-	errorRight = driveRight - SensorValue[RightEnc];
-	prevErrorRight = driveRight - SensorValue[RightEnc];
-	errorLeft = driveLeft - SensorValue[LeftEnc];
-	prevErrorLeft = driveLeft - SensorValue[LeftEnc];
-
-	while ( abs(errorRight) != 0 && abs(errorLeft)!= 0)
+	while(SensorValue[MogoPot] < 3600)
 	{
-		errorLeft = driveRight - SensorValue[LeftEnc];
-		errorRight = driveLeft - SensorValue[RightEnc];
-		integralRight = integralRight + errorRight;
-		integralLeft = integralLeft + errorLeft;
-		if (errorLeft == 0 || errorRight == 0)
-		{
-			integralRight = 0;
-			integralLeft = 0;
-		}
-		derivativeRight = errorRight - prevErrorRight;
-		prevErrorRight = errorRight;
-		derivativeLeft = errorLeft - prevErrorLeft;
-		prevErrorLeft = errorLeft;
+		motor[Mogo] = 127;
+	}
 
-		speedRight = errorRight*kP + integralRight*kI + derivativeRight*kD;
-		speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
-		motor[LeftFrontDrive] = -speedLeft;
-		motor[RightFrontDrive] = speedRight;
-		motor[LeftRearDrive] = -speedLeft;
-		motor[RightRearDrive] = speedRight;
+	drivePID(100);
+	//add timers
+	motor[LeftFrontDrive] = 0;
+	motor[LeftRearDrive] = 0;
+	motor[RightFrontDrive] = 0;
+	motor[RightRearDrive] = 0;
 
-		wait1Msec(15);
+	while(SensorValue[MogoPot] > 950)
+	{
+		motor[Mogo] = -127;
 	}
 }
 
-void turnRightPID(int driveDistance)
+void mogoDrop()
 {
+	while(SensorValue[MogoPot] > 950)
+	{
+		motor[Mogo] = -127;
+	}
 
+	drivePID(-100);
+	//add timers
+	motor[LeftFrontDrive] = 0;
+	motor[LeftRearDrive] = 0;
+	motor[RightFrontDrive] = 0;
+	motor[RightRearDrive] = 0;
+
+	while(SensorValue[MogoPot] > 3600)
+	{
+		motor[Mogo] = -127;
+	}
 }
+
+void turnLeft(int driveDistance)
+{
+	int error = 0;
+	int speed = 0;
+	SensorValue[LeftEnc] = 0;
+	while(SensorValue[LeftEnc] < driveDistance)
+	{
+		error = driveDistance - SensorValue[LeftEnc];
+		if(error > 250)
+		{
+			speed = error/2;
+			motor[LeftFrontDrive] = speed;
+			motor[LeftRearDrive] = speed;
+			motor[RightFrontDrive] = -speed;
+			motor[RightRearDrive] = -speed;
+		}
+		else
+		{
+			motor[LeftFrontDrive] = 100;
+			motor[LeftRearDrive] = 100;
+			motor[RightFrontDrive] = -100;
+			motor[RightRearDrive] = -100;
+		}
+	}
+	motor[LeftFrontDrive] = -25;
+	motor[LeftRearDrive] = -25;
+	motor[RightFrontDrive] = 25;
+	motor[RightRearDrive] = 25;
+
+	wait1Msec(200);
+
+	motor[LeftFrontDrive] = 0;
+	motor[LeftRearDrive] = 0;
+	motor[RightFrontDrive] = 0;
+	motor[RightRearDrive] = 0;
+
+	wait1Msec(200);
+}
+
+void turnRight(int driveDistance)
+
+{
+	int error = 0;
+	int speed = 0;
+	SensorValue[RightEnc] = 0;
+	while(SensorValue[RightEnc] < driveDistance)
+	{
+		error = driveDistance - SensorValue[RightEnc];
+		if(error > 250)
+		{
+			speed = error/2;
+			motor[LeftFrontDrive] = -speed;
+			motor[LeftRearDrive] = -speed;
+			motor[RightFrontDrive] = speed;
+			motor[RightRearDrive] = speed;
+		}
+		else
+		{
+			motor[LeftFrontDrive] = -100;
+			motor[LeftRearDrive] = -100;
+			motor[RightFrontDrive] = 100;
+			motor[RightRearDrive] = 100;
+		}
+	}
+	motor[LeftFrontDrive] = 25;
+	motor[LeftRearDrive] = 25;
+	motor[RightFrontDrive] = -25;
+	motor[RightRearDrive] = -25;
+
+	wait1Msec(200);
+
+	motor[LeftFrontDrive] = 0;
+	motor[LeftRearDrive] = 0;
+	motor[RightFrontDrive] = 0;
+	motor[RightRearDrive] = 0;
+
+	wait1Msec(200);
+}
+
 void drivePID(int driveDistance)
 {
 	int errorRight = 0;
@@ -179,92 +284,49 @@ void drivePID(int driveDistance)
 	SensorValue[LeftEnc] = 0;
 	SensorValue[RightEnc] = 0;
 
-	if(driveDistance > 0)
+
+	errorRight = driveDistance - SensorValue[RightEnc];
+	prevErrorRight = driveDistance - SensorValue[RightEnc];
+	errorLeft = driveDistance - SensorValue[LeftEnc];
+	prevErrorLeft = driveDistance - SensorValue[LeftEnc];
+
+	while ( abs(errorRight) > 10 && abs(errorLeft) > 10 )
 	{
-		errorRight = driveDistance - SensorValue[RightEnc];
-		prevErrorRight = driveDistance - SensorValue[RightEnc];
 		errorLeft = driveDistance - SensorValue[LeftEnc];
-		prevErrorLeft = driveDistance - SensorValue[LeftEnc];
-
-		while ( abs(errorRight) != 0 && abs(errorLeft)!= 0)
-		{
-			errorLeft = driveDistance - SensorValue[LeftEnc];
-			errorRight = driveDistance - SensorValue[RightEnc];
-			integralRight = integralRight + errorRight;
-			integralLeft = integralLeft + errorLeft;
-			if (errorLeft == 0 || errorRight == 0)
-			{
-				integralRight = 0;
-				integralLeft = 0;
-			}
-			derivativeRight = errorRight - prevErrorRight;
-			prevErrorRight = errorRight;
-			derivativeLeft = errorLeft - prevErrorLeft;
-			prevErrorLeft = errorLeft;
-
-			speedRight = errorRight*kP + integralRight*kI + derivativeRight*kD;
-			speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
-			motor[LeftFrontDrive] = speedLeft;
-			motor[RightFrontDrive] = speedRight;
-			motor[LeftRearDrive] = speedLeft;
-			motor[RightRearDrive] = speedRight;
-
-			wait1Msec(15);
-		}
-
-		//run in reverse for a bit to make sure movement
-		//is stopped
-		/*
-		motor[LeftFrontDrive] = -25;
-		motor[RightFrontDrive] = -25;
-		motor[LeftRearDrive] = -25;
-		motor[RightRearDrive] = -25;
-		wait1Msec(400);
-		*/
-	}
-	else
-	{
 		errorRight = driveDistance - SensorValue[RightEnc];
-		prevErrorRight = driveDistance - SensorValue[RightEnc];
-		errorLeft = driveDistance - SensorValue[LeftEnc];
-		prevErrorLeft = driveDistance - SensorValue[LeftEnc];
-
-		while ( abs(errorRight) != 0 && abs(errorLeft) != 0)
+		integralRight = integralRight + errorRight;
+		integralLeft = integralLeft + errorLeft;
+		if (errorLeft == 0 || errorRight == 0)
 		{
-			errorLeft = driveDistance - SensorValue[LeftEnc];
-			errorRight = driveDistance - SensorValue[RightEnc];
-			integralRight = integralRight + errorRight;
-			integralLeft = integralLeft + errorLeft;
-			if (errorLeft == 0 || errorRight == 0)
-			{
-				integralRight = 0;
-				integralLeft = 0;
-			}
-			derivativeRight = errorRight - prevErrorRight;
-			prevErrorRight = errorRight;
-			derivativeLeft = errorLeft - prevErrorLeft;
-			prevErrorLeft = errorLeft;
-
-			speedRight = errorRight*kP + integralRight*kI + derivativeRight*kD;
-			speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
-			motor[LeftFrontDrive] = speedLeft;
-			motor[RightFrontDrive] = speedRight;
-			motor[LeftRearDrive] = speedLeft;
-			motor[RightRearDrive] = speedRight;
-
-			wait1Msec(15);
+			integralRight = 0;
+			integralLeft = 0;
 		}
+		derivativeRight = errorRight - prevErrorRight;
+		prevErrorRight = errorRight;
+		derivativeLeft = errorLeft - prevErrorLeft;
+		prevErrorLeft = errorLeft;
 
-		//run in reverse for a bit to make sure movement
-		//is stopped
-		/*
-		motor[LeftFrontDrive] = 15;
-		motor[RightFrontDrive] = 15;
-		motor[LeftRearDrive] = 15;
-		motor[RightRearDrive] = 15;
-		wait1Msec(800);
-		*/
+		speedRight = errorRight*kP + integralRight*kI + derivativeRight*kD;
+		speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
+		motor[LeftFrontDrive] = speedLeft;
+		motor[RightFrontDrive] = speedRight;
+		motor[LeftRearDrive] = speedLeft;
+		motor[RightRearDrive] = speedRight;
+
+		wait1Msec(15);
 	}
+
+	//run in reverse for a bit to make sure movement
+	//is stopped
+	/*
+	motor[LeftFrontDrive] = -25;
+	motor[RightFrontDrive] = -25;
+	motor[LeftRearDrive] = -25;
+	motor[RightRearDrive] = -25;
+	wait1Msec(400);
+	*/
+
+
 	//kill motors
 	motor[LeftFrontDrive] = 0;
 	motor[RightFrontDrive] = 0;
@@ -355,5 +417,6 @@ task usercontrol()
 		{
 			motor[Mogo] = 0;
 		}
+		wait1Msec(15);
 	}
 }
