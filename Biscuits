@@ -93,7 +93,7 @@ task autonomous()
 	turnRight(38);
 
 	//drive forward
-	drivePID(80);
+	drivePID(100);
 
 	//mogo out
 	startTask(mogoDown);
@@ -315,6 +315,26 @@ while ( abs(errorRight) > 10 && abs(errorLeft) > 10 )
 
 	speedRight = errorRight*kP + integralRight*kI + derivativeRight*kD;
 	speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
+	
+	
+	if(abs(speedRight) < 60 && speedRight < 0)
+	{
+		speedRight = -60;
+	}
+		else if(abs(speedRight) < 60 && speedRight > 0)
+	{
+		speedRight = 60;
+	}
+	
+		if(abs(speedLeft) < 60 && speedLeft < 0)
+	{
+		speedLeft = -60;
+	}
+		else if(abs(speedLeft) < 60 && speedLeft > 0)
+	{
+		speedLeft = 60;
+	}
+	
 	motor[LeftFrontDrive] = speedLeft / 2;
 	motor[RightFrontDrive] = speedRight / 2;
 	motor[LeftRearDrive] = speedLeft / 2;
