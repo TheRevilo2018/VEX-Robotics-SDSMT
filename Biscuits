@@ -88,28 +88,37 @@ void pre_auton()
 
 task autonomous()
 {
-	bool running = false;
+	bool running = true;
 	if(running == true)
 	{
+		motor[LeftLift] = -30;
+		motor[RightLift] = -30;
 		//drop onto stationary goal
-		drivePID(-80);
-		drivePID(38);
+		drivePID(-330);
+		motor[LeftLift] = 10;
+		motor[RightLift] = 10;
+		wait1Msec(200);
+		drivePID(182);
+		
+		motor[RightLift] = 0;
+		motor[LeftLift] = 0;
 
 		//go to the left mobile goal
-		// turn left
-		turnRight(50);
+		// turn right
+		turnRight(180);
 
 		//drive forward
-		drivePID(120);
-
-		//mogo out
-		startTask(mogoDown);
+		drivePID(708);
 
 		//turn right
-		turnRight(28);
+		turnRight(70);
+		
+		//mogo out
+		startTask(mogoDown);
+		wait1Msec(800);
 
 		//drive forward
-		drivePID(170);
+		drivePID(951);
 
 		//mogo in
 		stopTask(mogoDown);
@@ -118,10 +127,10 @@ task autonomous()
 		stopTask(mogoUp);
 
 		//drive back
-		drivePID(-70);
+		drivePID(-262);
 
 		//turn right
-		turnRight(47);
+		turnRight(128);
 
 		//back up
 		motor[LeftFrontDrive] = -30;
@@ -135,61 +144,40 @@ task autonomous()
 
 		//place left mobile goal on far scoring goal
 		//go straight
-		drivePID(70);
+		drivePID(325);
 
 		//turn right
-		turnRight(50);
+		turnRight(145);
 
 		//drive straight
-		drivePID(174);
+		drivePID(791);
 
 		//turn right
-		turnRight(50);
-
-		//drive straight over bar
-		motor[LeftFrontDrive] = 80;
-		motor[RightFrontDrive] = 80;
-		motor[LeftRearDrive] = 80;
-		motor[RightRearDrive] = 80;
-		wait1Msec(800);
-
-		motor[LeftFrontDrive] = 0;
-		motor[RightFrontDrive] = 0;
-		motor[LeftRearDrive] = 0;
-		motor[RightRearDrive] = 0;
-		wait1Msec(10);
-
+		turnRight(52);
+		
+		//drive straight
+		drivePID(276);
+		
 		//mogo down
 		stopTask(mogoUp);
 		startTask(mogoDown);
 		wait1Msec(1000);
 		stopTask(mogoDown);
-
-		//drive backwards over bar
-		motor[LeftFrontDrive] = -127;
-		motor[RightFrontDrive] = -127;
-		motor[LeftRearDrive] = -127;
-		motor[RightRearDrive] = -127;
-		wait1Msec(2000);
-
-		motor[LeftFrontDrive] = 0;
-		motor[RightFrontDrive] = 0;
-		motor[LeftRearDrive] = 0;
-		motor[RightRearDrive] = 0;
-		wait1Msec(10);
-
+		
+		//dive backwards
+		drivePID(-342);
+		
 		//mogo up
 		stopTask(mogoDown);
 		startTask(mogoUp);
 		wait1Msec(1000);
 		stopTask(mogoUp);
-
-		//straighten on bar
-		motor[LeftFrontDrive] = 20;
-		motor[LeftRearDrive] = 20;
-		motor[RightFrontDrive] = 20;
-		motor[RightRearDrive] = 20;
-		wait1Msec(500);
+		
+		//turn right
+		turnRight(102);
+		
+		//drive forward
+		drivePID(390);
 
 		//go get right mobile goal
 		//turn to wall
@@ -563,7 +551,7 @@ void drivePID(int driveDistance)
 			speedLeft = 60;
 		}
 
-		if(abs(SensorValue[LeftEnc]) < 80)
+		if(abs(SensorValue[LeftEnc]) < 200)
 		{
 			if(driveDistance < 0)
 			{
@@ -574,7 +562,7 @@ void drivePID(int driveDistance)
 				speedLeft = 126;
 			}
 		}
-		if(abs(SensorValue[RightEnc]) < 80)
+		if(abs(SensorValue[RightEnc]) < 200)
 		{
 			if(driveDistance < 0)
 			{
@@ -586,30 +574,30 @@ void drivePID(int driveDistance)
 			}
 		}
 
-		motor[LeftFrontDrive] = speedLeft / 2;
-		motor[RightFrontDrive] = speedRight / 2;
-		motor[LeftRearDrive] = speedLeft / 2;
-		motor[RightRearDrive] = speedRight / 2;
+		motor[LeftFrontDrive] = speedLeft / 3;
+		motor[RightFrontDrive] = speedRight / 3;
+		motor[LeftRearDrive] = speedLeft / 3;
+		motor[RightRearDrive] = speedRight / 3;
 
 		wait1Msec(15);
 	}
 
 	if(speedRight < 0)
 	{
-		speedRight = 15;
+		speedRight = 25;
 	}
 	else if(speedRight > 0)
 	{
-		speedRight = -15;
+		speedRight = -25;
 	}
 
 	if(speedLeft < 0)
 	{
-		speedLeft = 15;
+		speedLeft = 25;
 	}
 	else if(speedLeft > 0)
 	{
-		speedLeft = -15;
+		speedLeft = -25;
 	}
 	motor[LeftFrontDrive] = speedLeft;
 	motor[RightFrontDrive] = speedRight;
