@@ -68,7 +68,7 @@ task mogoDown()
 
 task mogoUp()
 {
-		motor[Mogo] = 0;
+	motor[Mogo] = 0;
 	wait1Msec(20);
 
 	while(SensorValue[MogoPot] > 880)
@@ -277,30 +277,30 @@ task autonomous()
 		*/
 		//go get right mobile goal
 		//turn to wall
-		drivePID(-35);
+		drivePID(-25);
 		//turnRight(150);
-		turnLeft(38);
+		turnLeft(55);
 
 		//drive forward to wall
-		drivePID(95);
+		drivePID(270);
 
 		//turn left to face mogo
 		startTask(mogoDown);
-		turnLeft(38);
+		turnLeft(20);
 
 		//lower mogo lift and run into mogo
-		drivePID(180);
+		drivePID(215);
 
 		//drive back toward goal
 		stopTask(mogoDown);
 		startTask(mogoUp);
 		wait1Msec(1100);
-		drivePID(-180);
+		drivePID(-215);
 
 		//go to score on right mobile goal
 		//turn to other wall1
 		//turnRight(70);
-		turnLeft(95);
+		turnLeft(70);
 		drivePID(50);
 		turnLeft(25);
 		drivePID(20);
@@ -327,9 +327,9 @@ task autonomous()
 
 		stopTask(mogoDown);
 		startTask(mogoUp);
-		
+
 		wait10Msec(300);
-		
+
 		motor[LeftFrontDrive] = 0;
 		motor[LeftRearDrive] = 0;
 		motor[RightFrontDrive] = 0;
@@ -340,35 +340,38 @@ task autonomous()
 void autoStack()
 {
 	int grabHeight = 3950;
-	int armDrop[5] = {250, 400, 500, 650, 800};
+	int armDrop[5] = {250, 400, 500, 800, 1800};
 
+	/*
 	//hug wall while stacking to preventing rocking
 	motor[LeftFrontDrive] = -20;
 	motor[LeftRearDrive] = -20;
 	motor[RightFrontDrive] = -20;
 	motor[RightRearDrive] = -20;
+	*/
 
 	for(int i = 0; i < 5; i++)
 	{
-
-		//drop Roller down to grab height to grab cone
-		while(SensorValue[SwingPot] < grabHeight)
+		while( SensorValue[SwingPot] < 2400)
 		{
-			if(SensorValue[SwingPot] < 2000)
-			{
-				motor[Roller] = -60;
-			}
-			else
-			{
-				motor[Roller] = 127;
-			}
+			motor[Roller] = -60;
 			motor[LeftLift] = 127;
 			motor[RightLift] = 127;
+			wait1Msec(20);
 		}
+		//drop Roller down to grab height to grab cone
+		while(SensorValue[LimitSwitch] != 1)
+		{
+			motor[Roller] = 127;
+			motor[LeftLift] = 127;
+			motor[RightLift] = 127;
+			wait1Msec(20);
+		}
+
 
 		//Roller back over to arm drop height
 		//slow down roller at certain height to 60
-		while(SensorValue[SwingPot] > armDrop[i])
+		while(SensorValue[SwingPot] > armDrop[I])
 		{
 
 			//right side determines drop height
@@ -377,6 +380,7 @@ void autoStack()
 				motor[Roller] = 30;
 				motor[LeftLift] = -127;
 				motor[RightLift] = -127;
+				wait1Msec(20);
 			}
 			else
 			{
@@ -385,7 +389,16 @@ void autoStack()
 				motor[Roller] = -127;
 			}
 		}
-
+		if(i == 4)
+		{
+			while( SensorValue[SwingPot] < 2400)
+			{
+				motor[Roller] = -60;
+				motor[LeftLift] = 127;
+				motor[RightLift] = 127;
+				wait1Msec(20);
+			}
+		}
 		//kill switch
 		if(vexRT[Btn6D] == 1)
 		{
@@ -393,6 +406,7 @@ void autoStack()
 		}
 	}
 }
+
 
 void turnRight(int driveDistance)
 {
@@ -410,18 +424,18 @@ void turnRight(int driveDistance)
 		if(error > 250)
 		{
 			speed = error/2;
-			motor[LeftFrontDrive] = speed /3;
-			motor[LeftRearDrive] = speed /3;
-			motor[RightFrontDrive] = -speed /3;
-			motor[RightRearDrive] = -speed /3;
+			motor[LeftFrontDrive] = speed / 1;
+			motor[LeftRearDrive] = speed /1;
+			motor[RightFrontDrive] = -speed /1;
+			motor[RightRearDrive] = -speed /1;
 		}
 		//otherise go constant reasonable speed
 		else
 		{
-			motor[LeftFrontDrive] = 100 /3;
-			motor[LeftRearDrive] = 100 /3;
-			motor[RightFrontDrive] = -100 /3;
-			motor[RightRearDrive] = -100 /3;
+			motor[LeftFrontDrive] = 100 /1;
+			motor[LeftRearDrive] = 100 /1;
+			motor[RightFrontDrive] = -100 /1;
+			motor[RightRearDrive] = -100 /1;
 		}
 	}
 	//brake slighty to remove inertia
@@ -453,17 +467,17 @@ void turnLeft(int driveDistance)
 		if(error > 250)
 		{
 			speed = error/2;
-			motor[LeftFrontDrive] = -speed /3;
-			motor[LeftRearDrive] = -speed /3;
-			motor[RightFrontDrive] = speed /3;
-			motor[RightRearDrive] = speed /3;
+			motor[LeftFrontDrive] = -speed /1;
+			motor[LeftRearDrive] = -speed /1;
+			motor[RightFrontDrive] = speed /1;
+			motor[RightRearDrive] = speed /1;
 		}
 		else
 		{
-			motor[LeftFrontDrive] = -100 /3;
-			motor[LeftRearDrive] = -100 /3;
-			motor[RightFrontDrive] = 100 /3;
-			motor[RightRearDrive] = 100 /3;
+			motor[LeftFrontDrive] = -100 /1;
+			motor[LeftRearDrive] = -100 /1;
+			motor[RightFrontDrive] = 100 /1;
+			motor[RightRearDrive] = 100 /1;
 		}
 	}
 	motor[LeftFrontDrive] = 25;
@@ -549,6 +563,29 @@ void drivePID(int driveDistance)
 			speedLeft = 60;
 		}
 
+		if(abs(SensorValue[LeftEnc]) < 80)
+		{
+			if(driveDistance < 0)
+			{
+				speedLeft = -126;
+			}
+			else
+			{
+				speedLeft = 126;
+			}
+		}
+		if(abs(SensorValue[RightEnc]) < 80)
+		{
+			if(driveDistance < 0)
+			{
+				speedRight= -126;
+			}
+			else
+			{
+				speedRight = 126;
+			}
+		}
+
 		motor[LeftFrontDrive] = speedLeft / 2;
 		motor[RightFrontDrive] = speedRight / 2;
 		motor[LeftRearDrive] = speedLeft / 2;
@@ -557,16 +594,28 @@ void drivePID(int driveDistance)
 		wait1Msec(15);
 	}
 
-	//run in reverse for a bit to make sure movement
-	//is stopped
-	/*
-	motor[LeftFrontDrive] = -25;
-	motor[RightFrontDrive] = -25;
-	motor[LeftRearDrive] = -25;
-	motor[RightRearDrive] = -25;
-	wait1Msec(400);
-	*/
+	if(speedRight < 0)
+	{
+		speedRight = 15;
+	}
+	else if(speedRight > 0)
+	{
+		speedRight = -15;
+	}
 
+	if(speedLeft < 0)
+	{
+		speedLeft = 15;
+	}
+	else if(speedLeft > 0)
+	{
+		speedLeft = -15;
+	}
+	motor[LeftFrontDrive] = speedLeft;
+	motor[RightFrontDrive] = speedRight;
+	motor[LeftRearDrive] = speedLeft;
+	motor[RightRearDrive] = speedRight;
+	wait1Msec(200);
 
 	//kill motors
 	motor[LeftFrontDrive] = 0;
