@@ -99,7 +99,7 @@ task autonomous()
 		motor[RightLift] = 10;
 		wait1Msec(200);
 		drivePID(182);
-		
+
 		motor[RightLift] = 0;
 		motor[LeftLift] = 0;
 
@@ -112,7 +112,7 @@ task autonomous()
 
 		//turn right
 		turnRight(58);
-		
+
 		//mogo out
 		startTask(mogoDown);
 		wait1Msec(800);
@@ -154,28 +154,28 @@ task autonomous()
 
 		//turn right
 		turnRight(52);
-		
+
 		//drive straight
 		drivePID(276);
-		
+
 		//mogo down
 		//stopTask(mogoUp);
 		startTask(mogoDown);
 		wait1Msec(1000);
 		stopTask(mogoDown);
-		
+
 		//dive backwards
 		drivePID(-342);
-		
+
 		//mogo up
 		stopTask(mogoDown);
 		startTask(mogoUp);
 		wait1Msec(1000);
 		stopTask(mogoUp);
-		
+
 		//turn right
 		turnRight(102);
-		
+
 		//drive forward
 		drivePID(390);
 
@@ -411,18 +411,18 @@ void turnRight(int driveDistance)
 		if(error > 250)
 		{
 			speed = error/2;
-			motor[LeftFrontDrive] = speed / 1;
-			motor[LeftRearDrive] = speed /1;
-			motor[RightFrontDrive] = -speed /1;
-			motor[RightRearDrive] = -speed /1;
+			motor[LeftFrontDrive] = speed / 2;
+			motor[LeftRearDrive] = speed / 2;
+			motor[RightFrontDrive] = -speed / 2;
+			motor[RightRearDrive] = -speed / 2;
 		}
 		//otherise go constant reasonable speed
 		else
 		{
-			motor[LeftFrontDrive] = 100 /1;
-			motor[LeftRearDrive] = 100 /1;
-			motor[RightFrontDrive] = -100 /1;
-			motor[RightRearDrive] = -100 /1;
+			motor[LeftFrontDrive] = 100 / 2;
+			motor[LeftRearDrive] = 100 / 2;
+			motor[RightFrontDrive] = -100 / 2;
+			motor[RightRearDrive] = -100 / 2;
 		}
 	}
 	//brake slighty to remove inertia
@@ -454,17 +454,17 @@ void turnLeft(int driveDistance)
 		if(error > 250)
 		{
 			speed = error/2;
-			motor[LeftFrontDrive] = -speed /1;
-			motor[LeftRearDrive] = -speed /1;
-			motor[RightFrontDrive] = speed /1;
-			motor[RightRearDrive] = speed /1;
+			motor[LeftFrontDrive] = -speed / 2;
+			motor[LeftRearDrive] = -speed / 2;
+			motor[RightFrontDrive] = speed / 2;
+			motor[RightRearDrive] = speed / 2;
 		}
 		else
 		{
-			motor[LeftFrontDrive] = -100 /1;
-			motor[LeftRearDrive] = -100 /1;
-			motor[RightFrontDrive] = 100 /1;
-			motor[RightRearDrive] = 100 /1;
+			motor[LeftFrontDrive] = -100 / 2;
+			motor[LeftRearDrive] = -100 / 2;
+			motor[RightFrontDrive] = 100 / 2;
+			motor[RightRearDrive] = 100 / 2;
 		}
 	}
 	motor[LeftFrontDrive] = 25;
@@ -531,14 +531,17 @@ void drivePID(int driveDistance)
 		speedRight = errorRight*kP + integralRight*kI + derivativeRight*kD;
 		//speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
 
+		speedRight = speedRight /10;
+		//	speedLeft = speedLeft /10;
 
-		if(abs(speedRight) < 60 && speedRight < 0)
+
+		if(abs(speedRight) < 30 && speedRight < 0)
 		{
-			speedRight = -60;
+			speedRight = -30;
 		}
-		else if(abs(speedRight) < 60 && speedRight > 0)
+		else if(abs(speedRight) < 30 && speedRight > 0)
 		{
-			speedRight = 60;
+			speedRight = 30;
 		}
 
 		if(abs(SensorValue[RightEnc]) < 200)
@@ -553,30 +556,62 @@ void drivePID(int driveDistance)
 			}
 		}
 
-		motor[LeftFrontDrive] = speedRight / 3;
-		motor[RightFrontDrive] = speedRight / 3;
-		motor[LeftRearDrive] = speedRight / 3;
-		motor[RightRearDrive] = speedRight / 3;
+		if(abs(SensorValue[RightEnc]) < errorRight / 4.0)
+		{
+			if(driveDistance < 0)
+			{
+				speedRight= -50;
+			}
+			else
+			{
+				speedRight = 50;
+			}
+		}
+
+		if(abs(SensorValue[LeftEnc]) < abs(SensorValue[RightEnc]))
+		{
+			motor[LeftFrontDrive] = speedRight;
+			motor[RightFrontDrive] = speedRight * .6;
+			motor[LeftRearDrive] = speedRight;
+			motor[RightRearDrive] = speedRight * .6;
+		}
+		else if(abs(SensorValue[LeftEnc]) > abs(SensorValue[RightEnc]))
+		{
+			motor[LeftFrontDrive] = speedRight * .6;
+			motor[RightFrontDrive] = speedRight;
+			motor[LeftRearDrive] = speedRight * .6;
+			motor[RightRearDrive] = speedRight;
+		}
+
+		else
+		{
+			motor[LeftFrontDrive] = speedRight;
+			motor[RightFrontDrive] = speedRight;
+			motor[LeftRearDrive] = speedRight;
+			motor[RightRearDrive] = speedRight;
+		}
 
 		wait1Msec(15);
 	}
 
+	
 	if(driveDistance < 0)
 	{
-		speedRight = 25;
+		speedRight = 18;
 	}
 	else if(driveDistance > 0)
 	{
-		speedRight = -25;
+		speedRight = -18;
 	}
-
 	
+
 	motor[LeftFrontDrive] = speedRight;
 	motor[RightFrontDrive] = speedRight;
 	motor[LeftRearDrive] = speedRight;
 	motor[RightRearDrive] = speedRight;
-	wait1Msec(200);
-
+	wait1Msec(100);
+	
+	
 	//kill motors
 	motor[LeftFrontDrive] = 0;
 	motor[RightFrontDrive] = 0;
@@ -674,7 +709,10 @@ task usercontrol()
 		{
 			autoStack();
 		}
-
+		if(vexRT[Btn7R] == 1)
+		{
+			drivePID(2500);
+		}
 		wait1Msec(20);
 	}
 }
