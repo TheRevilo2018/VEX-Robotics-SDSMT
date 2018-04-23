@@ -88,7 +88,7 @@ void pre_auton()
 
 task autonomous()
 {
-	bool running = true;
+	bool running = false;
 	if(running == true)
 	{
 		motor[LeftLift] = -30;
@@ -105,13 +105,13 @@ task autonomous()
 
 		//go to the left mobile goal
 		// turn right
-		turnRight(180);
+		turnRight(175);
 
 		//drive forward
-		drivePID(708);
+		drivePID(738);
 
 		//turn right
-		turnRight(70);
+		turnRight(58);
 		
 		//mogo out
 		startTask(mogoDown);
@@ -159,7 +159,7 @@ task autonomous()
 		drivePID(276);
 		
 		//mogo down
-		stopTask(mogoUp);
+		//stopTask(mogoUp);
 		startTask(mogoDown);
 		wait1Msec(1000);
 		stopTask(mogoDown);
@@ -265,33 +265,33 @@ task autonomous()
 		*/
 		//go get right mobile goal
 		//turn to wall
-		drivePID(-25);
+		drivePID(-125);
 		//turnRight(150);
-		turnLeft(55);
+		turnLeft(275);
 
 		//drive forward to wall
-		drivePID(270);
+		drivePID(1475);
 
 		//turn left to face mogo
 		startTask(mogoDown);
-		turnLeft(20);
+		turnLeft(25);
 
 		//lower mogo lift and run into mogo
-		drivePID(215);
+		drivePID(1075);
 
 		//drive back toward goal
 		stopTask(mogoDown);
 		startTask(mogoUp);
 		wait1Msec(1100);
-		drivePID(-215);
+		drivePID(-1075);
 
 		//go to score on right mobile goal
 		//turn to other wall1
 		//turnRight(70);
-		turnLeft(70);
-		drivePID(50);
-		turnLeft(25);
-		drivePID(20);
+		turnLeft(350);
+		drivePID(250);
+		turnLeft(60);
+		drivePID(100);
 		stopTask(mogoUp);
 		startTask(mogoDown);
 		//drive to wall
@@ -310,7 +310,6 @@ task autonomous()
 		motor[LeftFrontDrive] = -60;
 		motor[LeftRearDrive] = -60;
 		motor[RightFrontDrive] = -60;
-		motor[RightRearDrive] = -60;
 		wait1Msec(1000);
 
 		stopTask(mogoDown);
@@ -487,14 +486,14 @@ void drivePID(int driveDistance)
 {
 	int errorRight = 0;
 	int prevErrorRight = 0;
-	int errorLeft = 0;
-	int prevErrorLeft = 0;
+	//int errorLeft = 0;
+	//int prevErrorLeft = 0;
 	int integralRight = 0;
-	int integralLeft = 0;
+	//int integralLeft = 0;
 	int derivativeRight = 0;
-	int derivativeLeft = 0;
+	//int derivativeLeft = 0;
 	int speedRight;
-	int speedLeft;
+	//int speedLeft;
 	float kP = .9;
 	float kI = .00001;
 	float kD = .005;
@@ -510,27 +509,27 @@ void drivePID(int driveDistance)
 
 	errorRight = driveDistance - SensorValue[RightEnc];
 	prevErrorRight = driveDistance - SensorValue[RightEnc];
-	errorLeft = driveDistance - SensorValue[LeftEnc];
-	prevErrorLeft = driveDistance - SensorValue[LeftEnc];
+	//errorLeft = driveDistance - SensorValue[LeftEnc];
+	//prevErrorLeft = driveDistance - SensorValue[LeftEnc];
 
-	while ( abs(errorRight) > 10 && abs(errorLeft) > 10 )
+	while ( abs(errorRight) > 10)
 	{
-		errorLeft = driveDistance - SensorValue[LeftEnc];
+		//errorLeft = driveDistance - SensorValue[LeftEnc];
 		errorRight = driveDistance - SensorValue[RightEnc];
 		integralRight = integralRight + errorRight;
-		integralLeft = integralLeft + errorLeft;
-		if (errorLeft == 0 || errorRight == 0)
+		//integralLeft = integralLeft + errorLeft;
+		if (errorRight == 0)
 		{
 			integralRight = 0;
-			integralLeft = 0;
+			//integralLeft = 0;
 		}
 		derivativeRight = errorRight - prevErrorRight;
 		prevErrorRight = errorRight;
-		derivativeLeft = errorLeft - prevErrorLeft;
-		prevErrorLeft = errorLeft;
+		//derivativeLeft = errorLeft - prevErrorLeft;
+		//prevErrorLeft = errorLeft;
 
 		speedRight = errorRight*kP + integralRight*kI + derivativeRight*kD;
-		speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
+		//speedLeft = errorLeft * kP + integralLeft*kI + derivativeLeft*kD;
 
 
 		if(abs(speedRight) < 60 && speedRight < 0)
@@ -542,26 +541,6 @@ void drivePID(int driveDistance)
 			speedRight = 60;
 		}
 
-		if(abs(speedLeft) < 60 && speedLeft < 0)
-		{
-			speedLeft = -60;
-		}
-		else if(abs(speedLeft) < 60 && speedLeft > 0)
-		{
-			speedLeft = 60;
-		}
-
-		if(abs(SensorValue[LeftEnc]) < 200)
-		{
-			if(driveDistance < 0)
-			{
-				speedLeft = -126;
-			}
-			else
-			{
-				speedLeft = 126;
-			}
-		}
 		if(abs(SensorValue[RightEnc]) < 200)
 		{
 			if(driveDistance < 0)
@@ -574,34 +553,27 @@ void drivePID(int driveDistance)
 			}
 		}
 
-		motor[LeftFrontDrive] = speedLeft / 3;
+		motor[LeftFrontDrive] = speedRight / 3;
 		motor[RightFrontDrive] = speedRight / 3;
-		motor[LeftRearDrive] = speedLeft / 3;
+		motor[LeftRearDrive] = speedRight / 3;
 		motor[RightRearDrive] = speedRight / 3;
 
 		wait1Msec(15);
 	}
 
-	if(speedRight < 0)
+	if(driveDistance < 0)
 	{
 		speedRight = 25;
 	}
-	else if(speedRight > 0)
+	else if(driveDistance > 0)
 	{
 		speedRight = -25;
 	}
 
-	if(speedLeft < 0)
-	{
-		speedLeft = 25;
-	}
-	else if(speedLeft > 0)
-	{
-		speedLeft = -25;
-	}
-	motor[LeftFrontDrive] = speedLeft;
+	
+	motor[LeftFrontDrive] = speedRight;
 	motor[RightFrontDrive] = speedRight;
-	motor[LeftRearDrive] = speedLeft;
+	motor[LeftRearDrive] = speedRight;
 	motor[RightRearDrive] = speedRight;
 	wait1Msec(200);
 
