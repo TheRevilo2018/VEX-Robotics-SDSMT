@@ -1,4 +1,5 @@
 #pragma config(Sensor, in6,    SwingPot,       sensorPotentiometer)
+#pragma config(Sensor, in7,    GyroSensor,     sensorGyro)
 #pragma config(Sensor, in8,    MogoPot,        sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  LeftEnc,        sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  RightEnc,       sensorQuadEncoder)
@@ -37,6 +38,8 @@ void turnRight(int driveDistance);
 
 //GLOBALS
 int liftHeight = 0;
+
+
 
 task liftToHeight()
 {
@@ -85,6 +88,14 @@ task mogoUp()
 
 void pre_auton()
 {
+	  //Completely clear out any previous sensor readings by setting the port to "sensorNone"
+  SensorType[in7] = sensorNone;
+  wait1Msec(1000);
+  //Reconfigure Analog Port 8 as a Gyro sensor and allow time for ROBOTC to calibrate it
+  SensorType[in7] = sensorGyro;
+  wait1Msec(2000);
+
+	gyro_init(gyro, 7, false);
 	bStopTasksBetweenModes = true;
 }
 
@@ -317,7 +328,7 @@ task autonomous()
 		stopTask(mogoDown);
 		startTask(mogoUp);
 
-		wait10Msec(300);
+		wait1Msec(3000);
 
 		motor[LeftFrontDrive] = 0;
 		motor[LeftRearDrive] = 0;
@@ -450,9 +461,9 @@ void turnLeft(int driveDistance)
 	int error = 0;
 	int speed = 0;
 	SensorValue[RightEnc] = 0;
-	while(SensorValue[RightEnc] < driveDistance)
+	while(SensorValue[GyroSensor] != driveDistance)
 	{
-		error = driveDistance - SensorValue[RightEnc];
+		error = driveDistance - SensorValue[GyroSensor];
 		if(error > 250)
 		{
 			speed = error/2;
@@ -716,6 +727,10 @@ task usercontrol()
 		if(vexRT[Btn7R] == 1)
 		{
 			drivePID(2500);
+		}
+		if(vexRT[Btn7L] == 1)
+		{
+			turnLeft(900);
 		}
 		wait1Msec(20);
 	}
