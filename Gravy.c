@@ -28,13 +28,15 @@
 
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
-#include "Gyro.c"
 
 //PROTOTYPES
 void autoStack();
 void drivePID(int driveDistance);
 void turnLeft(int driveDistance);
 void turnRight(int driveDistance);
+void displayAuton();
+int auton;
+int numAutons = 4;
 
 //GLOBALS
 int liftHeight = 0;
@@ -86,24 +88,88 @@ task mogoUp()
 	stopTask(mogoUp);
 }
 
+task LCDControl()
+{
+	clearLCDLine(0);
+	clearLCDLine(1);
+	bool noButtonsPressed = true;
+	displayAuton();
+	while(true){
+		if(noButtonsPressed){ // only update auton if a button is pressed AND wasn't pressed previously
+			switch(nLCDButtons){
+			case kButtonLeft:
+				auton--;
+				if (auton < 0)
+					auton = 0;
+				displayAuton();
+				break;
+			case kButtonCenter:
+				stopTask(LCDControl);
+				break;
+			case kButtonRight:
+				auton++;
+				if(auton > numAutons)
+					auton = numAutons;
+				displayAuton();
+				break;
+			}
+		}
+		noButtonsPressed = !nLCDButtons; //update if there is a button currently pressed
+		wait1Msec(20);
+	}
+}
+
+void displayAuton()
+{
+	switch(auton)
+	{
+	case 1:
+		displayLCDCenteredString(0, "Hunter");
+		break;
+
+	case 2:
+		displayLCDCenteredString(0, "Matt");
+		break;
+
+	case 0:
+		displayLCDCenteredString(0, "?");
+		break;
+
+	case 3:
+	displayLCDCenteredString(0, "Aldo");
+	break;
+
+	default:
+		displayLCDCenteredString(0, "No auton");
+		break;
+	}
+}
+
 void pre_auton()
 {
-	  //Completely clear out any previous sensor readings by setting the port to "sensorNone"
-  SensorType[in7] = sensorNone;
-  wait1Msec(1000);
-  //Reconfigure Analog Port 8 as a Gyro sensor and allow time for ROBOTC to calibrate it
-  SensorType[in7] = sensorGyro;
-  wait1Msec(2000);
+	//Completely clear out any previous sensor readings by setting the port to "sensorNone"
+	SensorType[in7] = sensorNone;
+	wait1Msec(1000);
+	//Reconfigure Analog Port 8 as a Gyro sensor and allow time for ROBOTC to calibrate it
+	SensorType[in7] = sensorGyro;
+	wait1Msec(2000);
+	bLCDBacklight = true;
 
-	gyro_init(gyro, 7, false);
+	clearLCDLine(0);
+	clearLCDLine(1);
+	bDisplayCompetitionStatusOnLcd = false;
+	startTask(LCDControl);
+
 	bStopTasksBetweenModes = true;
 }
 
 task autonomous()
 {
-	bool running = false;
-	if(running == true)
-	{
+	clearLCDLine(0);
+	clearLCDLine(1);
+	stopTask(LCDControl);
+	switch(auton){
+	case 1:
 		motor[LeftLift] = -30;
 		motor[RightLift] = -30;
 		//drop onto stationary goal
@@ -261,10 +327,9 @@ task autonomous()
 		stopTask(mogoDown);
 		startTask(mogoUp);
 		wait1Msec(300);
-	}
+		break;
 
-	if(running == false)
-	{
+	case 0:
 		//go right auton
 		//drop on stationary goal
 		/*
@@ -334,7 +399,20 @@ task autonomous()
 		motor[LeftRearDrive] = 0;
 		motor[RightFrontDrive] = 0;
 		motor[RightRearDrive] = 0;
+		break;
+
+	case 2:
+
+		break;
+
+case 3:
+break;
+
+	default:
+
+		break;
 	}
+
 }
 
 void autoStack()
@@ -342,25 +420,26 @@ void autoStack()
 	int grabHeight = 3950;
 	int armDrop[5] = {250, 400, 500, 800, 1800};
 
-	/*
+
 	//hug wall while stacking to preventing rocking
 	motor[LeftFrontDrive] = -20;
 	motor[LeftRearDrive] = -20;
 	motor[RightFrontDrive] = -20;
 	motor[RightRearDrive] = -20;
-	*/
+
 
 	for(int i = 0; i < 5; i++)
 	{
-		while( SensorValue[SwingPot] < 2400)
+
+			while(SensorValue[SwingPot] < 2000)
 		{
-			motor[Roller] = -60;
+			motor[Roller] = -127;
 			motor[LeftLift] = 127;
 			motor[RightLift] = 127;
 			wait1Msec(20);
 		}
 		//drop Roller down to grab height to grab cone
-		while(SensorValue[LimitSwitch] != 1)
+		while(SensorValue[SwingPot] < grabHeight)
 		{
 			motor[Roller] = 127;
 			motor[LeftLift] = 127;
@@ -368,14 +447,13 @@ void autoStack()
 			wait1Msec(20);
 		}
 
-
 		//Roller back over to arm drop height
 		//slow down roller at certain height to 60
 		while(SensorValue[SwingPot] > armDrop[I])
 		{
 
 			//right side determines drop height
-			if(SensorValue[SwingPot] > armDrop[i] + 300)
+			if(SensorValue[SwingPot] > armDrop[i] + 500)
 			{
 				motor[Roller] = 30;
 				motor[LeftLift] = -127;
@@ -384,21 +462,11 @@ void autoStack()
 			}
 			else
 			{
-
 				//release cone
 				motor[Roller] = -127;
 			}
 		}
-		if(i == 4)
-		{
-			while( SensorValue[SwingPot] < 2400)
-			{
-				motor[Roller] = -60;
-				motor[LeftLift] = 127;
-				motor[RightLift] = 127;
-				wait1Msec(20);
-			}
-		}
+
 		//kill switch
 		if(vexRT[Btn6D] == 1)
 		{
@@ -412,33 +480,40 @@ void turnRight(int driveDistance)
 {
 	int error = 0;
 	int speed = 0;
-	SensorValue[LeftEnc] = 0;
+	SensorValue[GyroSensor] = 0;
+	wait1Msec(200);
+	clearTimer(T2);
 
-	//while not turned far enough
-	while(SensorValue[LeftEnc] < driveDistance)
+	while(abs(SensorValue[GyroSensor]) < driveDistance && time1[T2] < 2000)
 	{
-		//calculate how far from goal distance you are
-		error = driveDistance - SensorValue[LeftEnc];
-
-		//if close to goal, keep going but slow down
-		if(error > 250)
+		error = driveDistance + SensorValue[GyroSensor];
+		if(abs(error) > 350)
 		{
 			speed = error/2;
-			motor[LeftFrontDrive] = speed / 2;
-			motor[LeftRearDrive] = speed / 2;
-			motor[RightFrontDrive] = -speed / 2;
-			motor[RightRearDrive] = -speed / 2;
+			if(speed > 500)
+			{
+				speed = 500;
+			}
+			motor[LeftFrontDrive] = speed / 3;
+			motor[LeftRearDrive] = speed / 3;
+			motor[RightFrontDrive] = -speed / 3;
+			motor[RightRearDrive] = -speed / 3;
 		}
-		//otherise go constant reasonable speed
+		else if(abs(error) < 200)
+		{
+			motor[LeftFrontDrive] = 20;
+			motor[LeftRearDrive] = 20;
+			motor[RightFrontDrive] = -20;
+			motor[RightRearDrive] = -20;
+		}
 		else
 		{
-			motor[LeftFrontDrive] = 100 / 2;
-			motor[LeftRearDrive] = 100 / 2;
-			motor[RightFrontDrive] = -100 / 2;
-			motor[RightRearDrive] = -100 / 2;
+			motor[LeftFrontDrive] = 40;
+			motor[LeftRearDrive] = 40;
+			motor[RightFrontDrive] = -40;
+			motor[RightRearDrive] = -40;
 		}
 	}
-	//brake slighty to remove inertia
 	motor[LeftFrontDrive] = -25;
 	motor[LeftRearDrive] = -25;
 	motor[RightFrontDrive] = 25;
@@ -446,13 +521,12 @@ void turnRight(int driveDistance)
 
 	wait1Msec(200);
 
-	//stop completely to shift more easily into a new task
 	motor[LeftFrontDrive] = 0;
 	motor[LeftRearDrive] = 0;
 	motor[RightFrontDrive] = 0;
 	motor[RightRearDrive] = 0;
 
-	wait1Msec(200);
+	wait1Msec(150);
 }
 
 void turnLeft(int driveDistance)
@@ -460,24 +534,38 @@ void turnLeft(int driveDistance)
 {
 	int error = 0;
 	int speed = 0;
-	SensorValue[RightEnc] = 0;
-	while(SensorValue[GyroSensor] != driveDistance)
+	SensorValue[GyroSensor] = 0;
+	wait1Msec(200);
+	clearTimer(T2);
+
+	while(abs(SensorValue[GyroSensor]) < driveDistance && time1[T2] < 2000)
 	{
 		error = driveDistance - SensorValue[GyroSensor];
-		if(error > 250)
+		if(abs(error) > 350)
 		{
 			speed = error/2;
-			motor[LeftFrontDrive] = -speed / 2;
-			motor[LeftRearDrive] = -speed / 2;
-			motor[RightFrontDrive] = speed / 2;
-			motor[RightRearDrive] = speed / 2;
+			if(speed > 500)
+			{
+				speed = 500;
+			}
+			motor[LeftFrontDrive] = -speed / 3;
+			motor[LeftRearDrive] = -speed / 3;
+			motor[RightFrontDrive] = speed / 3;
+			motor[RightRearDrive] = speed / 3;
+		}
+		else if(abs(error) < 200)
+		{
+			motor[LeftFrontDrive] = -20;
+			motor[LeftRearDrive] = -20;
+			motor[RightFrontDrive] = 20;
+			motor[RightRearDrive] = 20;
 		}
 		else
 		{
-			motor[LeftFrontDrive] = -100 / 2;
-			motor[LeftRearDrive] = -100 / 2;
-			motor[RightFrontDrive] = 100 / 2;
-			motor[RightRearDrive] = 100 / 2;
+			motor[LeftFrontDrive] = -40;
+			motor[LeftRearDrive] = -40;
+			motor[RightFrontDrive] = 40;
+			motor[RightRearDrive] = 40;
 		}
 	}
 	motor[LeftFrontDrive] = 25;
@@ -485,7 +573,7 @@ void turnLeft(int driveDistance)
 	motor[RightFrontDrive] = -25;
 	motor[RightRearDrive] = -25;
 
-	wait1Msec(200);
+	wait1Msec(150);
 
 	motor[LeftFrontDrive] = 0;
 	motor[LeftRearDrive] = 0;
@@ -497,7 +585,7 @@ void turnLeft(int driveDistance)
 
 void drivePID(int driveDistance)
 {
-	int maxDriveTime = 4000;
+	int maxDriveTime = 8000;
 	int errorRight = 0;
 	int prevErrorRight = 0;
 	//int errorLeft = 0;
@@ -511,6 +599,7 @@ void drivePID(int driveDistance)
 	float kP = .9;
 	float kI = .00001;
 	float kD = .005;
+	float kG = 1.5;
 
 	//values for turn
 	/*float kP = .1;
@@ -519,6 +608,8 @@ void drivePID(int driveDistance)
 	*/
 	SensorValue[LeftEnc] = 0;
 	SensorValue[RightEnc] = 0;
+	SensorValue[GyroSensor] = 0;
+	wait1Msec(200);
 
 	clearTimer(T1);
 
@@ -583,28 +674,11 @@ void drivePID(int driveDistance)
 			}
 		}
 
-		if(abs(SensorValue[LeftEnc]) < abs(SensorValue[RightEnc]))
-		{
-			motor[LeftFrontDrive] = speedRight;
-			motor[RightFrontDrive] = speedRight * .6;
-			motor[LeftRearDrive] = speedRight;
-			motor[RightRearDrive] = speedRight * .6;
-		}
-		else if(abs(SensorValue[LeftEnc]) > abs(SensorValue[RightEnc]))
-		{
-			motor[LeftFrontDrive] = speedRight * .6;
-			motor[RightFrontDrive] = speedRight;
-			motor[LeftRearDrive] = speedRight * .6;
-			motor[RightRearDrive] = speedRight;
-		}
 
-		else
-		{
-			motor[LeftFrontDrive] = speedRight;
-			motor[RightFrontDrive] = speedRight;
-			motor[LeftRearDrive] = speedRight;
-			motor[RightRearDrive] = speedRight;
-		}
+		motor[LeftFrontDrive] = speedRight + SensorValue[GyroSensor] * kG;
+		motor[RightFrontDrive] = speedRight - SensorValue[GyroSensor] * kG;
+		motor[LeftRearDrive] = speedRight + SensorValue[GyroSensor] * kG;
+		motor[RightRearDrive] = speedRight + SensorValue[GyroSensor] * kG;
 
 		wait1Msec(15);
 	}
@@ -612,11 +686,11 @@ void drivePID(int driveDistance)
 
 	if(driveDistance < 0)
 	{
-		speedRight = 18;
+		speedRight = 25;
 	}
 	else if(driveDistance > 0)
 	{
-		speedRight = -18;
+		speedRight = -25;
 	}
 
 
@@ -649,6 +723,9 @@ void drivePID(int driveDistance)
 task usercontrol()
 {
 	// User control code here, inside the loop
+	clearLCDLine(0);
+	clearLCDLine(1);
+	stopTask(LCDControl);
 	int y;
 	int x;
 	int threshhigh = 100;
@@ -730,7 +807,15 @@ task usercontrol()
 		}
 		if(vexRT[Btn7L] == 1)
 		{
-			turnLeft(900);
+			turnLeft(532);
+			wait1Msec(1000);
+			turnRight(551);
+			wait1Msec(1000);
+			turnLeft(1050);
+			wait1Msec(1000);
+			turnRight(1078);
+			wait1Msec(1000);
+
 		}
 		wait1Msec(20);
 	}
