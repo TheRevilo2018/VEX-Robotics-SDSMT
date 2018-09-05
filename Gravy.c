@@ -110,20 +110,20 @@ void displayAuton()
 {
 	switch(auton)
 	{
+	case 0:
+		displayLCDCenteredString(0, "Red Mogo");
+		break;
+
 	case 1:
-		displayLCDCenteredString(0, "Hunter");
+		displayLCDCenteredString(0, "Red Post");
 		break;
 
 	case 2:
-		displayLCDCenteredString(0, "Matt");
-		break;
-
-	case 0:
-		displayLCDCenteredString(0, "Dick Butt");
+		displayLCDCenteredString(0, "Blue Mogo");
 		break;
 
 	case 3:
-		displayLCDCenteredString(0, "Aldo is Hoe");
+		displayLCDCenteredString(0, "Blue Post");
 		break;
 
 	default:
@@ -210,7 +210,7 @@ task autonomous()
 		wait1Msec(1500);
 
 		//autostack onto left mobile goal
-		//autoStack();
+		autoStack();
 
 		//place left mobile goal on far scoring goal
 		//go straight
@@ -231,91 +231,10 @@ task autonomous()
 		//dive backwards
 		driveReverseP(342);
 
-		//mogo up
-		motor[Mogo] = 127;
-		wait1Msec(1200);
-		motor[Mogo] = 0;
-		wait1Msec(20);
-
-		//turn right
-		turnRight(350);
-
-		//drive forward
-		driveP(390);
-
-		//go get right mobile goal
-		//turn to wall
-		driveReverseP(42);
-		turnLeft(350);
-
-		//drive forward to wall
-		driveP(95);
-
-		//turn left to face mogo
-		startTask(mogoDown);
-		turnLeft(150);
-
-		//lower mogo lift and run into mogo
-		driveP(170);
-
-		//drive back toward goal
-		stopTask(mogoDown);
-		startTask(mogoUp);
-		wait1Msec(300);
-		driveReverseP(170);
-
-		//go to scoring platform
-		//turn to other wall
-		turnLeft(450);
-
-		//drive to wall
-		driveP(150);
-
-		//drive toward loader
-		turnRight(350);
-
-		//drive forward to loader
-		driveP(40);
-
-		//turn right
-		turnRight(38);
-
-		//back into loader
-		motor[LeftFrontDrive] = -30;
-		motor[LeftRearDrive] = -30;
-		motor[RightFrontDrive] = -30;
-		motor[RightRearDrive] = -30;
-		wait1Msec(1000);
-
-		//autostack onto right mobile goal
-		//autoStack();
-
-		//go straight to place right mobile goal onto right side of second score
-		driveP(70);
-
-		//turn right
-		turnRight(50);
-
-		//drive straight
-		driveP(174);
-
-		//turn right
-		turnRight(50);
-
-		//mogo out
-		startTask(mogoDown);
-
-		//back up to drop off mogo
-		driveReverseP(40);
-
-		//put mogo back up
-		stopTask(mogoDown);
-		startTask(mogoUp);
-		wait1Msec(300);
 		break;
 
 	case 0:
-	motor[Roller] = 10;
+	motor[Roller] = 30;
 	startVal = 0;
 	numCones = 1;
 
@@ -348,7 +267,7 @@ task autonomous()
 		motor[RightLift] = 0;
 
 		//drive back
-		driveReverseP(280);
+		driveReverseP(250);
 
 		//turn right
 		turnRight(535);
@@ -388,10 +307,25 @@ task autonomous()
 		driveP(325);
 
 		//turn right
-		turnRight(720);
+		turnRight(680);
 
 		//drive straight
-		driveP(950);
+		driveP(850);
+
+		//turn right
+		turnRight(100);
+
+		motor[LeftFrontDrive] = 30;
+		motor[LeftRearDrive] = 30;
+		motor[RightFrontDrive] = 30;
+		motor[RightRearDrive] = 30;
+		wait1Msec(1000);
+
+				motor[LeftFrontDrive] = 0;
+		motor[LeftRearDrive] = 0;
+		motor[RightFrontDrive] = 0;
+		motor[RightRearDrive] = 0;
+		wait1Msec(10);
 
 		//mogo down
 		//stopTask(mogoUp);
@@ -404,8 +338,184 @@ task autonomous()
 		break;
 
 	case 2:
+		motor[Roller] = 30;
+	startVal = 0;
+	numCones = 1;
+
+		//mogo out
+		motor[Mogo] = -127;
+		wait1Msec(1200);
+		motor[Mogo] = -20;
+
+		//drive forward
+		driveP(1300);
+
+		motor[LeftFrontDrive] = 20;
+		motor[LeftRearDrive] = 20;
+		motor[RightFrontDrive] = 20;
+		motor[RightRearDrive] = 20;
+		//mogo in
+		wait1Msec(500);
+		motor[LeftFrontDrive] = 0;
+		motor[LeftRearDrive] = 0;
+		motor[RightFrontDrive] = 0;
+		motor[RightRearDrive] = 0;
+		//mogo in
+		wait1Msec(20);
+
+		motor[Mogo] = 127;
+		wait1Msec(1200);
+		motor[Mogo] = 0;
+		autoStack();
+		motor[LeftLift] =0;
+		motor[RightLift] = 0;
+
+		//drive back
+		driveReverseP(250);
+
+		//turn right
+		turnLeft(480);
+
+		//back up
+		motor[LeftFrontDrive] = -30;
+		motor[LeftRearDrive] = -30;
+		motor[RightFrontDrive] = -30;
+		motor[RightRearDrive] = -30;
+		wait1Msec(1500);
+
+				motor[LeftFrontDrive] = 0;
+		motor[LeftRearDrive] = 0;
+		motor[RightFrontDrive] = 0;
+		motor[RightRearDrive] = 0;
+		wait1Msec(10);
+
+				motor[LeftFrontDrive] = 20;
+		motor[LeftRearDrive] = 20;
+		motor[RightFrontDrive] = 20;
+		motor[RightRearDrive] = 20;
+		wait1Msec(50);
+
+				motor[LeftFrontDrive] = 0;
+		motor[LeftRearDrive] = 0;
+		motor[RightFrontDrive] = 0;
+		motor[RightRearDrive] = 0;
+		wait1Msec(10);
+
+		//autostack onto left mobile goal
+		numCones = 4;
+		startVal = 1;
+		autoStack();
+
+		//place left mobile goal on far scoring goal
+		//go straight
+		driveP(325);
+
+		//turn right
+		turnLeft(680);
+
+		//drive straight
+		driveP(850);
+
+		//turn right
+		turnLeft(100);
+
+		motor[LeftFrontDrive] = 30;
+		motor[LeftRearDrive] = 30;
+		motor[RightFrontDrive] = 30;
+		motor[RightRearDrive] = 30;
+		wait1Msec(1000);
+
+				motor[LeftFrontDrive] = 0;
+		motor[LeftRearDrive] = 0;
+		motor[RightFrontDrive] = 0;
+		motor[RightRearDrive] = 0;
+		wait1Msec(10);
+
+		//mogo down
+		//stopTask(mogoUp);
+		motor[Mogo] = -127;
+		wait1Msec(1200);
+		motor[Mogo] = -20;
+
+		//dive backwards
+		driveReverseP(342);
+	break;
 
 	case 3:
+			motor[LeftLift] = -30;
+		motor[RightLift] = -30;
+		//drop onto stationary goal
+		driveReverseP(230);
+		motor[LeftLift] = 10;
+		motor[RightLift] = 10;
+		wait1Msec(200);
+		driveP(157);
+
+		motor[RightLift] = 0;
+		motor[LeftLift] = 0;
+
+		//go to the left mobile goal
+		// turn right
+		turnLeft(480);
+
+		//drive forward to near loader wall
+		driveP(600);
+
+		//turn right to face first mogo
+		turnLeft(333);
+
+		//mogo out
+		motor[Mogo] = -127;
+		wait1Msec(1200);
+		motor[Mogo] = -20;
+
+		//drive forward
+		driveP(1150);
+
+		motor[LeftFrontDrive] = 20;
+		motor[LeftRearDrive] = 20;
+		motor[RightFrontDrive] = 20;
+		motor[RightRearDrive] = 20;
+		//mogo in
+		motor[Mogo] = 127;
+		wait1Msec(1200);
+		motor[Mogo] = 0;
+
+		//drive back
+		driveReverseP(275);
+
+		//turn right
+		turnLeft(420);
+
+		//back up
+		motor[LeftFrontDrive] = -30;
+		motor[LeftRearDrive] = -30;
+		motor[RightFrontDrive] = -30;
+		motor[RightRearDrive] = -30;
+		wait1Msec(1500);
+
+		//autostack onto left mobile goal
+		autoStack();
+
+		//place left mobile goal on far scoring goal
+		//go straight
+		driveP(325);
+
+		//turn right
+		turnLeft(720);
+
+		//drive straight
+		driveP(791);
+
+		//mogo down
+		//stopTask(mogoUp);
+		motor[Mogo] = -127;
+		wait1Msec(1200);
+		motor[Mogo] = -20;
+
+		//dive backwards
+		driveReverseP(342);
+
 		break;
 
 	default:
@@ -417,7 +527,7 @@ task autonomous()
 
 void autoStack()
 {
-	int grabHeight = 3900;
+	int grabHeight = 3950;
 	int armDrop[5] = {250, 550, 650, 1000, 1300};
 
 
