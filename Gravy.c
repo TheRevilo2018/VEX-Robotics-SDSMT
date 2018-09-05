@@ -371,10 +371,10 @@ task autonomous()
 		motor[RightLift] = 0;
 
 		//drive back
-		driveReverseP(250);
+		driveReverseP(230);
 
 		//turn right
-		turnLeft(480);
+		turnLeft(400);
 
 		//back up
 		motor[LeftFrontDrive] = -30;
@@ -411,13 +411,13 @@ task autonomous()
 		driveP(325);
 
 		//turn right
-		turnLeft(680);
+		turnLeft(400);
 
 		//drive straight
 		driveP(850);
 
 		//turn right
-		turnLeft(100);
+		turnLeft(200);
 
 		motor[LeftFrontDrive] = 30;
 		motor[LeftRearDrive] = 30;
