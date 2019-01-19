@@ -5,4 +5,4 @@ Flywheel must be able to maintain a constant speed (~2000)
 When ball hits, flywheel will slow down, speed it up back to constant asap (PID)
 Redirector bar at top of flywheel, controls low/med/high flag
 Arcade Drive
-
+Point turns

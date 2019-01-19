@@ -56,6 +56,8 @@ void autonomous( void ) {
 
 void usercontrol( void ) {
   // User control code here, inside the loop
+  vex::directionType robotDirection;
+  ll turnThreshold = 10;
   while (1){
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo 
@@ -67,6 +69,38 @@ void usercontrol( void ) {
     // ........................................................................
     
     
+    
+    //left/right control is axis1, up/down is axis 3;
+    
+    //if turning
+    if(abs(mainController.axis3.value()) > turnThreshold && abs(mainController.axis1.value()) > driveThreshold)
+    {
+        if(mainController.axis3.value() < 0)
+        {
+            rightMotors.spin(forward, abs(mainController.axis1.value()), percent);
+            leftMotors.spin(reverse, abs(mainController.axis1.value()), percent);
+        }
+        else
+        {
+            rightMotors.spin(reverse, abs(mainController.axis1.value()), percent);
+            leftMotors.spin(forward, abs(mainController.axis1.value()), percent);
+            
+        }
+    }
+    //if driving in a line
+    else if(abs(mainController.axis1.value()) > driveThreshold)
+    {
+        if(mainController.axis1.value() < 0)
+        {
+            robotDirection = backward; 
+        }
+        else
+        {
+            robotDiretion = forward;
+        }
+        rightMotors.spin(robotDirection, abs(mainController.axis1.value()), percent);
+        leftMotors.spin(robotDirection, abs(mainController.axis1.value()), percent);   
+    }
     
     vex::task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
   }
