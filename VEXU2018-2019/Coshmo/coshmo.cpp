@@ -1,3 +1,5 @@
+#include <math.h>
+#include <iostream>
 #include "robot-config.h"
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -55,9 +57,29 @@ void autonomous( void ) {
 
 void usercontrol( void ) {
   // User control code here, inside the loop
-  vex::directionType robotDirection;
-  ll turnThreshold = 10;
-  ll driveThreshold = 10;
+  vex::directionType leftMotorDirection;
+  vex::directionType rightMotorDirection;
+  int turnThreshold = 10;
+  int driveThreshold = 10;
+  int leftMotorPercent = 0;
+  int rightMotorPercent = 0;
+  
+  
+   /*
+  rightMotor1.stop(vex::brakeType::brake);
+  rightMotor2.stop(vex::brakeType::brake);
+  rightMotor3.stop(vex::brakeType::brake);
+  leftMotor1.stop(vex::brakeType::brake); 
+  leftMotor2.stop(vex::brakeType::brake);
+  leftMotor3.stop(vex::brakeType::brake);
+    */
+      rightMotor1.stop(vex::brakeType::coast);
+  rightMotor2.stop(vex::brakeType::coast);
+  rightMotor3.stop(vex::brakeType::coast);
+  leftMotor1.stop(vex::brakeType::coast); 
+  leftMotor2.stop(vex::brakeType::coast);
+  leftMotor3.stop(vex::brakeType::coast);  
+
   while (1){
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo 
@@ -70,48 +92,65 @@ void usercontrol( void ) {
     
     
     
-    //left/right control is axis1, up/down is axis 3;
-    
-    //if turning
-    if(abs(mainController.Axis3.value()) > turnThreshold && abs(mainController.Axis1.value()) > driveThreshold)
+    // up/down is axis 3, left/right control is axis1;
+   
+    //if high enough values to move
+    if(abs(mainController.Axis1.value()) > turnThreshold || abs(mainController.Axis3.value()) > driveThreshold)
     {
-        if(mainController.Axis3.value() < 0)
+         Brain.Screen.print("Hello");
+        leftMotorPercent = mainController.Axis3.value();
+        rightMotorPercent = mainController.Axis3.value();
+        
+        
+        if(mainController.Axis1.value()> 0)
         {
-            rightMotor1.spin(forward, abs(mainController.Axis1.value()), percent);
-            rightMotor2.spin(forward, abs(mainController.Axis1.value()), percent);
-            rightMotor3.spin(forward, abs(mainController.Axis1.value()), percent);
-            leftMotor1.spin(reverse, abs(mainController.Axis1.value()), percent);
-            leftMotor2.spin(reverse, abs(mainController.Axis1.value()), percent);
-            leftMotor3.spin(reverse, abs(mainController.Axis1.value()), percent);
+             leftMotorPercent += fabs(mainController.Axis1.value() / 4.0);
+             rightMotorPercent -= fabs(mainController.Axis1.value() / 4.0);
         }
         else
         {
-            rightMotor1.spin(reverse, abs(mainController.Axis1.value()), percent);
-            rightMotor2.spin(reverse, abs(mainController.Axis1.value()), percent);
-            rightMotor3.spin(reverse, abs(mainController.Axis1.value()), percent);
-            leftMotor1.spin(forward, abs(mainController.Axis1.value()), percent);
-            leftMotor2.spin(forward, abs(mainController.Axis1.value()), percent);
-            leftMotor3.spin(forward, abs(mainController.Axis1.value()), percent);
-            
+            leftMotorPercent -= fabs(mainController.Axis1.value() / 4.0);
+            rightMotorPercent += fabs(mainController.Axis1.value() / 4.0);
         }
+       
+        
+        if(leftMotorPercent > 0)
+        {
+            leftMotorDirection = forward;
+        }
+        else
+        {
+            leftMotorDirection = reverse;
+        }
+        if(rightMotorPercent > 0)
+        {
+            rightMotorDirection = forward;
+        }
+        else
+        {
+            rightMotorDirection = reverse;
+        }
+        
+        //set percents to abs value of driection, capped at 100
+        rightMotorPercent = std::min(100, abs(rightMotorPercent));
+        leftMotorPercent = std::min(100, abs(leftMotorPercent));
+        
+        rightMotor1.spin(rightMotorDirection, rightMotorPercent, percent);
+        rightMotor2.spin(rightMotorDirection, rightMotorPercent, percent);
+        rightMotor3.spin(rightMotorDirection, rightMotorPercent, percent);
+        leftMotor1.spin(leftMotorDirection, leftMotorPercent, percent); 
+        leftMotor2.spin(leftMotorDirection, leftMotorPercent, percent);
+        leftMotor3.spin(leftMotorDirection, leftMotorPercent, percent); 
+        
     }
-    //if driving in a line
-    else if(abs(mainController.Axis1.value()) > driveThreshold)
+    else
     {
-        if(mainController.Axis1.value() < 0)
-        {
-            robotDirection = reverse; 
-        }
-        else
-        {
-            robotDirection = forward;
-        }
-        rightMotor1.spin(robotDirection, abs(mainController.Axis1.value()), percent);
-        rightMotor2.spin(robotDirection, abs(mainController.Axis1.value()), percent);
-        rightMotor3.spin(robotDirection, abs(mainController.Axis1.value()), percent);
-        leftMotor1.spin(robotDirection, abs(mainController.Axis1.value()), percent); 
-        leftMotor2.spin(robotDirection, abs(mainController.Axis1.value()), percent);
-        leftMotor3.spin(robotDirection, abs(mainController.Axis1.value()), percent);
+        rightMotor1.spin(rightMotorDirection, 0, percent);
+        rightMotor2.spin(rightMotorDirection, 0, percent);
+        rightMotor3.spin(rightMotorDirection, 0, percent);
+        leftMotor1.spin(leftMotorDirection, 0, percent); 
+        leftMotor2.spin(leftMotorDirection, 0, percent);
+        leftMotor3.spin(leftMotorDirection, 0, percent);   
     }
     
     vex::task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
