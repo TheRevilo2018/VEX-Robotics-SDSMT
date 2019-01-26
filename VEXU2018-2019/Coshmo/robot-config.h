@@ -1,7 +1,6 @@
 #ifndef  _ROBOTCONFIG_H__
 #define _ROBOTCONFIG_H__
 
-using namespace vex;
 //initialization
 vex::brain Brain;
 
@@ -23,9 +22,14 @@ vex::velocityUnits revolutionsPerMinute = vex::velocityUnits::rpm;
 vex::velocityUnits degreesPerSecond = vex::velocityUnits::dps;
 
 vex::brakeType brake = vex::brakeType::brake;
+vex::brakeType hold = vex::brakeType::hold;
 vex::brakeType coast = vex::brakeType::coast;
 
 vex::rotationUnits revolutions = vex::rotationUnits::rev;
 vex::rotationUnits degrees = vex::rotationUnits::deg;
 
+
+//function declarations
+void setBrakeType(std::vector<vex::motor>motorVector, vex::brakeType type);
+void test();
 #endif

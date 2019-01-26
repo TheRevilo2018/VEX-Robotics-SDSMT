@@ -1,5 +1,18 @@
-#include <math.h>
+#define _USE_MATH_DEFINES
 #include <iostream>
+#include <stdio.h>
+#include <cmath>
+#include <iomanip>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <unordered_set>
+#include <ctype.h>
+#include <queue>
+#include <map>
+#include <set>
+#include <stack>
+#include <unordered_map>
 #include "robot-config.h"
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -57,14 +70,21 @@ void autonomous( void ) {
 
 void usercontrol( void ) {
   // User control code here, inside the loop
+  bool holdMode = false;
   vex::directionType leftMotorDirection;
   vex::directionType rightMotorDirection;
+  int loopDelay = 20;
+  int debounceButtonY = 0;
   int turnThreshold = 10;
   int driveThreshold = 10;
   int leftMotorPercent = 0;
   int rightMotorPercent = 0;
   
-  
+  std::vector<vex::motor> motorVector = { leftMotor1, leftMotor2, leftMotor3, 
+                                         rightMotor1, rightMotor2, rightMotor3 };
+  std::vector<vex::motor> leftMotorVector = { leftMotor1, leftMotor2, leftMotor3 };
+  std::vector<vex::motor> rightMotorVector = { rightMotor1,rightMotor2, rightMotor3 };
+    
    /*
   rightMotor1.stop(vex::brakeType::brake);
   rightMotor2.stop(vex::brakeType::brake);
@@ -90,7 +110,48 @@ void usercontrol( void ) {
     // update your motors, etc.
     // ........................................................................
     
-    
+    //settings checks
+    if(mainController.ButtonY.pressing())
+    {
+        if(debounceButtonY > 0)
+        {
+            debounceButtonY -= loopDelay;
+        }
+        else
+        {
+            //call hold mode
+            holdMode = !holdMode;
+            debounceButtonY = 200;
+        }
+    }
+      
+      
+    //set settings
+    if(!holdMode)
+    {
+        
+        setBrakeType(motorVector, vex::brakeType::brake);
+        /*
+        rightMotor1.setStopping(vex::brakeType::brake);
+        rightMotor2.setStopping(vex::brakeType::brake);
+        rightMotor3.setStopping(vex::brakeType::brake);
+        leftMotor1.setStopping(vex::brakeType::brake);
+        leftMotor2.setStopping(vex::brakeType::brake);
+        leftMotor3.setStopping(vex::brakeType::brake);
+        */
+    }
+    else
+    {
+        setBrakeType(motorVector, vex::brakeType::hold);
+        /*
+        rightMotor1.setStopping(vex::brakeType::hold);
+        rightMotor2.setStopping(vex::brakeType::hold);
+        rightMotor3.setStopping(vex::brakeType::hold);
+        leftMotor1.setStopping(vex::brakeType::hold);
+        leftMotor2.setStopping(vex::brakeType::hold);
+        leftMotor3.setStopping(vex::brakeType::hold);
+        */
+    }
     
     // up/down is axis 3, left/right control is axis1;
    
@@ -153,7 +214,7 @@ void usercontrol( void ) {
         leftMotor3.spin(leftMotorDirection, 0, percent);   
     }
     
-    vex::task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources. 
+    vex::task::sleep(loopDelay); //Sleep the task for a short amount of time to prevent wasted resources. 
   }
 }
 
@@ -174,4 +235,26 @@ int main() {
       vex::task::sleep(100);//Sleep the task for a short amount of time to prevent wasted resources.
     }    
        
+}
+
+
+
+
+
+
+
+
+
+//code declared in header file
+void setBrakeType(std::vector<vex::motor>motorVector, vex::brakeType type)
+{
+	for(auto motor: motorVector)
+	{
+		motor.setStopping(type);
+	}
+}
+
+void test()
+{
+	return;
 }
