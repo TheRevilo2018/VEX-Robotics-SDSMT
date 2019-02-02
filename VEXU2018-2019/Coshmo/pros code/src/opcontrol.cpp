@@ -1,18 +1,4 @@
-#define _USE_MATH_DEFINES
-#include <iostream>
-#include <stdio.h>
-#include <cmath>
-#include <iomanip>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <unordered_set>
-#include <ctype.h>
-#include <queue>
-#include <map>
-#include <set>
-#include <stack>
-#include <unordered_map>
+
 #include "helperFunctions.h"
 #include "main.h"
 
@@ -22,7 +8,6 @@
 #define RIGHT_WHEEL1_PORT 11
 #define RIGHT_WHEEL2_PORT 12
 #define RIGHT_WHEEL3_PORT 13
-
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -46,6 +31,7 @@ void opcontrol()
 	pros::Motor rightWheel1(11, false);
 	pros::Motor rightWheel2(12, true);
 	pros::Motor rightWheel3(13, false);
+
 	std::vector<pros::Motor> wheelMotorVector = {leftWheel1, leftWheel2, leftWheel3, rightWheel1, rightWheel2, rightWheel3 };
 	std::vector<pros::Motor> leftWheelMotorVector = {leftWheel1, leftWheel2, leftWheel3 };
 	std::vector<pros::Motor> rightWheelMotorVector = {rightWheel1, rightWheel2, rightWheel3 };
@@ -53,11 +39,35 @@ void opcontrol()
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
+	int debounceButtonY = 0;
+	int loopDelay = 20;
 	bool holdMode = false;
 
 
 	while (true)
 	{
+		if(debounceButtonY > 0)
+		{
+			debounceButtonY -= loopDelay;
+		}
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+    {
+        if(debounceButtonY <= 0)
+        {    //call hold mode
+            holdMode = !holdMode;
+            debounceButtonY = 200;
+        }
+    }
+
+		if(!holdMode)
+    {
+        setBrakes(wheelMotorVector, pros::E_MOTOR_BRAKE_COAST );
+    }
+    else
+    {
+    	setBrakes(wheelMotorVector, pros::E_MOTOR_BRAKE_HOLD );
+    }
+
 
 		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
 		{
@@ -84,6 +94,6 @@ void opcontrol()
 
 		setMotors(leftWheelMotorVector, leftMotorPercent);
 		setMotors(rightWheelMotorVector, rightMotorPercent);
-		pros::delay(20);
+		pros::delay(loopDelay);
 	}
 }
