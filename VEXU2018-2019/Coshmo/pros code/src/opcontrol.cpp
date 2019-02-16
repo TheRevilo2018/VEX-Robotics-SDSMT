@@ -25,12 +25,14 @@ void opcontrol()
 {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
   pros::Controller partner(pros::E_CONTROLLER_PARTNER);
-	pros::Motor leftWheel1(1, true);
-	pros::Motor leftWheel2(2, false);
-	pros::Motor leftWheel3(3, true);
-	pros::Motor rightWheel1(11, false);
-	pros::Motor rightWheel2(12, true);
-	pros::Motor rightWheel3(13, false);
+	pros::Motor leftWheel1(1, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor leftWheel2(2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor leftWheel3(3, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor rightWheel1(11, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor rightWheel2(12, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor rightWheel3(13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+  pros::Motor launchMotorLeft(19, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor launchMotorRight(20, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 
 	std::vector<pros::Motor> wheelMotorVector = {leftWheel1, leftWheel2, leftWheel3, rightWheel1, rightWheel2, rightWheel3 };
 	std::vector<pros::Motor> leftWheelMotorVector = {leftWheel1, leftWheel2, leftWheel3 };
@@ -40,6 +42,7 @@ void opcontrol()
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
 	int debounceButtonY = 0;
+	int debounceButtonR1 = 0;
 	int loopDelay = 20;
 	bool holdMode = false;
 
@@ -50,6 +53,10 @@ void opcontrol()
 		{
 			debounceButtonY -= loopDelay;
 		}
+		if(debounceButtonR1 > 0)
+		{
+			debounceButtonR1 -= loopDelay;
+		}
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
     {
         if(debounceButtonY <= 0)
@@ -58,7 +65,16 @@ void opcontrol()
             debounceButtonY = 200;
         }
     }
-
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+		{
+			launchMotorLeft = 100;
+			launchMotorRight = 100;
+		}
+		else
+		{
+			launchMotorLeft = 0;
+			launchMotorRight = 0;
+		}
 		if(!holdMode)
     {
         setBrakes(wheelMotorVector, pros::E_MOTOR_BRAKE_COAST );
@@ -67,7 +83,6 @@ void opcontrol()
     {
     	setBrakes(wheelMotorVector, pros::E_MOTOR_BRAKE_HOLD );
     }
-
 
 		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
 		{
