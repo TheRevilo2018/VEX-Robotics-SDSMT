@@ -39,16 +39,17 @@ void opcontrol()
 	pros::Motor angler(13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor intakeTop(17, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor launchMotorRight(19, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor intakeBottom(20, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor intakeBottom(20, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
+	int intakePercent = 0;
 	int liftPos = 0;
 	int minLiftPos = 0;
 	int debounceButtonY = 0;
-	int debounceButtonR1 = 0;
+	int debounceButtonB = 0;
 	int debounceButtonUP = 0;
 	int loopDelay = 20;
 	bool holdMode = false;
@@ -57,7 +58,8 @@ void opcontrol()
 	std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4, wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
 	std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4 };
 	std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
-	std::vector<int*> debounceButtons = {&debounceButtonR1, &debounceButtonY, &debounceButtonUP};
+	std::vector<pros::Motor> intakeMotors = {intakeTop, intakeBottom};
+	std::vector<int*> debounceButtons = {&debounceButtonY, &debounceButtonUP, &debounceButtonB};
 
 	liftMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	while (true)
@@ -70,12 +72,12 @@ void opcontrol()
 			}
 		}
 
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
     {
-        if(debounceButtonY <= 0)
+        if(debounceButtonB <= 0)
         {    //call hold mode
             holdMode = !holdMode;
-            debounceButtonY = 200;
+            debounceButtonB = 200;
         }
     }
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
@@ -86,7 +88,7 @@ void opcontrol()
             debounceButtonUP = 200;
         }
     }
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
 		{
 			launchMotorLeft = 60;
 			launchMotorRight = 60;
@@ -111,6 +113,19 @@ void opcontrol()
 		{
 			//liftPos = liftMotor.get_position();
 			liftPos = minLiftPos;
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+		{
+				intakePercent = 100;
+		}
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		{
+			intakePercent = -100;
+		}
+		else
+		{
+			intakePercent = 0;
 		}
 
 		if(!holdMode)
@@ -157,6 +172,7 @@ void opcontrol()
 
 		setMotors(leftWheelMotorVector, leftMotorPercent);
 		setMotors(rightWheelMotorVector, rightMotorPercent);
+		setMotors(intakeMotors, intakePercent);
 		liftMotor.move_absolute(liftPos, 127);
 		pros::delay(loopDelay);
 	}
