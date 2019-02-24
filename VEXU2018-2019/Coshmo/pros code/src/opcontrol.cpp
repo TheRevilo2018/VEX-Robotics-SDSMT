@@ -45,6 +45,8 @@ void opcontrol()
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
+	int liftPos = 0;
+	int minLiftPos = 10000;
 	int debounceButtonY = 0;
 	int debounceButtonR1 = 0;
 	int debounceButtonUP = 0;
@@ -57,6 +59,7 @@ void opcontrol()
 	std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
 	std::vector<int*> debounceButtons = {&debounceButtonR1, &debounceButtonY, &debounceButtonUP};
 
+	liftMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	while (true)
 	{
 		for(auto button : debounceButtons)
@@ -66,20 +69,7 @@ void opcontrol()
 				*button -= loopDelay;
 			}
 		}
-		/*
-		if(debounceButtonY > 0)
-		{
-			debounceButtonY -= loopDelay;
-		}
-		if(debounceButtonR1 > 0)
-		{
-			debounceButtonR1 -= loopDelay;
-		}
-		if(debounceButtonUP > 0)
-		{
-			debounceButtonUP -= loopDelay;
-		}
-		*/
+
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
     {
         if(debounceButtonY <= 0)
@@ -91,21 +81,38 @@ void opcontrol()
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
     {
         if(debounceButtonUP <= 0)
-        {    //call hold mode
+        {
             turboMode = !turboMode;
             debounceButtonUP = 200;
         }
     }
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
 		{
-			launchMotorLeft = 100;
-			launchMotorRight = 100;
+			launchMotorLeft = 60;
+			launchMotorRight = 60;
 		}
 		else
 		{
 			launchMotorLeft = 0;
 			launchMotorRight = 0;
 		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+    {
+    	liftPos = 1000;
+			//minLiftPos = liftMotor.get_position();
+    }
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+		{
+			liftPos = 0;
+			//minLiftPos = liftMotor.get_position();
+		}
+		else
+		{
+			liftPos = liftMotor.get_position();
+			//liftPos = minLiftPos
+		}
+
 		if(!holdMode)
     {
         setBrakes(wheelMotorVector, pros::E_MOTOR_BRAKE_COAST );
@@ -150,6 +157,7 @@ void opcontrol()
 
 		setMotors(leftWheelMotorVector, leftMotorPercent);
 		setMotors(rightWheelMotorVector, rightMotorPercent);
+		liftMotor.move_absolute(liftPos, 127);
 		pros::delay(loopDelay);
 	}
 }
