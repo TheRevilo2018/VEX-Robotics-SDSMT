@@ -25,30 +25,48 @@ void opcontrol()
 {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
   pros::Controller partner(pros::E_CONTROLLER_PARTNER);
-	pros::Motor leftWheel1(1, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor leftWheel2(2, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor leftWheel3(3, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor rightWheel1(11, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor rightWheel2(12, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor rightWheel3(13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-  pros::Motor launchMotorLeft(19, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-	pros::Motor launchMotorRight(20, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 
-	std::vector<pros::Motor> wheelMotorVector = {leftWheel1, leftWheel2, leftWheel3, rightWheel1, rightWheel2, rightWheel3 };
-	std::vector<pros::Motor> leftWheelMotorVector = {leftWheel1, leftWheel2, leftWheel3 };
-	std::vector<pros::Motor> rightWheelMotorVector = {rightWheel1, rightWheel2, rightWheel3 };
+	pros::Motor wheelLeft1(2, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor wheelLeft2(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor wheelLeft3(4, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor wheelLeft4(5, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor wheelRight1(6, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor wheelRight2(7, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor wheelRight3(8, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor wheelRight4(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor liftMotor(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+  pros::Motor launchMotorLeft(12, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor angler(13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor intakeTop(17, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor launchMotorRight(19, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor intakeBottom(20, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
 	int debounceButtonY = 0;
 	int debounceButtonR1 = 0;
+	int debounceButtonUP = 0;
 	int loopDelay = 20;
 	bool holdMode = false;
+	bool turboMode = false;
 
+	std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4, wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
+	std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4 };
+	std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
+	std::vector<int*> debounceButtons = {&debounceButtonR1, &debounceButtonY, &debounceButtonUP};
 
 	while (true)
 	{
+		for(auto button : debounceButtons)
+		{
+			if (*button > 0)
+			{
+				*button -= loopDelay;
+			}
+		}
+		/*
 		if(debounceButtonY > 0)
 		{
 			debounceButtonY -= loopDelay;
@@ -57,12 +75,25 @@ void opcontrol()
 		{
 			debounceButtonR1 -= loopDelay;
 		}
+		if(debounceButtonUP > 0)
+		{
+			debounceButtonUP -= loopDelay;
+		}
+		*/
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
     {
         if(debounceButtonY <= 0)
         {    //call hold mode
             holdMode = !holdMode;
             debounceButtonY = 200;
+        }
+    }
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
+    {
+        if(debounceButtonUP <= 0)
+        {    //call hold mode
+            turboMode = !turboMode;
+            debounceButtonUP = 200;
         }
     }
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
@@ -91,13 +122,13 @@ void opcontrol()
 
 			if(master.get_analog(ANALOG_RIGHT_X) > turnThreshold)
       {
-             leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
-             rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+             leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+             rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
       }
       else
       {
-          leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
-          rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+          leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+          rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
       }
 		}
 		else
@@ -106,6 +137,16 @@ void opcontrol()
 			rightMotorPercent = 0;
 		}
 
+		if(!turboMode)
+		{
+			leftMotorPercent *= .8;
+			rightMotorPercent *= .8;
+		}
+		else
+		{
+			leftMotorPercent *= .9;
+			rightMotorPercent *= .9;
+		}
 
 		setMotors(leftWheelMotorVector, leftMotorPercent);
 		setMotors(rightWheelMotorVector, rightMotorPercent);
