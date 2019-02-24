@@ -46,7 +46,7 @@ void opcontrol()
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
 	int liftPos = 0;
-	int minLiftPos = 10000;
+	int minLiftPos = 0;
 	int debounceButtonY = 0;
 	int debounceButtonR1 = 0;
 	int debounceButtonUP = 0;
@@ -100,17 +100,17 @@ void opcontrol()
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     {
     	liftPos = 1000;
-			//minLiftPos = liftMotor.get_position();
+			minLiftPos = liftMotor.get_position();
     }
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 		{
 			liftPos = 0;
-			//minLiftPos = liftMotor.get_position();
+			minLiftPos = liftMotor.get_position();
 		}
 		else
 		{
-			liftPos = liftMotor.get_position();
-			//liftPos = minLiftPos
+			//liftPos = liftMotor.get_position();
+			liftPos = minLiftPos;
 		}
 
 		if(!holdMode)
