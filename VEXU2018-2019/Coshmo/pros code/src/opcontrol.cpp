@@ -49,6 +49,7 @@ void opcontrol()
 	int liftPos = 0;
 	int minLiftPos = 0;
 	int anglerPos = 0;
+	int debounceButtonB = 0;
 	int debounceButtonY = 0;
 	int debounceButtonDOWN = 0;
 	int debounceButtonUP = 0;
@@ -60,7 +61,7 @@ void opcontrol()
 	std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4 };
 	std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
 	std::vector<pros::Motor> intakeMotors = {intakeTop, intakeBottom};
-	std::vector<int*> debounceButtons = {&debounceButtonY, &debounceButtonUP, &debounceButtonDOWN};
+	std::vector<int*> debounceButtons = {&debounceButtonY, &debounceButtonUP, &debounceButtonDOWN, &debounceButtonB};
 
 	liftMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	while (true)
@@ -72,6 +73,15 @@ void opcontrol()
 				*button -= loopDelay;
 			}
 		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+    {
+        if(debounceButtonB <= 0)
+        {    //call hold mode
+            doubleLaunch(launchMotorLeft, launchMotorRight, anglerMotor, intakeMotors);
+            debounceButtonB = 200;
+        }
+    }
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
@@ -118,11 +128,11 @@ void opcontrol()
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
     {
-    	anglerPos = 70;
+    	anglerPos = 60;
     }
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
 		{
-			anglerPos = 40;
+			anglerPos = 30;
 		}
 		else
 		{
