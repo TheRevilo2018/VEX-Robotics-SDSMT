@@ -1,4 +1,4 @@
-#include "helperfunctions.h"
+#include "helperFunctions.h"
 
 
 void setMotors(std::vector<pros::Motor> & motors, double speed)

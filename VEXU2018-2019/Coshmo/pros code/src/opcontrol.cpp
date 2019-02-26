@@ -2,12 +2,6 @@
 #include "helperFunctions.h"
 #include "main.h"
 
-#define LEFT_WHEEL1_PORT 1
-#define LEFT_WHEEL2_PORT 2
-#define LEFT_WHEEL3_PORT 3
-#define RIGHT_WHEEL1_PORT 11
-#define RIGHT_WHEEL2_PORT 12
-#define RIGHT_WHEEL3_PORT 13
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -24,7 +18,7 @@
 void opcontrol()
 {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-  pros::Controller partner(pros::E_CONTROLLER_PARTNER);
+	pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 
 	pros::Motor wheelLeft1(2, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor wheelLeft2(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
@@ -35,7 +29,7 @@ void opcontrol()
 	pros::Motor wheelRight3(8, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor wheelRight4(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor liftMotor(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-  pros::Motor launchMotorLeft(12, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+	pros::Motor launchMotorLeft(12, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor anglerMotor(13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor intakeTop(17, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 	pros::Motor launchMotorRight(19, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);

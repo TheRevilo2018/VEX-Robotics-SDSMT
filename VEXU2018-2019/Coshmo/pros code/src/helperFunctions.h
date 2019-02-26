@@ -1,5 +1,5 @@
-#ifndef HELPER_FUNCTIONS
-#define HELPER_FUNCTIONS
+#ifndef HELPER_FUNCTIONS_H
+#define HELPER_FUNCTIONS_H
 
 #include "main.h"
 
