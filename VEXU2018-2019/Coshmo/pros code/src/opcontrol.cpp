@@ -15,7 +15,7 @@
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
- 
+
 void opcontrol()
 {
 	int turnThreshold = 10;
@@ -26,20 +26,18 @@ void opcontrol()
 	int liftPos = 0;
 	int minLiftPos = 0;
 	int anglerPos = 0;
+	int anglerIndex = 0;
+	int debounceButtonA = 0;
 	int debounceButtonB = 0;
-	int debounceButtonY = 0;
+	int debounceButtonX = 0;
 	int debounceButtonDOWN = 0;
 	int debounceButtonUP = 0;
 	int loopDelay = 20;
 	bool holdMode = false;
 	bool turboMode = false;
 
-	std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4, wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
-	std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4 };
-	std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
-	std::vector<pros::Motor> intakeMotors = {intakeTop, intakeBottom};
-	std::vector<int*> debounceButtons = {&debounceButtonY, &debounceButtonUP, &debounceButtonDOWN, &debounceButtonB};
-
+	std::vector<int*> debounceButtons = {&debounceButtonX, &debounceButtonUP, &debounceButtonDOWN, &debounceButtonB, &debounceButtonA};
+	std::vector<int> anglerPositions = {0, 30, 60};
 	liftMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	while (true)
 	{
@@ -55,7 +53,7 @@ void opcontrol()
     {
         if(debounceButtonB <= 0)
         {    //call hold mode
-            doubleLaunch(launchMotorLeft, launchMotorRight, anglerMotor, intakeMotors);
+            doubleLaunch(launchMotors, anglerMotor, intakeMotors);
             debounceButtonB = 200;
         }
     }
@@ -76,20 +74,10 @@ void opcontrol()
             debounceButtonUP = 200;
         }
     }
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
-		{
-			launchMotorLeft = 127;
-			launchMotorRight = 127;
-		}
-		else
-		{
-			launchMotorLeft = 0;
-			launchMotorRight = 0;
-		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     {
-    	liftPos = 1000;
+    	liftPos = 1500;
 			minLiftPos = liftMotor.get_position();
     }
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
@@ -105,15 +93,21 @@ void opcontrol()
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
     {
-    	anglerPos = 60;
+			if(debounceButtonX <= 0)
+			{
+    		launch(launchMotors, anglerMotor, anglerPos);
+				debounceButtonX = 200;
+			}
     }
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
 		{
-			anglerPos = 30;
-		}
-		else
-		{
-			anglerPos = 0;
+			if(debounceButtonA <= 0)
+			{
+				anglerIndex = (anglerIndex + 1) % 3;
+				anglerPos = anglerPositions[anglerIndex];
+				debounceButtonA = 200;
+			}
 		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))

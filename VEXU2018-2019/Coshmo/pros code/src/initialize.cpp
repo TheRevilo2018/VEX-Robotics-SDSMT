@@ -21,6 +21,11 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
+
+	//2911 for no ball
+	//1896 for ball
+	lightSensor.calibrate();
+	//pros::lcd::set_text(2, std::to_string(lightSensor.get_value()));
 }
 
 /**
