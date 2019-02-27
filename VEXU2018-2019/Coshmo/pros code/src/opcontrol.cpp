@@ -30,14 +30,16 @@ void opcontrol()
 	int debounceButtonA = 0;
 	int debounceButtonB = 0;
 	int debounceButtonX = 0;
+	int debounceButtonY = 0;
 	int debounceButtonDOWN = 0;
 	int debounceButtonUP = 0;
+	int debounceButtonLEFT = 0;
+	int debounceButtonRIGHT = 0;
 	int loopDelay = 20;
 	bool holdMode = false;
 	bool turboMode = false;
 
-	std::vector<int*> debounceButtons = {&debounceButtonX, &debounceButtonUP, &debounceButtonDOWN, &debounceButtonB, &debounceButtonA};
-	std::vector<int> anglerPositions = {0, 30, 60};
+	std::vector<int*> debounceButtons = {&debounceButtonX, &debounceButtonY,  &debounceButtonB, &debounceButtonA,  &debounceButtonUP, &debounceButtonDOWN, &debounceButtonLEFT, &debounceButtonRIGHT};
 	liftMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	while (true)
 	{
@@ -99,6 +101,15 @@ void opcontrol()
 				debounceButtonX = 200;
 			}
     }
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+		{
+			if(debounceButtonY <= 0)
+			{
+				autoDriveDistance( leftWheelMotorVector, rightWheelMotorVector, 700, 50);
+				debounceButtonY = 200;
+			}
+		}
 
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
 		{
