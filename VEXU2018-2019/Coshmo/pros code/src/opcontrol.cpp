@@ -51,14 +51,34 @@ void opcontrol()
 			}
 		}
 
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     {
-        if(debounceButtonB <= 0)
-        {    //call hold mode
-            doubleLaunch(launchMotors, anglerMotor, intakeMotors);
-            debounceButtonB = 200;
-        }
+    	liftPos = liftPositions[3];
+			minLiftPos = liftMotor.get_position();
     }
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+		{
+			liftPos = -20;
+			minLiftPos = liftMotor.get_position();
+		}
+		else
+		{
+			//liftPos = liftMotor.get_position();
+			liftPos = minLiftPos;
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+		{
+				intakePercent = 100;
+		}
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		{
+			intakePercent = -100;
+		}
+		else
+		{
+			intakePercent = 0;
+		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
@@ -68,6 +88,7 @@ void opcontrol()
             debounceButtonDOWN = 200;
         }
     }
+
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
     {
         if(debounceButtonUP <= 0)
@@ -95,20 +116,14 @@ void opcontrol()
             debounceButtonRIGHT = 200;
         }
     }
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-    {
-    	liftPos = liftPositions[3];
-			minLiftPos = liftMotor.get_position();
-    }
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
 		{
-			liftPos = -20;
-			minLiftPos = liftMotor.get_position();
-		}
-		else
-		{
-			//liftPos = liftMotor.get_position();
-			liftPos = minLiftPos;
+				if(debounceButtonB <= 0)
+				{    //call hold mode
+						doubleLaunch(launchMotors, anglerMotor, intakeMotors);
+						debounceButtonB = 200;
+				}
 		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
@@ -139,22 +154,9 @@ void opcontrol()
 			}
 		}
 
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-		{
-				intakePercent = 100;
-		}
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-		{
-			intakePercent = -100;
-		}
-		else
-		{
-			intakePercent = 0;
-		}
-
 		if(!holdMode)
     {
-        setBrakes(wheelMotorVector, pros::E_MOTOR_BRAKE_COAST );
+      setBrakes(wheelMotorVector, pros::E_MOTOR_BRAKE_COAST );
     }
     else
     {
@@ -168,13 +170,13 @@ void opcontrol()
 
 			if(master.get_analog(ANALOG_RIGHT_X) > turnThreshold)
       {
-             leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
-             rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+        leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+      	rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
       }
       else
       {
-          leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
-          rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+        leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
+        rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 2.0);
       }
 		}
 		else
