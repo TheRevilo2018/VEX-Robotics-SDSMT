@@ -75,6 +75,8 @@ void opcontrol(void);
 /**
  * You can add C++-only headers here
  */
+
+//data structure includes just in case
 #include <iostream>
 #include <stdio.h>
 #include <cmath>
@@ -91,11 +93,14 @@ void opcontrol(void);
 #include <unordered_map>
 #endif
 
+//3 wire port defines
 #define lightSensorPort 'H'
 
+//controller declarations
 static pros::Controller master(pros::E_CONTROLLER_MASTER);
 static pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 
+//standard port declarations
 static pros::Motor wheelLeft1(2, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelLeft2(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelLeft3(4, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
@@ -111,18 +116,23 @@ static pros::Motor intakeTop(17, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_E
 static pros::Motor launchMotorRight(19, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor intakeBottom(20, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 
+//3 wire port declearations
 static pros::ADIAnalogIn lightSensor(lightSensorPort);
+
+//motor grouping declarations
 static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4, wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
 static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4 };
 static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
 static std::vector<pros::Motor> intakeMotors = {intakeTop, intakeBottom};
 static std::vector<pros::Motor> launchMotors = {launchMotorLeft, launchMotorRight};
 
+//position constants
 static std::vector<int> anglerPositions = {0, 44, 64};
 static std::vector<int> manualAnglerPositions{0, 34, 72};
 static std::vector<int> longAnglerPositions = {0, 44, 60};
 static std::vector<int> liftPositions = {290, 1240, 1025, 1450};
 
+//pros declarations
 static std::uint32_t now = pros::millis();
 
 #endif  // _PROS_MAIN_H_
