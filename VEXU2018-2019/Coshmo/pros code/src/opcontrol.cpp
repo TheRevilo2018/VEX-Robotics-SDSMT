@@ -139,7 +139,7 @@ void opcontrol()
 		{
 			if(debounceButtonY <= 0)
 			{
-				autoDriveDistance( leftWheelMotorVector, rightWheelMotorVector, -1000, 50);
+				autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2150, 60);
 				debounceButtonY = 200;
 			}
 		}
