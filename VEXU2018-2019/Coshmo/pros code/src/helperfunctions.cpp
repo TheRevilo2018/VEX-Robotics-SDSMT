@@ -48,6 +48,7 @@ void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, 
   }
 }
 
+//tqke in a vector of motors, and call the move relative function for all of them with a given distnce and speed
 void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, double speed)
 {
   for(auto motor : motors)
@@ -56,6 +57,7 @@ void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, doubl
   }
 }
 
+//function used in autononomous to drive for a given distance at a given speed
 void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double distance, double speed)
 {
   //TODO add check for stuck motors to prevent damage
@@ -112,8 +114,11 @@ void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vec
   setBrakes(rightWheelMotorVector,  prevBrake );
   return;
 }
+
+//function used in autonomous to turn a given degree amount at a given speed
 void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount, double speed)
 {
+  //TODO add checks for getting stuck to prevent damage
   double currSpeed;
   pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
   setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
@@ -126,17 +131,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
   int diffRight = abs(rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight);
   while(  diffLeft < fabs(amount) ||  diffRight < fabs(amount))
   {
-    /*
-    if(diffLeft < fabs(.25 * amount) || diffLeft > fabs(.75 * amount))
-    {
-      currSpeed = speed * .5;
-    }
-
-    else
-    {
-      */
-      currSpeed = speed;
-    //}
+    currSpeed = speed;
     if(amount < 0)
     {
       setMotors(leftWheelMotorVector, currSpeed);
@@ -161,6 +156,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
   return;
 }
 
+//adds a cap to a post when aligned properly
 void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, pros::Motor & liftMotor)
 {
   liftMotor.move_absolute(liftPositions[1], 127);
@@ -173,13 +169,12 @@ void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros
   return;
 }
 
-void longDoubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors)
+//swing arm past crown and flip it back up so it can be used
+void flipCrown(pros::Motor & liftMotor)
 {
-  launch(launchMotors, anglerMotor, longAnglerPositions[1]);
-  setMotors(intakeMotors, 127);
-  pros::delay(400);
-  setMotors(intakeMotors, 0);
-  pros::delay(200);
-  launch(launchMotors, anglerMotor, longAnglerPositions[2]);
+  liftMotor.move_absolute(liftPositions[3], 127);
+  pros::delay(2500);
+  liftMotor.move_absolute(0, 127);
+  pros::delay(2500);
   return;
 }
