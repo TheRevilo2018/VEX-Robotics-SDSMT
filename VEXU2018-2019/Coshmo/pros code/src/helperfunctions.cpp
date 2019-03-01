@@ -1,6 +1,6 @@
 #include "helperfunctions.h"
 
-
+//take in a vecor of motors, and set their speed to a value
 void setMotors(std::vector<pros::Motor> & motors, double speed)
 {
   for(auto motor : motors)
@@ -9,6 +9,7 @@ void setMotors(std::vector<pros::Motor> & motors, double speed)
   }
 }
 
+//take in a vector of motors, and set their brake type to a given type
 void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t brakeType)
 {
   for(auto motor: motors)
@@ -17,18 +18,19 @@ void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t br
   }
 }
 
-
+//call launch twice with appropriate waits and heights in order to hit the two high flags
 void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors)
 {
   launch(launchMotors, anglerMotor, anglerPositions[1]);
   setMotors(intakeMotors, 127);
-  pros::delay(400);
+  pros::delay(600);
   setMotors(intakeMotors, 0);
   pros::delay(200);
   launch(launchMotors, anglerMotor, anglerPositions[2]);
   return;
 }
 
+//set the puncher hight to a value and rotate the slip ear 360 degrees
 void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, int height)
 {
   if(lightSensor.get_value() < 2100)
@@ -36,7 +38,7 @@ void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, 
     anglerMotor.move_absolute(height, 50);
     pros::delay(200);
     setMotorsRelative(launchMotors, 720, 127);
-    pros::delay(1000);
+    pros::delay(500); //TODO
     return;
   }
   else
@@ -112,25 +114,41 @@ void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vec
 }
 void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount, double speed)
 {
+  double currSpeed;
   pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
   setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
   setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
 
-  amount *= ((double)2075/360);
+  amount *= ((double)2087/360);
   int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
   int initialEncoderRight = rightWheelMotorVector[0].get_raw_position(&now);
-  while( abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft) < fabs(amount) || abs(rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight) < fabs(amount))
+  int diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+  int diffRight = abs(rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight);
+  while(  diffLeft < fabs(amount) ||  diffRight < fabs(amount))
   {
+    /*
+    if(diffLeft < fabs(.25 * amount) || diffLeft > fabs(.75 * amount))
+    {
+      currSpeed = speed * .5;
+    }
+
+    else
+    {
+      */
+      currSpeed = speed;
+    //}
     if(amount < 0)
     {
-      setMotors(leftWheelMotorVector, speed);
-      setMotors(rightWheelMotorVector, -speed);
+      setMotors(leftWheelMotorVector, currSpeed);
+      setMotors(rightWheelMotorVector, -currSpeed);
     }
     else
     {
-      setMotors(leftWheelMotorVector, -speed);
-      setMotors(rightWheelMotorVector, speed);
+      setMotors(leftWheelMotorVector, -currSpeed);
+      setMotors(rightWheelMotorVector, currSpeed);
     }
+    diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+    diffRight = abs(rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight);
     pros::delay(20);
   }
 
@@ -145,14 +163,23 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
 
 void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, pros::Motor & liftMotor)
 {
-
   liftMotor.move_absolute(liftPositions[1], 127);
   pros::delay(1000);
   setMotors(leftWheelMotorVector, -20);
   setMotors(rightWheelMotorVector, -20);
-  pros::delay(350);
+  pros::delay(550);
   liftMotor.move_absolute(liftPositions[2], 127);
   pros::delay(100);
   return;
+}
 
+void longDoubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors)
+{
+  launch(launchMotors, anglerMotor, longAnglerPositions[1]);
+  setMotors(intakeMotors, 127);
+  pros::delay(400);
+  setMotors(intakeMotors, 0);
+  pros::delay(200);
+  launch(launchMotors, anglerMotor, longAnglerPositions[2]);
+  return;
 }

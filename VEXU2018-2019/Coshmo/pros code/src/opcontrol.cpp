@@ -81,7 +81,7 @@ void opcontrol()
     {
         if(debounceButtonLEFT <= 0)
         {
-						autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -360, 50);
+						autonomous();
             debounceButtonLEFT = 200;
         }
     }
@@ -91,17 +91,18 @@ void opcontrol()
         if(debounceButtonRIGHT <= 0)
 				{
 						highScore(leftWheelMotorVector, rightWheelMotorVector, liftMotor);
+					  //autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -360, 50);
             debounceButtonRIGHT = 200;
         }
     }
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     {
-    	liftPos = 1500;
+    	liftPos = liftPositions[3];
 			minLiftPos = liftMotor.get_position();
     }
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 		{
-			liftPos = 0;
+			liftPos = -20;
 			minLiftPos = liftMotor.get_position();
 		}
 		else
@@ -133,7 +134,7 @@ void opcontrol()
 			if(debounceButtonA <= 0)
 			{
 				anglerIndex = (anglerIndex + 1) % 3;
-				anglerPos = anglerPositions[anglerIndex];
+				anglerPos = manualAnglerPositions[anglerIndex];
 				debounceButtonA = 200;
 			}
 		}
@@ -197,7 +198,7 @@ void opcontrol()
 		setMotors(rightWheelMotorVector, rightMotorPercent);
 		setMotors(intakeMotors, intakePercent);
 		liftMotor.move_absolute(liftPos, 127);
-		anglerMotor.move_absolute(anglerPos, 50);
+		anglerMotor.move_absolute(anglerPos, 80);
 		pros::delay(loopDelay);
 	}
 }
