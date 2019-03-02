@@ -23,7 +23,7 @@ void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerM
 {
   launch(launchMotors, anglerMotor, anglerPositions[1]);
   setMotors(intakeMotors, 127);
-  pros::delay(600);
+  pros::delay(800);
   setMotors(intakeMotors, 0);
   pros::delay(200);
   launch(launchMotors, anglerMotor, anglerPositions[2]);
@@ -33,12 +33,13 @@ void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerM
 //set the puncher hight to a value and rotate the slip ear 360 degrees
 void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, int height)
 {
-  if(lightSensor.get_value() < 2100)
+  //2900
+  if(lightSensor.get_value() < 2400)
   {
     anglerMotor.move_absolute(height, 50);
     pros::delay(200);
     setMotorsRelative(launchMotors, 720, 127);
-    pros::delay(500); //TODO
+    pros::delay(1000);
     return;
   }
   else
@@ -255,6 +256,8 @@ void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Mo
     }
     setBrakes(leftWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
     setBrakes(rightWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    setMotors(leftWheelMotorVector, 0);
+    setMotors(rightWheelMotorVector, 0);
     pros::delay(200);
     setBrakes(leftWheelMotorVector, prevBrake);
     setBrakes(rightWheelMotorVector, prevBrake);
@@ -315,6 +318,8 @@ void turnLeft(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros:
     }
     setBrakes(leftWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
     setBrakes(rightWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    setMotors(leftWheelMotorVector, 0);
+    setMotors(rightWheelMotorVector, 0);
     pros::delay(200);
     setBrakes(leftWheelMotorVector, prevBrake);
     setBrakes(rightWheelMotorVector, prevBrake);
@@ -374,6 +379,8 @@ void turnRight(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros
     }
     setBrakes(leftWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
     setBrakes(rightWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    setMotors(leftWheelMotorVector, 0);
+    setMotors(rightWheelMotorVector, 0);
     pros::delay(200);
     setBrakes(leftWheelMotorVector, prevBrake);
     setBrakes(rightWheelMotorVector, prevBrake);

@@ -25,7 +25,9 @@ void initialize() {
 	//2911 for no ball
 	//1896 for ball
 	lightSensor.calibrate();
-	//pros::lcd::set_text(2, std::to_string(lightSensor.get_value()));
+	middleLightSensor.calibrate();
+	pros::lcd::set_text(1, std::to_string(lightSensor.get_value()));
+	pros::lcd::set_text(2, std::to_string(middleLightSensor.get_value()));
 }
 
 /**
