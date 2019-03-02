@@ -13,7 +13,7 @@
  */
 void autonomous()
 {
-  int autonType = 4;
+  int autonType = 2;
   switch(autonType)
   {
     //long red auton
@@ -80,9 +80,9 @@ void autonomous()
       int timeOut = 1000;
       while(middleLightSensor.get_value() > 2100 && timeOut >= 0)
       {
-        setMotors(intakeMotors, 100);
-        pros::delay(20);
-        timeOut -= 20;
+        setMotors(intakeMotors, 70);
+        pros::delay(10);
+        timeOut -= 10;
       }
       setMotors(intakeMotors, 0);
       pros::delay(230);
@@ -90,7 +90,7 @@ void autonomous()
       //grab flat cap
       drive(leftWheelMotorVector, rightWheelMotorVector, -1101);
       pros::delay(200);
-      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 860);
+      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 890);
       pros::delay(200);
 
       drive(leftWheelMotorVector, rightWheelMotorVector, -1650);
@@ -105,9 +105,9 @@ void autonomous()
       pros::delay(200);
       drive(leftWheelMotorVector, rightWheelMotorVector, 750);
       pros::delay(200);
-      turnRight(leftWheelMotorVector, rightWheelMotorVector, 560);
+      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 560);
       pros::delay(200);
-      drive(leftWheelMotorVector, rightWheelMotorVector, 1000);
+      drive(leftWheelMotorVector, rightWheelMotorVector, 1225);
       pros::delay(200);
       highScore(leftWheelMotorVector, rightWheelMotorVector, liftMotor);
       pros::delay(200);
@@ -115,9 +115,9 @@ void autonomous()
       pros::delay(1000);
 
       //line up shot on opposite flags next to platform
-      drive(leftWheelMotorVector, rightWheelMotorVector, -1500);
+      drive(leftWheelMotorVector, rightWheelMotorVector, -1300);
       pros::delay(200);
-      turnRight(leftWheelMotorVector, rightWheelMotorVector, 900);
+      turnRight(leftWheelMotorVector, rightWheelMotorVector, 300);
       pros::delay(200);
       doubleLaunch(launchMotors, anglerMotor, intakeMotors);
       pros::delay(200);
@@ -146,13 +146,14 @@ void autonomous()
       //position to fire at opposite team's flags
       drive(leftWheelMotorVector, rightWheelMotorVector, -500);
       pros::delay(200);
-      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 240);
+      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 323);
       pros::delay(200);
+      pros::delay(25000);
       doubleLaunch(launchMotors, anglerMotor, intakeMotors);
       pros::delay(200);
 
       //turn toward team platform and park
-      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 105);
+      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 100);
       pros::delay(200);
       drive(leftWheelMotorVector, rightWheelMotorVector, 2150);
       return;
@@ -175,13 +176,14 @@ void autonomous()
       //position to fire at opposite team's flags
       drive(leftWheelMotorVector, rightWheelMotorVector, -500);
       pros::delay(200);
-      turnRight(leftWheelMotorVector, rightWheelMotorVector, 240);
+      turnRight(leftWheelMotorVector, rightWheelMotorVector, 323);
       pros::delay(200);
+      pros::delay(25000);
       doubleLaunch(launchMotors, anglerMotor, intakeMotors);
       pros::delay(200);
 
       //turn toward team platform and park
-      turnRight(leftWheelMotorVector, rightWheelMotorVector, 105);
+      turnRight(leftWheelMotorVector, rightWheelMotorVector, 100);
       pros::delay(200);
       drive(leftWheelMotorVector, rightWheelMotorVector, 2150);
       return;

@@ -103,7 +103,7 @@ void opcontrol()
     {
         if(debounceButtonLEFT <= 0)
         {
-						//autonomous();
+						autonomous();
             debounceButtonLEFT = 200;
         }
     }
