@@ -178,3 +178,203 @@ void flipCrown(pros::Motor & liftMotor)
   pros::delay(2500);
   return;
 }
+
+//drive for autonomous
+void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, int distance)
+{
+    pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
+    setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+    setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+
+    int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
+    int initialEncoderRight = rightWheelMotorVector[3].get_raw_position(&now);
+
+    double leftDriveSpeed;
+    double rightDriveSpeed;
+
+    bool forward = distance > 0;
+    distance = abs(distance);
+
+    double diffLeft, diffRight;
+
+    diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+    diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
+
+    while(diffLeft < distance)
+    {
+        if(distance - diffLeft < (distance * 2 )/ 32 || distance - diffLeft > (distance * 30 )/ 32)
+        {
+            leftDriveSpeed = 40;
+            rightDriveSpeed = 40;
+        }
+        else if(distance - diffLeft < (distance * 4 )/ 32 || distance - diffLeft > (distance * 28 )/ 32)
+        {
+            leftDriveSpeed = 60;
+            rightDriveSpeed = 60;
+        }
+        else if(distance - diffLeft < (distance * 6 )/ 32 || distance - diffLeft > (distance * 26 )/ 32)
+        {
+          leftDriveSpeed = 60;
+          rightDriveSpeed = 60;
+        }
+        else if(distance - diffLeft < (distance * 8 )/ 32 || distance - diffLeft > (distance * 24 )/ 32)
+        {
+          leftDriveSpeed = 80;
+          rightDriveSpeed = 80;
+        }
+        else
+        {
+          leftDriveSpeed = 100;
+          rightDriveSpeed = 100;
+        }
+
+        if(distance <= 1000)
+        {
+            leftDriveSpeed /= 2;
+            rightDriveSpeed /= 2;
+        }
+        else if(distance <= 500)
+        {
+            leftDriveSpeed /= 4;
+            rightDriveSpeed /= 4;
+        }
+
+        leftDriveSpeed /= 2;
+        rightDriveSpeed /= 2;
+        if(!forward)
+        {
+          leftDriveSpeed *= -1;
+          rightDriveSpeed *= -1;
+        }
+        setMotors(leftWheelMotorVector, leftDriveSpeed);
+        setMotors(rightWheelMotorVector, rightDriveSpeed);
+        diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+        diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
+        pros::delay(20);
+
+    }
+    setBrakes(leftWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    setBrakes(rightWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    pros::delay(200);
+    setBrakes(leftWheelMotorVector, prevBrake);
+    setBrakes(rightWheelMotorVector, prevBrake);
+}
+
+
+//turn right while adjusting speed based on distance from goal
+void turnLeft(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount)
+{
+    //translation factor
+    pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
+    setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+    setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+
+    int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
+    int initialEncoderRight = rightWheelMotorVector[3].get_raw_position(&now);
+
+    double leftDriveSpeed;
+    double rightDriveSpeed;
+
+    amount = fabs(amount);
+
+    double diffLeft, diffRight;
+
+    diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+    diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
+
+    while( diffLeft < amount)
+    {
+        if(amount - diffLeft < (amount * 2 )/ 32 || amount - diffLeft > (amount * 30 )/ 32)
+        {
+            leftDriveSpeed = 20;
+            rightDriveSpeed = 20;
+        }
+        else if(amount - diffLeft < (amount * 4 )/ 32 || amount - diffLeft > (amount * 28 )/ 32)
+        {
+            leftDriveSpeed = 30;
+            rightDriveSpeed = 30;
+        }
+        else if(amount - diffLeft < (amount * 6 )/ 32 || amount - diffLeft > (amount * 26 )/ 32)
+        {
+            leftDriveSpeed = 40;
+            rightDriveSpeed = 40;
+        }
+        else
+        {
+            leftDriveSpeed = 50;
+            rightDriveSpeed = 50;
+        }
+        leftDriveSpeed /= 1.25;
+        rightDriveSpeed /= 1.25;
+        setMotors(leftWheelMotorVector, leftDriveSpeed);
+        setMotors(rightWheelMotorVector, -rightDriveSpeed);
+        diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+        diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
+        pros::delay(20);
+
+    }
+    setBrakes(leftWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    setBrakes(rightWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    pros::delay(200);
+    setBrakes(leftWheelMotorVector, prevBrake);
+    setBrakes(rightWheelMotorVector, prevBrake);
+}
+
+
+void turnRight(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount)
+{
+    pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
+    setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+    setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+
+    int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
+    int initialEncoderRight = rightWheelMotorVector[3].get_raw_position(&now);
+
+    double leftDriveSpeed;
+    double rightDriveSpeed;
+
+    amount = fabs(amount);
+
+    double diffLeft, diffRight;
+
+    diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+    diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
+
+    while( diffRight < amount)
+    {
+        if(amount - diffRight < (amount * 2 )/ 32 || amount - diffRight > (amount * 30 )/ 32)
+        {
+            leftDriveSpeed = 20;
+            rightDriveSpeed = 20;
+        }
+        else if(amount - diffRight < (amount * 4 )/ 32 || amount - diffRight > (amount * 28 )/ 32)
+        {
+            leftDriveSpeed = 30;
+            rightDriveSpeed = 30;
+        }
+        else if(amount - diffRight < (amount * 6 )/ 32 || amount - diffRight > (amount * 26 )/ 32)
+        {
+            leftDriveSpeed = 40;
+            rightDriveSpeed = 40;
+        }
+        else
+        {
+            leftDriveSpeed = 50;
+            rightDriveSpeed = 50;
+        }
+
+        leftDriveSpeed /= 1.25;
+        rightDriveSpeed /= 1.25;
+        setMotors(leftWheelMotorVector, -leftDriveSpeed);
+        setMotors(rightWheelMotorVector, rightDriveSpeed);
+        diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
+        diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
+        pros::delay(20);
+
+    }
+    setBrakes(leftWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    setBrakes(rightWheelMotorVector, pros::E_MOTOR_BRAKE_BRAKE);
+    pros::delay(200);
+    setBrakes(leftWheelMotorVector, prevBrake);
+    setBrakes(rightWheelMotorVector, prevBrake);
+}

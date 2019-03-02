@@ -158,24 +158,24 @@ void autonomous()
 
       //grab ball underneath cap directly in front of robot
       setMotors(intakeMotors, 100);
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2300, 40);
+      drive(leftWheelMotorVector, rightWheelMotorVector, 2300);
       pros::delay(500);
       setMotors(intakeMotors, -100);
       pros::delay(230);
       setMotors(intakeMotors, 0);
 
       //position to fire at opposite team's flags
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -500, 40);
+      drive(leftWheelMotorVector, rightWheelMotorVector, -500);
       pros::delay(200);
-      autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 44, 40);
+      turnRight(leftWheelMotorVector, rightWheelMotorVector, 240);
       pros::delay(200);
-      doubleLaunch(launchMotors, anglerMotor, intakeMotors);
+      //doubleLaunch(launchMotors, anglerMotor, intakeMotors);
       pros::delay(200);
 
       //turn toward team platform and park
-      autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 19, 40);
+      turnRight(leftWheelMotorVector, rightWheelMotorVector, 120);
       pros::delay(200);
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2150, 60);
+      drive(leftWheelMotorVector, rightWheelMotorVector, 2150);
       return;
       break;
   };

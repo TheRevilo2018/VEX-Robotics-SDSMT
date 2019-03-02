@@ -41,6 +41,7 @@ void opcontrol()
 
 	std::vector<int*> debounceButtons = {&debounceButtonX, &debounceButtonY,  &debounceButtonB, &debounceButtonA,  &debounceButtonUP, &debounceButtonDOWN, &debounceButtonLEFT, &debounceButtonRIGHT};
 	liftMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
 	while (true)
 	{
 		for(auto button : debounceButtons)
@@ -112,7 +113,6 @@ void opcontrol()
         if(debounceButtonRIGHT <= 0)
 				{
 						highScore(leftWheelMotorVector, rightWheelMotorVector, liftMotor);
-					  //autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -360, 50);
             debounceButtonRIGHT = 200;
         }
     }
@@ -139,7 +139,13 @@ void opcontrol()
 		{
 			if(debounceButtonY <= 0)
 			{
-				autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2150, 60);
+				//drive(leftWheelMotorVector, rightWheelMotorVector, 2500);
+				//drive(leftWheelMotorVector, rightWheelMotorVector, -2500);
+				turnRight(leftWheelMotorVector, rightWheelMotorVector, 2000);
+				pros::delay(200);
+				turnLeft(leftWheelMotorVector, rightWheelMotorVector, 2000);
+				//turn(leftWheelMotorVector, rightWheelMotorVector, -180);
+				//autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2150, 60);
 				debounceButtonY = 200;
 			}
 		}
