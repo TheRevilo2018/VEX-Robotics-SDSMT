@@ -139,13 +139,7 @@ void opcontrol()
 		{
 			if(debounceButtonY <= 0)
 			{
-				//drive(leftWheelMotorVector, rightWheelMotorVector, 2500);
-				//drive(leftWheelMotorVector, rightWheelMotorVector, -2500);
-				turnRight(leftWheelMotorVector, rightWheelMotorVector, 2000);
-				pros::delay(200);
-				turnLeft(leftWheelMotorVector, rightWheelMotorVector, 2000);
-				//turn(leftWheelMotorVector, rightWheelMotorVector, -180);
-				//autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2150, 60);
+				autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2150, 60);
 				debounceButtonY = 200;
 			}
 		}

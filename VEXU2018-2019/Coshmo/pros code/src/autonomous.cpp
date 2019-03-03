@@ -13,7 +13,7 @@
  */
 void autonomous()
 {
-  int autonType = 2;
+  int autonType = 4;
   switch(autonType)
   {
     //long red auton
@@ -131,7 +131,6 @@ void autonomous()
     //short red auton
     case 2:
     {
-
       //flip the crown with the swing arm
       flipCrown(liftMotor);
 
@@ -148,7 +147,7 @@ void autonomous()
       pros::delay(200);
       turnLeft(leftWheelMotorVector, rightWheelMotorVector, 323);
       pros::delay(200);
-      pros::delay(25000);
+      pros::delay(22000);
       doubleLaunch(launchMotors, anglerMotor, intakeMotors);
       pros::delay(200);
 
@@ -167,18 +166,18 @@ void autonomous()
 
       //grab ball underneath cap directly in front of robot
       setMotors(intakeMotors, 100);
-      drive(leftWheelMotorVector, rightWheelMotorVector, 2300);
+      drive(leftWheelMotorVector, rightWheelMotorVector, 2500);
       pros::delay(500);
       setMotors(intakeMotors, -100);
       pros::delay(230);
       setMotors(intakeMotors, 0);
 
       //position to fire at opposite team's flags
-      drive(leftWheelMotorVector, rightWheelMotorVector, -500);
+      drive(leftWheelMotorVector, rightWheelMotorVector, -700);
       pros::delay(200);
       turnRight(leftWheelMotorVector, rightWheelMotorVector, 323);
       pros::delay(200);
-      pros::delay(25000);
+      pros::delay(22000);
       doubleLaunch(launchMotors, anglerMotor, intakeMotors);
       pros::delay(200);
 
@@ -189,10 +188,40 @@ void autonomous()
       return;
       break;
     }
+    //red skills
     case 4:
     {
-      turnRight(leftWheelMotorVector, rightWheelMotorVector, 550);
+      //flip the crown with the swing arm
+      flipCrown(liftMotor);
+
+      //grab ball underneath cap directly in front of robot
+      setMotors(intakeMotors, 100);
+      drive(leftWheelMotorVector, rightWheelMotorVector, 2500);
+      pros::delay(500);
+      setMotors(intakeMotors, -100);
+      pros::delay(230);
+      setMotors(intakeMotors, 0);
+
+      //position to fire at opposite team's flags
+      drive(leftWheelMotorVector, rightWheelMotorVector, -700);
       pros::delay(200);
+      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 323);
+      pros::delay(200);
+      //pros::delay(22000);
+      doubleLaunch(launchMotors, anglerMotor, intakeMotors);
+      pros::delay(200);
+
+      //turn toward team platform and park
+      turnLeft(leftWheelMotorVector, rightWheelMotorVector, 100);
+      pros::delay(200);
+      drive(leftWheelMotorVector, rightWheelMotorVector, 2150);
+      pros::delay(200);
+      turnRight(leftWheelMotorVector, rightWheelMotorVector, 560);
+      pros::delay(200);
+      drive(leftWheelMotorVector, rightWheelMotorVector, 1850);
+      pros::delay(200);
+      return;
+      break;
     }
   };
 }
