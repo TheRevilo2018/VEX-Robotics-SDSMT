@@ -15,13 +15,35 @@ void autonomous() //aaa
 {
   //red autonomous
   setMotors(intakeMotors, 100);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2700, 60);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2500, 60);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 200, 40);
+
   pros::delay(200);
   setMotors(intakeMotors, 0);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -1900, 60);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -2150, 60); //a
   pros::delay(200);
-  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 650);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 700);
   pros::delay(200);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -1300, 60);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -1275, 60);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -500, 40);
+  pros::delay(300);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 375, 60);
   pros::delay(200);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 670);
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -1500, 60);
+  pros::delay(200);
+  actuatorState = true;
+  actuator.set_value(actuatorState);
+  pros::delay(200);
+  liftMotorLeft.move_absolute(liftPositions[1], 127);
+  liftMotorRight.move_absolute(liftPositions[1], 127);
+  pros::delay(500);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 900, 60);
+  pros::delay(200);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 725);
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 450, 30);
+  pros::delay(200);
+  highScore(leftWheelMotorVector, rightWheelMotorVector, liftMotors, actuatorState);
 }

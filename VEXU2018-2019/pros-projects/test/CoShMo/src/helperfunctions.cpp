@@ -183,7 +183,8 @@ void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Mo
 
     int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
     int initialEncoderRight = rightWheelMotorVector[3].get_raw_position(&now);
-
+    int currTime = 0;
+    int maxTime = std::min(1000, 2 * distance);
     double leftDriveSpeed;
     double rightDriveSpeed;
 
@@ -195,7 +196,7 @@ void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Mo
     diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
     diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
 
-    while(diffLeft < distance)
+    while(diffLeft < distance && currTime < maxTime)
     {
         if(distance - diffLeft < (distance * 2 )/ 32 || distance - diffLeft > (distance * 30 )/ 32)
         {
@@ -245,6 +246,7 @@ void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Mo
         setMotors(rightWheelMotorVector, rightDriveSpeed);
         diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
         diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
+        currTime += 20;
         pros::delay(20);
 
     }
