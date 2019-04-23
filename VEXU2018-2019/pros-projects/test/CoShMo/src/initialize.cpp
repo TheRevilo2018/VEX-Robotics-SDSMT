@@ -18,7 +18,7 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(2, "HELP MEE!");
+	pros::lcd::set_text(2, "Starting...");
 
 	pros::lcd::register_btn1_cb(on_center_button);
 	//visionSensor.clear_led();

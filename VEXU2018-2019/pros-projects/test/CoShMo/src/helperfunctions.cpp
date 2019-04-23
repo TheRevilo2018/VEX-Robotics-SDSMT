@@ -1,5 +1,5 @@
 #include "helperfunctions.h"
-
+#include <algorithm>
 //take in a vecor of motors, and set their speed to a value
 void setMotors(std::vector<pros::Motor> & motors, double speed)
 {
@@ -36,8 +36,9 @@ void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, 
   {
     anglerMotor.move_absolute(height, 50);
     pros::delay(200);
-    setMotorsRelative(launchMotors, 727, 127);
+    setMotorsRelative(launchMotors, 724, 127);
     pros::delay(500);
+    setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST);
     return;
   }
   else
@@ -67,8 +68,13 @@ void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vec
   int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
   int initialEncoderRight = rightWheelMotorVector[0].get_raw_position(&now);
   int allowedDiff = 0;
+  int maxTime = std::max(1000, int(3 * std::fabs(distance)));
+  int currTime = 0;
+  int gyroVal = 0;
   double diffLeft;
   double diffRight;
+
+  gyro.reset();
 
   if(distance < 0)
   {
@@ -82,27 +88,39 @@ void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vec
   setMotors(leftWheelMotorVector, speed);
   setMotors(rightWheelMotorVector, speed);
 
-  while( abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft) < fabs(distance) || abs(rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight) < fabs(distance))
+  while( currTime < maxTime &&
+    (abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft) < fabs(distance) ||
+    abs(rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight) < fabs(distance)))
   {
-    if(fabs(diffLeft - diffRight) > allowedDiff)
-    {
-      if(diffLeft < diffRight)
-      {
-        leftDriveSpeed *= .8;
-      }
-      else
-      {
-        rightDriveSpeed *= .8;
-      }
-    }
+    gyroVal = gyro.get_value();
 
     diffLeft = (leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
     diffRight = (rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight);
 
     leftDriveSpeed = speed;
     rightDriveSpeed = speed;
+
+    if(abs(gyroVal) > 5)
+    {
+      if(gyroVal > 0)
+      {
+        if(distance > 0)
+          leftDriveSpeed *= .95;
+        else
+          rightDriveSpeed *= .95;
+      }
+      else
+      {
+        if(distance > 0)
+          rightDriveSpeed *= .95;
+        else
+          leftDriveSpeed *= .95;
+      }
+    }
+
     setMotors(leftWheelMotorVector, leftDriveSpeed);
     setMotors(rightWheelMotorVector, rightDriveSpeed);
+    currTime += 20;
     pros::delay(20);
   }
   setMotors(leftWheelMotorVector, 0);
@@ -158,7 +176,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
 //adds a cap to a post when aligned properly
 void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector,  std::vector<pros::Motor> & liftMotors, bool & actuatorState)
 {
-  drive(leftWheelMotorVector, rightWheelMotorVector, -100);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -100, 40);
   pros::delay(200);
   liftMotors[0].move_absolute(liftPositions[3], 127);
   liftMotors[1].move_absolute(liftPositions[3], 127);
@@ -184,7 +202,7 @@ void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Mo
     int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
     int initialEncoderRight = rightWheelMotorVector[3].get_raw_position(&now);
     int currTime = 0;
-    int maxTime = std::min(1000, 2 * distance);
+    int maxTime = std::min(1000, 2 * abs(distance));
     double leftDriveSpeed;
     double rightDriveSpeed;
 
@@ -247,6 +265,8 @@ void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Mo
         diffLeft = abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
         diffRight = abs(rightWheelMotorVector[3].get_raw_position(&now) - initialEncoderRight);
         currTime += 20;
+        pros::lcd::set_text(1, "currTime: " + std::to_string(currTime));
+        pros::lcd::set_text(2, "maxTime: " + std::to_string(maxTime));
         pros::delay(20);
 
     }

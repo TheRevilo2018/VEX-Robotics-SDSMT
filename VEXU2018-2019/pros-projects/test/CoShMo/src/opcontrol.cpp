@@ -43,7 +43,7 @@ void opcontrol()
 
 	std::vector<int*> debounceButtons = {&debounceButtonX, &debounceButtonY,  &debounceButtonB, &debounceButtonA,  &debounceButtonUP, &debounceButtonDOWN, &debounceButtonLEFT, &debounceButtonRIGHT};
 	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
-	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); //a
+	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); //aaa
 
 	while (true)
 	{
@@ -95,9 +95,7 @@ void opcontrol()
     {
         if(debounceButtonDOWN <= 0)
         {
-					  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 500);
-						pros::delay(200);
-						autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 500); //a
+					autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 4000, 60); //a
             debounceButtonDOWN = 200;
         }
     }
@@ -125,7 +123,6 @@ void opcontrol()
         if(debounceButtonRIGHT <= 0)
 				{
 					  highScore(leftWheelMotorVector, rightWheelMotorVector,liftMotors, actuatorState);
-
             debounceButtonRIGHT = 200;
         }
     }
@@ -134,7 +131,7 @@ void opcontrol()
 		{
 				if(debounceButtonB <= 0)
 				{    //call hold mode
-						doubleLaunch(launchMotors, anglerMotor, intakeMotors);
+						doubleLaunch(launchMotors, anglerMotor, intakeMotors); //a
 						debounceButtonB = 200;
 				}
 		}
@@ -183,13 +180,13 @@ void opcontrol()
 
 			if(master.get_analog(ANALOG_RIGHT_X) > turnThreshold)
       {
-        leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 1.5);
-      	rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 1.5);
+        leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
+      	rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
       }
       else
       {
-        leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 1.5);
-        rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 1.5);
+        leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
+        rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
       }
 		}
 		else
@@ -221,7 +218,7 @@ void opcontrol()
 		pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));
 		pros::lcd::set_text(2, "Lift Motor Postion: " + std::to_string( liftMotorLeft.get_position()));
 		pros::lcd::set_text(3, "Launch Motor Brake Type: " + std::to_string( launchMotorLeft.get_brake_mode())); //a
-		pros::lcd::set_text(4, "ActuatorState: " + std::to_string( actuatorState)); //a
+		pros::lcd::set_text(4, "Gyro Value: " + std::to_string( gyro.get_value())); //a
 		pros::lcd::set_text(5, "Angler Position: " + std::to_string( anglerMotor.get_position())); //aaaaa
 
 		pros::delay(loopDelay);

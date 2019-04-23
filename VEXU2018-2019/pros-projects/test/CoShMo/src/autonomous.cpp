@@ -14,36 +14,100 @@
 void autonomous() //aaa
 {
   //red autonomous
+  //forward to grab ball under cap
   setMotors(intakeMotors, 100);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2500, 60);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2200, 60);
   autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 200, 40);
-
   pros::delay(200);
   setMotors(intakeMotors, 0);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -2150, 60); //a
+
+  //back up and turn around to grab cap
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -750, 60); //a
   pros::delay(200);
-  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 700);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 1450);
   pros::delay(200);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -1275, 60);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -500, 40);
-  pros::delay(300);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 375, 60);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -750, 40); //a
   pros::delay(200);
-  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 670);
+
+  //grab cap, turn to platform and drop on platform
+  actuatorState = true;
+  actuator.set_value(actuatorState);
   pros::delay(200);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -1500, 60);
+  liftMotorLeft.move_absolute(liftPositions[2], 127);
+  liftMotorRight.move_absolute(liftPositions[2], 127);
+  pros::delay(400);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 510);
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -200, 40); //a
+  pros::delay(200);
+  actuatorState = false;
+  actuator.set_value(actuatorState);
+  pros::delay(200);
+
+  //back up, turn and align on platform
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 300, 40); //a
+  pros::delay(200);
+  liftMotorLeft.move_absolute(liftPositions[0], 127);
+  liftMotorRight.move_absolute(liftPositions[0], 127);
+  pros::delay(400);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 200);
+  pros::delay(200);
+  //align
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -800, 40); //a
+  pros::delay(200);
+
+  //back away from platform and grab second cap
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 500, 30); //a
+  pros::delay(200);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 1350);
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -850, 40); //a
   pros::delay(200);
   actuatorState = true;
   actuator.set_value(actuatorState);
   pros::delay(200);
-  liftMotorLeft.move_absolute(liftPositions[1], 127);
-  liftMotorRight.move_absolute(liftPositions[1], 127);
-  pros::delay(500);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 900, 60);
+
+  //move into position for highscore from second cap
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 500, 60); //a
   pros::delay(200);
-  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 725);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 680);
   pros::delay(200);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 450, 30);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 1200, 60); //a
   pros::delay(200);
-  highScore(leftWheelMotorVector, rightWheelMotorVector, liftMotors, actuatorState);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 770);
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 1500, 30); //a
+  pros::delay(200);
+
+  //score the pole and align on platform
+  highScore(leftWheelMotorVector, rightWheelMotorVector,liftMotors, actuatorState);
+  liftMotorLeft.move_absolute(liftPositions[0], 127);
+  liftMotorRight.move_absolute(liftPositions[0], 127);
+  pros::delay(400);
+  autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 100);
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -1200, 60); //a
+  pros::delay(200);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 100);
+  pros::delay(200);
+  //align
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -800, 40); //a
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 300, 40); //a
+  pros::delay(200);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 1350);
+  pros::delay(200);
+  //realign after spinning
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 800, 30); //a
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -400, 40); //a
+  pros::delay(200);
+  autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 230);
+  pros::delay(200);
+  doubleLaunch(launchMotors, anglerMotor, intakeMotors); //a
+  pros::delay(200);
+  autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 222);
+  pros::delay(200);
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2200, 100); //a
+  pros::delay(200);
 }

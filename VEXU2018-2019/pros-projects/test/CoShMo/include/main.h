@@ -122,6 +122,7 @@ static pros::Motor anglerMotor(11, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTO
 //3 wire port declearations
 static pros::ADIAnalogIn lightSensor(lightSensorPort);
 static pros::ADIDigitalOut actuator(actuatorPort);
+static pros::ADIGyro gyro (gyroPort);
 //static pros::
 
 //motor grouping declarations
@@ -133,9 +134,9 @@ static std::vector<pros::Motor> launchMotors = {launchMotorLeft, launchMotorRigh
 static std::vector<pros::Motor> liftMotors = {liftMotorLeft, liftMotorRight};
 
 //position constants
-static std::vector<int> anglerPositions = {0, 35, 85};
-static std::vector<int> manualAnglerPositions{0, 45, 95};
-static std::vector<int> liftPositions = {-20, 110, 200, 760};
+static std::vector<int> anglerPositions = {0, 30, 80};
+static std::vector<int> manualAnglerPositions{0, 28, 78};
+static std::vector<int> liftPositions = {-20, 110, 170, 760};
 #define NO_BALL_LIGHT_VALUE 1000
 //pros declarations
 static std::uint32_t now = pros::millis();
