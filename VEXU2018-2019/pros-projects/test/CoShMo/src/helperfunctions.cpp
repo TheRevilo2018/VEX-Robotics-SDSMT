@@ -68,7 +68,7 @@ void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vec
   int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
   int initialEncoderRight = rightWheelMotorVector[0].get_raw_position(&now);
   int allowedDiff = 0;
-  int maxTime = std::max(1000, int(3 * std::fabs(distance)));
+  int maxTime = std::max(1000, int(2 * std::fabs(distance)));
   int currTime = 0;
   int gyroVal = 0;
   double diffLeft;
@@ -180,9 +180,9 @@ void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros
   pros::delay(200);
   liftMotors[0].move_absolute(liftPositions[3], 127);
   liftMotors[1].move_absolute(liftPositions[3], 127);
-  pros::delay(980);
+  pros::delay(940);
   actuator.set_value(false);
-  pros::delay(220);
+  pros::delay(260);
   setMotors(leftWheelMotorVector, -40);
   setMotors(rightWheelMotorVector, -40);
   pros::delay(700);
