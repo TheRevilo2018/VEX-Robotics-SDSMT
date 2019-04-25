@@ -11,6 +11,8 @@ void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerM
 void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, int height, bool fast);
 void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector,  std::vector<pros::Motor> & liftMotors, bool & actuatorState);
 void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double distance, double speed);
+void customMoveAbsolute(pros::Motor motor, double value);
+void customMoveAbsolute(std::vector<pros::Motor> motors, double value);
 void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount, double speed);
 void longDoubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors);
 void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, int distance);

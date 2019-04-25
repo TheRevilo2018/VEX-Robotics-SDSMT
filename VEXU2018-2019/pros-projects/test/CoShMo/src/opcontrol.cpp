@@ -102,7 +102,7 @@ void opcontrol()
     {
         if(debounceButtonUP <= 0)
         {
-            turboMode = !turboMode;
+            turboMode = !turboMode; //a
             debounceButtonUP = 200;
         }
     }
@@ -157,7 +157,7 @@ void opcontrol()
 			if(debounceButtonA <= 0)
 			{
 				anglerIndex = (anglerIndex + 1) % 3;
-				anglerPos = manualAnglerPositions[anglerIndex]; //a
+				anglerPos = manualAnglerPositions[anglerIndex]; //aaa
 				debounceButtonA = 200;
 			}
 		}
@@ -210,7 +210,7 @@ void opcontrol()
 		intakeTop = topIntakePercent;
 		intakeBottom = bottomIntakePercent;
 		liftMotorLeft.move_absolute(liftPos, 127);
-		liftMotorRight.move_absolute(liftPos, 127); //aa
+		liftMotorRight.move_absolute(liftPos, 127); //aaa
 		anglerMotor.move_absolute(anglerPos, 100);
 		actuator.set_value(actuatorState);
 		pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));

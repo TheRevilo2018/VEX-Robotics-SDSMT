@@ -29,7 +29,7 @@ void initialize() {
 	lightSensor.calibrate();
 	//middleLightSensor.calibrate();
 	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
-	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); 
+	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); //aaaaa
 	anglerMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));
 }

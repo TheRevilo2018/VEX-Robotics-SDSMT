@@ -22,9 +22,9 @@ void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t br
 void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors, std::vector<int> & anglerPos)
 {
   launch(launchMotors, anglerMotor, anglerPos[1], true);
-  //pros::delay(300);
+  pros::delay(400);
   launch(launchMotors, anglerMotor, anglerPos[2], true);
-  //pros::delay(200);
+  pros::delay(300);
   return;
 }
 
@@ -34,17 +34,27 @@ void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, 
   //2900
   if(fast || lightSensor.get_value() < NO_BALL_LIGHT_VALUE)
   {
-    anglerMotor.move_absolute(height, 100);
 
-    int initialPos = launchMotorLeft.get_position();
-    while( launchMotorLeft.get_position() - initialPos < 720)
+    anglerMotor.move_absolute(height, 70); //a
+    pros::delay(400);
+    int initialVal = launchMotorLeft.get_position();
+    while((launchMotorLeft.get_position() - initialVal) < 720)
     {
       setMotors(launchMotors, 100);
       pros::delay(20);
     }
+      setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST);
     setMotors(launchMotors, 0);
+    pros::delay(20);
+
+
+    return;
   }
-  return;
+  else
+  {
+    pros::delay(200);
+    return;
+  }
 }
 
 //tqke in a vector of motors, and call the move relative function for all of them with a given distnce and speed
@@ -176,12 +186,12 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
 void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector,  std::vector<pros::Motor> & liftMotors, bool & actuatorState)
 {
   autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -100, 40);
-  pros::delay(150);
+  pros::delay(200);
   liftMotors[0].move_absolute(liftPositions[3], 127);
   liftMotors[1].move_absolute(liftPositions[3], 127);
-  pros::delay(900); //940
+  pros::delay(940);
   actuator.set_value(false);
-  pros::delay(150);
+  pros::delay(260);
   setMotors(leftWheelMotorVector, -40);
   setMotors(rightWheelMotorVector, -40);
   pros::delay(700);
@@ -304,8 +314,8 @@ void autoTurnRight(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<
     {
         if(amount - diffLeft < (amount * 2 )/ 32 || amount - diffLeft > (amount * 30 )/ 32)
         {
-            leftDriveSpeed = 20;
-            rightDriveSpeed = 20;
+            leftDriveSpeed = 30;
+            rightDriveSpeed = 30;
         }
         else if(amount - diffLeft < (amount * 4 )/ 32 || amount - diffLeft > (amount * 28 )/ 32)
         {
@@ -364,8 +374,8 @@ void autoTurnLeft(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<p
     {
         if(amount - diffRight < (amount * 2 )/ 32 || amount - diffRight > (amount * 30 )/ 32)
         {
-            leftDriveSpeed = 20;
-            rightDriveSpeed = 20;
+            leftDriveSpeed = 30;
+            rightDriveSpeed = 30;
         }
         else if(amount - diffRight < (amount * 4 )/ 32 || amount - diffRight > (amount * 28 )/ 32)
         {
