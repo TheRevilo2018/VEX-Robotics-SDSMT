@@ -13,7 +13,7 @@
  */
 void autonomous() //aaa
 {
-  int mode = 2;
+  int mode = 1;
   switch(mode)
   {
     case(0):
@@ -155,37 +155,31 @@ void autonomous() //aaa
       //back up and turn around to grab cap
       autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -600, 60); //a
       pros::delay(180);
-      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 1450);
+      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 420);
       pros::delay(180);
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -750, 60); //a
+      pros::delay(30000);
+      doubleLaunch(launchMotors, anglerMotor, intakeMotors, farAnglerPositions); //aa
+      pros::delay(200);
+      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 380);
       pros::delay(180);
 
-      //grab cap, turn to platform and drop on platform
-      actuatorState = true;
-      actuator.set_value(actuatorState);
-      pros::delay(180);
-      liftMotorLeft.move_absolute(liftPositions[2], 127);
-      liftMotorRight.move_absolute(liftPositions[2], 127);
+
+      //raise arm to get on platform correctly, then lower it after
+      liftMotorLeft.move_absolute(liftPositions[1], 127);
+      liftMotorRight.move_absolute(liftPositions[1], 127); //aaaaa
       pros::delay(400);
-      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 510);
-      pros::delay(180);
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -200, 70); //a
-      pros::delay(180);
-      actuatorState = false;
-      actuator.set_value(actuatorState);
-      pros::delay(180);
-
-      //back up, turn and align on platform
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 300, 40); //a
-      pros::delay(180);
+      setMotors(leftWheelMotorVector, 80);
+      setMotors(rightWheelMotorVector, 80);
+      pros::delay(1500);
+      setMotors(leftWheelMotorVector, 0);
+      setMotors(rightWheelMotorVector, 0);
       liftMotorLeft.move_absolute(liftPositions[0], 127);
-      liftMotorRight.move_absolute(liftPositions[0], 127);
+      liftMotorRight.move_absolute(liftPositions[0], 127); //aaaaa
       pros::delay(400);
-      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 200);
-      pros::delay(180);
-      //align
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -800, 40); //a
-      pros::delay(180);
+      anglerMotor.move_absolute(0, 100);
+      pros::delay(200);
+      anglerMotor = 0;
+      pros::delay(200);
       break;
 
       //back up from platform angle then shoot at opposite flags

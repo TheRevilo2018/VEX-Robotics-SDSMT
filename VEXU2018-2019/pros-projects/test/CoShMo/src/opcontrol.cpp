@@ -156,7 +156,9 @@ void opcontrol()
 		{
 			if(debounceButtonA <= 0)
 			{
-				anglerIndex = (anglerIndex + 1) % 3;
+				//anglerPos += 10;
+
+				anglerIndex = (anglerIndex + 1) % 3; //a
 				anglerPos = manualAnglerPositions[anglerIndex]; //aaa
 				debounceButtonA = 200;
 			}
@@ -210,8 +212,15 @@ void opcontrol()
 		intakeTop = topIntakePercent;
 		intakeBottom = bottomIntakePercent;
 		liftMotorLeft.move_absolute(liftPos, 127);
-		liftMotorRight.move_absolute(liftPos, 127); //aaa
-		anglerMotor.move_absolute(anglerPos, 100);
+		liftMotorRight.move_absolute(liftPos, 127); //aaaaa
+		if(anglerMotor.get_position() != 0 || anglerPos != 0)
+		{
+			anglerMotor.move_absolute(anglerPos, 100);
+		}
+		else
+		{
+			anglerMotor = 0;
+		}
 		actuator.set_value(actuatorState);
 		pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));
 		pros::lcd::set_text(2, "Lift Motor Postion: " + std::to_string( liftMotorLeft.get_position()));

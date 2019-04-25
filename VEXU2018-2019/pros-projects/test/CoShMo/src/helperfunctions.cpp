@@ -34,10 +34,9 @@ void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, 
   //2900
   if(fast || lightSensor.get_value() < NO_BALL_LIGHT_VALUE)
   {
-
-    anglerMotor.move_absolute(height, 70); //a
-    pros::delay(400);
-    int initialVal = launchMotorLeft.get_position();
+    anglerMotor.move_absolute(height, 100); //a
+    pros::delay(300);
+    int initialVal = launchMotorLeft.get_position(); //a
     while((launchMotorLeft.get_position() - initialVal) < 720)
     {
       setMotors(launchMotors, 100);
