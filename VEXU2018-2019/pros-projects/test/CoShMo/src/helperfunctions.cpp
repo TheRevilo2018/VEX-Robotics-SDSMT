@@ -19,11 +19,11 @@ void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t br
 }
 
 //call launch twice with appropriate waits and heights in order to hit the two high flags
-void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors)
+void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors, std::vector<int> & anglerPos)
 {
-  launch(launchMotors, anglerMotor, anglerPositions[1], true);
+  launch(launchMotors, anglerMotor, anglerPos[1], true);
   pros::delay(300);
-  launch(launchMotors, anglerMotor, anglerPositions[2], true);
+  launch(launchMotors, anglerMotor, anglerPos[2], true);
   pros::delay(200);
   return;
 }

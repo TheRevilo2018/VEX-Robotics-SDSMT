@@ -42,8 +42,6 @@ void opcontrol()
 	bool turboMode = false;
 
 	std::vector<int*> debounceButtons = {&debounceButtonX, &debounceButtonY,  &debounceButtonB, &debounceButtonA,  &debounceButtonUP, &debounceButtonDOWN, &debounceButtonLEFT, &debounceButtonRIGHT};
-	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
-	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); //aaa
 
 	while (true)
 	{
@@ -131,7 +129,7 @@ void opcontrol()
 		{
 				if(debounceButtonB <= 0)
 				{    //call hold mode
-						doubleLaunch(launchMotors, anglerMotor, intakeMotors); //a
+						doubleLaunch(launchMotors, anglerMotor, intakeMotors, manualAnglerPositions); //aa
 						debounceButtonB = 200;
 				}
 		}
@@ -213,7 +211,7 @@ void opcontrol()
 		intakeBottom = bottomIntakePercent;
 		liftMotorLeft.move_absolute(liftPos, 127);
 		liftMotorRight.move_absolute(liftPos, 127); //a
-		anglerMotor.move_absolute(anglerPos, 80);
+		anglerMotor.move_absolute(anglerPos, 100);
 		actuator.set_value(actuatorState);
 		pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));
 		pros::lcd::set_text(2, "Lift Motor Postion: " + std::to_string( liftMotorLeft.get_position()));

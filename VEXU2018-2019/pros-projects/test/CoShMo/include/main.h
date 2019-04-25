@@ -117,7 +117,7 @@ static pros::Motor liftMotorLeft(12, pros::E_MOTOR_GEARSET_18, false, pros::E_MO
 static pros::Motor liftMotorRight(13, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor launchMotorLeft(15, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor launchMotorRight(16, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor anglerMotor(11, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor anglerMotor(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 
 //3 wire port declearations
 static pros::ADIAnalogIn lightSensor(lightSensorPort);
@@ -134,9 +134,9 @@ static std::vector<pros::Motor> launchMotors = {launchMotorLeft, launchMotorRigh
 static std::vector<pros::Motor> liftMotors = {liftMotorLeft, liftMotorRight};
 
 //position constants
-static std::vector<int> anglerPositions = {0, 30, 80};
-//static std::vector<int> FarAnglerPositions{0, 26, 76};
-static std::vector<int> manualAnglerPositions{0, 28, 78};
+static std::vector<int> anglerPositions = {20, 90, 240};
+static std::vector<int> farAnglerPositions{20, 78, 228};
+static std::vector<int> manualAnglerPositions{20, 84, 234};
 static std::vector<int> liftPositions = {-20, 110, 170, 760};
 #define NO_BALL_LIGHT_VALUE 1000
 //pros declarations

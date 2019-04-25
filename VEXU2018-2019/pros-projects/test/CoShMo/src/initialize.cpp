@@ -1,4 +1,5 @@
 #include "main.h"
+#include "helperfunctions.h"
 
 void on_center_button() {
 	static bool pressed = false;
@@ -27,7 +28,10 @@ void initialize() {
 	//1896 for ball
 	lightSensor.calibrate();
 	//middleLightSensor.calibrate();
-	pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value())); //A
+	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
+	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); //aaaaa
+
+	pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));
 }
 
 /**

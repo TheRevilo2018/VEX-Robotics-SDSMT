@@ -101,20 +101,20 @@ void autonomous() //aaa
   pros::delay(200);
   autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 1350);
   pros::delay(200);
-  //realign after spinning
+  //realign after spinning a
   autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 800, 30); //a
   pros::delay(200);
   autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -400, 40); //a
   pros::delay(200);
   autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 230);
   pros::delay(200);
-  doubleLaunch(launchMotors, anglerMotor, intakeMotors); //a
+  doubleLaunch(launchMotors, anglerMotor, intakeMotors, farAnglerPositions); //a
   pros::delay(200);
   autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 222);
   pros::delay(200);
   liftMotorLeft.move_absolute(liftPositions[1], 127);
   liftMotorRight.move_absolute(liftPositions[1], 127);
   pros::delay(200);
-  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2400, 90); //a
+  autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2700, 90); //a
   pros::delay(200);
 }
