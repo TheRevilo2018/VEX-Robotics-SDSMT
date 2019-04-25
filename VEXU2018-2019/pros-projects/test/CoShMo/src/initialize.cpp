@@ -21,7 +21,7 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(2, "Starting...");
 
-	pros::lcd::register_btn1_cb(on_center_button);
+	pros::lcd::register_btn1_cb(on_center_button); //aaa
 	//visionSensor.clear_led();
 
 	//2911 for no ball
@@ -29,8 +29,8 @@ void initialize() {
 	lightSensor.calibrate();
 	//middleLightSensor.calibrate();
 	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
-	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); //aaaaa
-
+	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST); 
+	anglerMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));
 }
 

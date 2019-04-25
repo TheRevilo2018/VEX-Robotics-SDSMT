@@ -22,9 +22,9 @@ void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t br
 void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors, std::vector<int> & anglerPos)
 {
   launch(launchMotors, anglerMotor, anglerPos[1], true);
-  pros::delay(300);
+  //pros::delay(300);
   launch(launchMotors, anglerMotor, anglerPos[2], true);
-  pros::delay(200);
+  //pros::delay(200);
   return;
 }
 
@@ -34,18 +34,17 @@ void launch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, 
   //2900
   if(fast || lightSensor.get_value() < NO_BALL_LIGHT_VALUE)
   {
-    anglerMotor.move_absolute(height, 50);
-    pros::delay(200);
-    setMotorsRelative(launchMotors, 724, 127);
-    pros::delay(500);
-    setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST);
-    return;
+    anglerMotor.move_absolute(height, 100);
+
+    int initialPos = launchMotorLeft.get_position();
+    while( launchMotorLeft.get_position() - initialPos < 720)
+    {
+      setMotors(launchMotors, 100);
+      pros::delay(20);
+    }
+    setMotors(launchMotors, 0);
   }
-  else
-  {
-    pros::delay(200);
-    return;
-  }
+  return;
 }
 
 //tqke in a vector of motors, and call the move relative function for all of them with a given distnce and speed
@@ -177,12 +176,12 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
 void highScore(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector,  std::vector<pros::Motor> & liftMotors, bool & actuatorState)
 {
   autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -100, 40);
-  pros::delay(200);
+  pros::delay(150);
   liftMotors[0].move_absolute(liftPositions[3], 127);
   liftMotors[1].move_absolute(liftPositions[3], 127);
-  pros::delay(940);
+  pros::delay(900); //940
   actuator.set_value(false);
-  pros::delay(260);
+  pros::delay(150);
   setMotors(leftWheelMotorVector, -40);
   setMotors(rightWheelMotorVector, -40);
   pros::delay(700);

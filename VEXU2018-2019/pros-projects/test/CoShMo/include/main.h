@@ -134,9 +134,15 @@ static std::vector<pros::Motor> launchMotors = {launchMotorLeft, launchMotorRigh
 static std::vector<pros::Motor> liftMotors = {liftMotorLeft, liftMotorRight};
 
 //position constants
+static std::vector<int> anglerPositions = {20, 100, 219};
+static std::vector<int> farAnglerPositions{20, 100, 219};
+static std::vector<int> manualAnglerPositions{20, 100, 219};
+/*
 static std::vector<int> anglerPositions = {20, 90, 240};
 static std::vector<int> farAnglerPositions{20, 78, 228};
 static std::vector<int> manualAnglerPositions{20, 84, 234};
+*/
+
 static std::vector<int> liftPositions = {-20, 110, 170, 760};
 #define NO_BALL_LIGHT_VALUE 1000
 //pros declarations
