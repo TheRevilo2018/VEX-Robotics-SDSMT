@@ -212,7 +212,7 @@ void opcontrol()
 		intakeTop = topIntakePercent;
 		intakeBottom = bottomIntakePercent;
 		liftMotorLeft.move_absolute(liftPos, 127);
-		liftMotorRight.move_absolute(liftPos, 127); //aaaaa
+		liftMotorRight.move_absolute(liftPos, 127); //aaaaaaaaa
 		if(anglerMotor.get_position() != 0 || anglerPos != 0)
 		{
 			anglerMotor.move_absolute(anglerPos, 100);

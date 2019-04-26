@@ -13,13 +13,13 @@
  */
 void autonomous() //aaa
 {
-  int mode = 1;
+  int mode = 4;
   switch(mode)
   {
     case(0):
     {
       //red long autonomous
-      //forward to grab ball under cap
+      //forward to grab ball under capaaa
       setMotors(intakeMotors, 100);
       autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2050, 60);
       autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 200, 25);
@@ -134,6 +134,7 @@ void autonomous() //aaa
       autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 222);
       pros::delay(180);
       /*
+      \
       liftMotorLeft.move_absolute(liftPositions[1], 127); //aa
       liftMotorRight.move_absolute(liftPositions[1], 127);
       pros::delay(180);
@@ -153,63 +154,41 @@ void autonomous() //aaa
       setMotors(intakeMotors, 0);
 
       //back up and turn around to grab cap
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -600, 60); //a
+      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -600, 60); //aa
       pros::delay(180);
-      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 420);
+      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 440);
       pros::delay(180);
       pros::delay(30000);
+
       doubleLaunch(launchMotors, anglerMotor, intakeMotors, farAnglerPositions); //aa
       pros::delay(200);
-      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 380);
+      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 200, 60); //aaaa
+      pros::delay(180);
+      autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 340);
       pros::delay(180);
 
 
       //raise arm to get on platform correctly, then lower it after
       liftMotorLeft.move_absolute(liftPositions[1], 127);
-      liftMotorRight.move_absolute(liftPositions[1], 127); //aaaaa
+      liftMotorRight.move_absolute(liftPositions[1], 127); //aaaaaa
       pros::delay(400);
       setMotors(leftWheelMotorVector, 80);
       setMotors(rightWheelMotorVector, 80);
-      pros::delay(1500);
+      pros::delay(1350);
       setMotors(leftWheelMotorVector, 0);
       setMotors(rightWheelMotorVector, 0);
       liftMotorLeft.move_absolute(liftPositions[0], 127);
       liftMotorRight.move_absolute(liftPositions[0], 127); //aaaaa
       pros::delay(400);
       anglerMotor.move_absolute(0, 100);
-      pros::delay(200);
+      pros::delay(400);
       anglerMotor = 0;
       pros::delay(200);
       break;
 
-      //back up from platform angle then shoot at opposite flags
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -300, 40); //a
-      pros::delay(180);
-      autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 300);
-      pros::delay(180);
-      doubleLaunch(launchMotors, anglerMotor, intakeMotors, farAnglerPositions); //aa
-      anglerMotor.move_absolute(0, 100);
-      pros::delay(180);
-
-      //back up, and then climb platform
-      autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -300, 40); //a
-      pros::delay(180);
-      autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 300);
-      pros::delay(180);
-      /*
-      liftMotorLeft.move_absolute(liftPositions[1], 127);
-      liftMotorRight.move_absolute(liftPositions[1], 127); //aaaaa
-      pros::delay(400);
-      setMotors(leftWheelMotorVector, 80);
-      setMotors(rightWheelMotorVector, 80);
-      pros::delay(1000);
-      setMotors(leftWheelMotorVector, 0);
-      setMotors(rightWheelMotorVector, 0);
-      */
-      return;
-      break;
       case (2):
       {
+        //blue short autonomous
         //forward to grab ball under cap
         setMotors(intakeMotors, 100);
         autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 2050, 60);
@@ -218,55 +197,42 @@ void autonomous() //aaa
         setMotors(intakeMotors, 0);
 
         //back up and turn around to grab cap
-        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -600, 60); //a
+        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -600, 60); //aa
         pros::delay(180);
-        autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 1250);
+        autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 365);
         pros::delay(180);
-        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -750, 60); //a
-        pros::delay(180);
+        pros::delay(30000); //TODO
 
-        //grab cap, turn to platform and drop on platform
-        actuatorState = true;
-        actuator.set_value(actuatorState);
-        pros::delay(180);
-        liftMotorLeft.move_absolute(liftPositions[2], 127);
-        liftMotorRight.move_absolute(liftPositions[2], 127);
-        pros::delay(400);
-        autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 510);
-        pros::delay(180);
-        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -200, 70); //a
-        pros::delay(180);
-        actuatorState = false;
-        actuator.set_value(actuatorState);
-        pros::delay(180);
-
-        //back up, turn and align on platform
-        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 300, 40); //a
-        pros::delay(180);
-        liftMotorLeft.move_absolute(liftPositions[0], 127);
-        liftMotorRight.move_absolute(liftPositions[0], 127);
-        pros::delay(400);
-        autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 200);
-        pros::delay(180);
-        //align
-        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -800, 40); //a
-        pros::delay(180);
-        break;
-
-        //back up from platform angle then shoot at opposite flags
-        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -300, 40); //a
-        pros::delay(180);
-        autoTurnLeft(leftWheelMotorVector, rightWheelMotorVector, 300);
-        pros::delay(180);
         doubleLaunch(launchMotors, anglerMotor, intakeMotors, farAnglerPositions); //aa
-        anglerMotor.move_absolute(0, 100);
+        pros::delay(200);
+        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, 170, 60); //aaaaaa
+        pros::delay(180);
+        autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 130);
         pros::delay(180);
 
-        //back up, and then climb platform
-        autoDriveDistance(leftWheelMotorVector, rightWheelMotorVector, -300, 40); //a
-        pros::delay(180);
-        autoTurnRight(leftWheelMotorVector, rightWheelMotorVector, 300);
-        pros::delay(180);
+
+        //raise arm to get on platform correctly, then lower it after
+        liftMotorLeft.move_absolute(liftPositions[1], 127);
+        liftMotorRight.move_absolute(liftPositions[1], 127); //aaaaaaaa
+        pros::delay(400);
+        setMotors(leftWheelMotorVector, 80);
+        setMotors(rightWheelMotorVector, 80);
+        pros::delay(1475);
+        setMotors(leftWheelMotorVector, 0);
+        setMotors(rightWheelMotorVector, 0);
+        liftMotorLeft.move_absolute(liftPositions[0], 127);
+        liftMotorRight.move_absolute(liftPositions[0], 127); //aaaaa
+        pros::delay(400);
+        anglerMotor.move_absolute(0, 100);
+        pros::delay(400);
+        anglerMotor = 0;
+        pros::delay(200);
+        break;
+      }
+      case(4):
+      {
+        doubleLaunch(launchMotors, anglerMotor, intakeMotors, anglerPositions); //aa
+        pros::delay(15000);
         break;
       }
     }

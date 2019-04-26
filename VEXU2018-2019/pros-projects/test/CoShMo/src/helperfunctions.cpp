@@ -22,9 +22,7 @@ void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t br
 void doubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & anglerMotor, std::vector<pros::Motor> & intakeMotors, std::vector<int> & anglerPos)
 {
   launch(launchMotors, anglerMotor, anglerPos[1], true);
-  pros::delay(400);
   launch(launchMotors, anglerMotor, anglerPos[2], true);
-  pros::delay(300);
   return;
 }
 
