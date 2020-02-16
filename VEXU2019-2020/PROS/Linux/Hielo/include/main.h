@@ -95,9 +95,9 @@ void opcontrol(void);
 #endif
 
 //3 wire port defines
-#define lightSensorPort 'H'
-#define actuatorPort 'G'
-#define gyroPort 'F'
+#define lightSensorPort 'A'
+#define actuatorPort 'H'
+#define gyroPort 'G'
 
 //controller declarations
 static pros::Controller master(pros::E_CONTROLLER_MASTER);

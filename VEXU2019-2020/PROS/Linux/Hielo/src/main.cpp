@@ -18,16 +18,6 @@ void autonomous()
 }
 
 
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
-
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -37,8 +27,6 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
-
-	pros::lcd::register_btn1_cb(on_center_button); //aaa
 	//visionSensor.clear_led();
 
 	//2911 for no ball
@@ -48,7 +36,6 @@ void initialize() {
 	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
 	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST);
 	anglerMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	pros::lcd::set_text(1, "Launcher Light Sensor: " + std::to_string(lightSensor.get_value()));
 }
 
 /**
@@ -103,33 +90,25 @@ void opcontrol()
 	int minLiftPos = 0;
 	int anglerPos = 0;
 	int anglerIndex = 0;
-	int debounceButtonA = 0;
-	int debounceButtonB = 0;
-	int debounceButtonX = 0;
-	int debounceButtonY = 0;
-	int debounceButtonDOWN = 0;
-	int debounceButtonUP = 0;
-	int debounceButtonLEFT = 0;
-	int debounceButtonRIGHT = 0;
+	std::uint32_t debounceButtonA = 0;
+	std::uint32_t debounceButtonB = 0;
+	std::uint32_t debounceButtonX = 0;
+	std::uint32_t debounceButtonY = 0;
+	std::uint32_t debounceButtonDOWN = 0;
+	std::uint32_t debounceButtonUP = 0;
+	std::uint32_t debounceButtonLEFT = 0;
+	std::uint32_t debounceButtonRIGHT = 0;
 	int loopDelay = 20;
 	bool holdMode = false;
 	bool turboMode = false;
-	std::vector<int*> debounceButtons = {&debounceButtonX, &debounceButtonY,  &debounceButtonB, &debounceButtonA,  &debounceButtonUP, &debounceButtonDOWN, &debounceButtonLEFT, &debounceButtonRIGHT};
   bool yep = false;
 
 	while (true)
 	{
-		for(auto button : debounceButtons)
-		{
-			if (*button > 0)
-			{
-				*button -= loopDelay;
-			}
-		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
     {
-      if(debounceButtonB <= 0)
+      if(pressButton(debounceButtonB))
 			{
         yep = !yep;
       }
@@ -146,4 +125,15 @@ void opcontrol()
 
 		pros::delay(loopDelay);
 	}
+}
+
+bool pressButton(std::uint32_t  & debounceTime)
+{
+	std::uint32_t pressTime = pros::millis();
+	if(pressTime - debounceTime >= DEBOUNCE_DELAY)
+	{
+		debounceTime = pressTime;
+		return true;
+	}
+	return false;
 }

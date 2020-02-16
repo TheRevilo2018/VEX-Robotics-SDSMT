@@ -17,6 +17,6 @@ void longDoubleLaunch(std::vector<pros::Motor> & launchMotors, pros::Motor & ang
 void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, int distance);
 void autoTurnLeft(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount);
 void autoTurnRight(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount);
-bool pressButton(std::uint32_t  & debounceTime)
+bool pressButton(std::uint32_t  & debounceTime);
 
 #endif
