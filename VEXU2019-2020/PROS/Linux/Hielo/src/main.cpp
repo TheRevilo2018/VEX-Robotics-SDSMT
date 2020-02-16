@@ -11,6 +11,7 @@
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+
 void autonomous()
 {
 
@@ -35,7 +36,7 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(2, "Starting...");
+	pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
 
 	pros::lcd::register_btn1_cb(on_center_button); //aaa
 	//visionSensor.clear_led();
@@ -55,7 +56,9 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled() {
+	pros::lcd::set_text(3, "Calling disabled: " + std::to_string(pros::millis()));
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -66,7 +69,9 @@ void disabled() {}
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-void competition_initialize() {}
+void competition_initialize() {
+	pros::lcd::set_text(4, "Calling competition_initialize: " + std::to_string(pros::millis()));
+}
 
 
 
@@ -86,6 +91,7 @@ void competition_initialize() {}
 
 void opcontrol()
 {
+	pros::lcd::set_text(5, "Calling op_control: " + std::to_string(pros::millis()));
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;

@@ -91,6 +91,7 @@ void opcontrol(void);
 #include <set>
 #include <stack>
 #include <unordered_map>
+#include <fstream>
 #endif
 
 //3 wire port defines
@@ -156,7 +157,6 @@ static std::uint32_t now = pros::millis();
 
 //globals
 static bool actuatorState = false;
-
 //sanity correction
 
 #endif  // _PROS_MAIN_H_
