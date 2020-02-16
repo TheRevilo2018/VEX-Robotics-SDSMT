@@ -114,6 +114,14 @@ void opcontrol()
       }
     }
 
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+		{
+			if(pressButton(debounceButtonA))
+			{
+						autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 180, 90);
+			}
+		}
+
     if(yep)
     {
       setMotors(intakeMotors, -120);
@@ -123,17 +131,42 @@ void opcontrol()
       setMotors(intakeMotors, 0);
     }
 
+		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
+				{
+					leftMotorPercent = master.get_analog(ANALOG_LEFT_Y);
+					rightMotorPercent = master.get_analog(ANALOG_LEFT_Y);
+
+					if(master.get_analog(ANALOG_RIGHT_X) > turnThreshold)
+		      {
+		        leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
+		      	rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
+		      }
+		      else
+		      {
+		        leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
+		        rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X) / 1.25);
+		      }
+				}
+				else
+				{
+					leftMotorPercent = 0;
+					rightMotorPercent = 0;
+				}
+
+				if(!turboMode)
+				{
+					leftMotorPercent *= .8;
+					rightMotorPercent *= .8;
+				}
+				else
+				{
+					leftMotorPercent *= .9;
+					rightMotorPercent *= .9;
+				}
+
+				setMotors(leftWheelMotorVector, leftMotorPercent);
+				setMotors(rightWheelMotorVector, rightMotorPercent);
+
 		pros::delay(loopDelay);
 	}
-}
-
-bool pressButton(std::uint32_t  & debounceTime)
-{
-	std::uint32_t pressTime = pros::millis();
-	if(pressTime - debounceTime >= DEBOUNCE_DELAY)
-	{
-		debounceTime = pressTime;
-		return true;
-	}
-	return false;
 }

@@ -99,29 +99,35 @@ void opcontrol(void);
 #define actuatorPort 'H'
 #define gyroPort 'G'
 
+//Motor port defines
+#define LEFT_WHEEL_BOTTOM_PORT 4
+#define LEFT_WHEEL_MIDDLE_PORT 5
+
+#define LEFT_WHEEL_TOP_PORT 10
+#define LEFT_INTAKE_2_PORT 12
+#define RIGHT_INTAKE_1_PORT 13
+#define RIGHT_WHEEL_MIDDLE_PORT 14
+#define RIGHT_WHEEL_BOTTOM_PORT 15
+
+#define RIGHT_INTAKE_2_PORT 18
+#define LEFT_INTAKE_1_PORT 19
+#define RIGHT_WHEEL_TOP_PORT 20
+
 //controller declarations
 static pros::Controller master(pros::E_CONTROLLER_MASTER);
 static pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 
 //standard port declarations
-static pros::Motor wheelLeft1(1, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelLeft2(2, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelLeft3(3, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelLeft4(4, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight1(10, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight2(9, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight3(14, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight4(20, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor intakeBottom(17, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor intakeLeft1(19, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor intakeLeft2(12, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor intakeRight1(13, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor intakeRight2(15, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor launchMotorRight(16, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor launchMotorLeft(7, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor anglerMotor(11, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor liftMotorRight(5, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor liftMotorLeft(6, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor wheelLeft1(LEFT_WHEEL_TOP_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelLeft2(LEFT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelLeft3(LEFT_WHEEL_BOTTOM_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelRight1(RIGHT_WHEEL_TOP_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelRight2(RIGHT_WHEEL_BOTTOM_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelRight3(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor intakeLeft1(LEFT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeLeft2(LEFT_INTAKE_2_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeRight1(RIGHT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeRight2(RIGHT_INTAKE_2_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
 
 
 //3 wire port declearations
@@ -131,9 +137,9 @@ static pros::ADIGyro gyro (gyroPort);
 //static pros::
 
 //motor grouping declarations
-static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4, wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
-static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelLeft4 };
-static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3, wheelRight4 };
+static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelRight1, wheelRight2, wheelRight3};
+static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3 };
+static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3};
 static std::vector<pros::Motor> intakeMotors = {intakeLeft1, intakeLeft2, intakeRight1, intakeRight1};
 static std::vector<pros::Motor> launchMotors = {launchMotorLeft, launchMotorRight};
 static std::vector<pros::Motor> liftMotors = {liftMotorLeft, liftMotorRight};
