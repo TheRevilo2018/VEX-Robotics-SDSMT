@@ -95,9 +95,11 @@ void opcontrol(void);
 #endif
 
 //3 wire port defines
-#define lightSensorPort 'A'
-#define actuatorPort 'H'
-#define gyroPort 'G'
+#define LEFT_TRAY_BUMPER_PORT 'A'
+#define RIGHT_TRAY_BUMPER_PORT 'B'
+#define LIGHT_SENSOR_PORT 'C'
+#define ACTUATOR_PORT 'H'
+#define GYRO_PORT 'G'
 
 //Motor port defines
 //1
@@ -143,9 +145,11 @@ static pros::Motor trayRight(RIGHT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, true, pr
 
 
 //3 wire port declearations
-static pros::ADIAnalogIn lightSensor(lightSensorPort);
-static pros::ADIDigitalOut actuator(actuatorPort);
-static pros::ADIGyro gyro (gyroPort);
+static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
+static pros::ADIDigitalIn trayBumperLeft(LEFT_TRAY_BUMPER_PORT);
+static pros::ADIDigitalIn trayBumperRight(RIGHT_TRAY_BUMPER_PORT);
+static pros::ADIDigitalOut actuator(ACTUATOR_PORT);
+static pros::ADIGyro gyro (GYRO_PORT);
 //static pros::
 
 //motor grouping declarations
@@ -160,12 +164,6 @@ static std::vector<int> anglerPositions = {0, 140, 280};
 static std::vector<int> manualAnglerPositions{0, 140, 280};
 static std::vector<int> farAnglerPositions{0, 180, 360};
 
-
-/*
-static std::vector<int> anglerPositions = {20, 90, 240};
-static std::vector<int> farAnglerPositions{20, 78, 228};
-static std::vector<int> manualAnglerPositions{20, 84, 234};
-*/
 
 static std::vector<int> liftPositions = {-20, 110, 170, 760};
 #define NO_BALL_LIGHT_VALUE 1000

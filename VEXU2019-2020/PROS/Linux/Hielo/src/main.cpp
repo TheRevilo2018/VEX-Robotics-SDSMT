@@ -99,7 +99,7 @@ void opcontrol()
 	bool holdMode = false;
 	bool turboMode = false;
   bool yep = false;
-
+	bool trayHitting = true;
 	while (true)
 	{
 
@@ -119,11 +119,12 @@ void opcontrol()
 			}
 		}
 
+		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     {
 			traySpeed = 100;
     }
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && !trayHitting)
 		{
 			traySpeed = -100;
 		}
@@ -177,6 +178,8 @@ void opcontrol()
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
 				setMotors(trayMotors, traySpeed);
-		pros::delay(loopDelay);
+				pros::lcd::set_text(2, "Bumper state left: " + std::to_string(trayBumperLeft.get_value()));
+				pros::lcd::set_text(3, "Bumper state right: " + std::to_string(trayBumperRight.get_value()));
+				pros::delay(loopDelay);
 	}
 }
