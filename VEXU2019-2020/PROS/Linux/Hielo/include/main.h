@@ -152,6 +152,8 @@ static std::vector<int> manualAnglerPositions{20, 84, 234};
 
 static std::vector<int> liftPositions = {-20, 110, 170, 760};
 #define NO_BALL_LIGHT_VALUE 1000
+#define DEBOUNCE_DELAY 200
+
 //pros declarations
 static std::uint32_t now = pros::millis();
 
