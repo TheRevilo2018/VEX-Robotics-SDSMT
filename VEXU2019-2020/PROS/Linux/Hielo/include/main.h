@@ -100,15 +100,25 @@ void opcontrol(void);
 #define gyroPort 'G'
 
 //Motor port defines
+//1
+//2
+//3
 #define LEFT_WHEEL_BOTTOM_PORT 4
 #define LEFT_WHEEL_MIDDLE_PORT 5
 
+//6
+//7
+#define LEFT_TRAY_PORT 8
+//9
 #define LEFT_WHEEL_TOP_PORT 10
+
 #define LEFT_INTAKE_2_PORT 12
 #define RIGHT_INTAKE_1_PORT 13
 #define RIGHT_WHEEL_MIDDLE_PORT 14
 #define RIGHT_WHEEL_BOTTOM_PORT 15
 
+#define RIGHT_TRAY_PORT 16
+//17
 #define RIGHT_INTAKE_2_PORT 18
 #define LEFT_INTAKE_1_PORT 19
 #define RIGHT_WHEEL_TOP_PORT 20
@@ -128,6 +138,8 @@ static pros::Motor intakeLeft1(LEFT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, tru
 static pros::Motor intakeLeft2(LEFT_INTAKE_2_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor intakeRight1(RIGHT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor intakeRight2(RIGHT_INTAKE_2_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor trayLeft(LEFT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor trayRight(RIGHT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
 
 
 //3 wire port declearations
@@ -141,8 +153,7 @@ static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, whee
 static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3 };
 static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3};
 static std::vector<pros::Motor> intakeMotors = {intakeLeft1, intakeLeft2, intakeRight1, intakeRight1};
-static std::vector<pros::Motor> launchMotors = {launchMotorLeft, launchMotorRight};
-static std::vector<pros::Motor> liftMotors = {liftMotorLeft, liftMotorRight};
+static std::vector<pros::Motor> trayMotors = {trayLeft, trayRight};
 
 //position constants
 static std::vector<int> anglerPositions = {0, 140, 280};

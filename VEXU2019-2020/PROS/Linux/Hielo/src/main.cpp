@@ -33,10 +33,7 @@ void initialize() {
 	//1896 for ball
 	lightSensor.calibrate();
 	//middleLightSensor.calibrate();
-	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
-	setBrakes(launchMotors, pros::E_MOTOR_BRAKE_COAST);
-	anglerMotor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-}
+	}
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -86,7 +83,7 @@ void opcontrol()
 	int bottomIntakePercent = 0;
 	int topIntakePercent = 0;
 	int intakePercent = 0;
-	int liftPos = 0;
+	int traySpeed = 0;
 	int minLiftPos = 0;
 	int anglerPos = 0;
 	int anglerIndex = 0;
@@ -120,6 +117,19 @@ void opcontrol()
 			{
 						autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 180, 90);
 			}
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+    {
+			traySpeed = 100;
+    }
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+		{
+			traySpeed = -100;
+		}
+		else
+		{
+			traySpeed = 0;
 		}
 
     if(yep)
@@ -166,7 +176,7 @@ void opcontrol()
 
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
-
+				setMotors(trayMotors, traySpeed);
 		pros::delay(loopDelay);
 	}
 }
