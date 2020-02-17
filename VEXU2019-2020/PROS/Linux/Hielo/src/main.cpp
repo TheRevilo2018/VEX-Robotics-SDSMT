@@ -80,13 +80,9 @@ void opcontrol()
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
-	int bottomIntakePercent = 0;
-	int topIntakePercent = 0;
 	int intakePercent = 0;
 	int traySpeed = 0;
-	int minLiftPos = 0;
-	int anglerPos = 0;
-	int anglerIndex = 0;
+	int liftSpeed = 0;
 	std::uint32_t debounceButtonA = 0;
 	std::uint32_t debounceButtonB = 0;
 	std::uint32_t debounceButtonX = 0;
@@ -95,13 +91,24 @@ void opcontrol()
 	std::uint32_t debounceButtonUP = 0;
 	std::uint32_t debounceButtonLEFT = 0;
 	std::uint32_t debounceButtonRIGHT = 0;
+	std::uint32_t debounceButtonR1 = 0;
 	int loopDelay = 20;
 	bool holdMode = false;
 	bool turboMode = false;
   bool yep = false;
 	bool trayHitting = true;
+	bool trayLock = false;
+	int liftIndex = 0;
+
 	while (true)
 	{
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+		{
+			if(pressButton(debounceButtonX))
+			{
+			}
+		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
     {
@@ -115,7 +122,6 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonA))
 			{
-						autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 180, 90);
 			}
 		}
 
@@ -131,6 +137,33 @@ void opcontrol()
 		else
 		{
 			traySpeed = 0;
+		}
+
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+    {
+			if(pressButton(debounceButtonR1))
+			{
+				trayLock = true;
+				liftLeft.move_absolute(liftPositions[liftIndex], 100);
+				liftRight.move_absolute(liftPositions[liftIndex], 100);
+				trayLeft.move_absolute(trayPositions[liftIndex], 100);
+				trayRight.move_absolute(trayPositions[liftIndex], 100);
+				liftIndex += 1;
+				liftIndex = std::min(1, liftIndex);
+			}
+    }
+
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		{
+			//unlock automatic control of tray and lift, reset index to medium position, and move down
+			trayLock = false;
+			liftSpeed = -120;
+			liftIndex = 0;
+		}
+		else
+		{
+			liftSpeed = 0;
 		}
 
     if(yep)
@@ -177,9 +210,17 @@ void opcontrol()
 
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
-				setMotors(trayMotors, traySpeed);
-				pros::lcd::set_text(2, "Bumper state left: " + std::to_string(trayBumperLeft.get_value()));
-				pros::lcd::set_text(3, "Bumper state right: " + std::to_string(trayBumperRight.get_value()));
+
+				if(!trayLock)
+				{
+					setMotors(trayMotors, traySpeed * .75);
+					setMotors(liftMotors, liftSpeed);
+				}
+
+				pros::lcd::set_text(3, "leftLift: " + std::to_string(liftLeft.get_position()));
+				pros::lcd::set_text(4, "rightLift: " + std::to_string(liftRight.get_position()));
+				pros::lcd::set_text(5, "trayLeft: " + std::to_string(trayLeft.get_position()));
+				pros::lcd::set_text(6, "trayRight: " + std::to_string(trayRight.get_position()));
 				pros::delay(loopDelay);
 	}
 }
