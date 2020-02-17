@@ -93,12 +93,9 @@ void opcontrol()
 	std::uint32_t debounceButtonRIGHT = 0;
 	std::uint32_t debounceButtonR1 = 0;
 	int loopDelay = 20;
-	bool holdMode = false;
-	bool turboMode = false;
-  bool yep = false;
-	bool trayHitting = true;
 	bool trayLock = false;
 	int liftIndex = 0;
+	bool trayHitting = false;
 
 	while (true)
 	{
@@ -107,7 +104,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonX))
 			{
-				intakeSpeed = 12700;
+				intakeSpeed = 120;
 			}
 		}
 
@@ -115,7 +112,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonA))
 			{
-				intakeSpeed = -30;
+				intakeSpeed = -60;
 			}
 		}
 
@@ -123,7 +120,7 @@ void opcontrol()
     {
       if(pressButton(debounceButtonB))
 			{
-				intakeSpeed = -12700;
+				intakeSpeed = -120;
       }
     }
 
@@ -131,15 +128,33 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonY))
 			{
-				intakeSpeed = 30;
+				intakeSpeed = 60;
 			}
 		}
+
+		//UP is unbound
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
 		{
 			if(pressButton(debounceButtonDOWN))
 			{
 				intakeSpeed = 0;
+			}
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
+		{
+			if(pressButton(debounceButtonRIGHT))
+			{
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 180);
+			}
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
+		{
+			if(pressButton(debounceButtonLEFT))
+			{
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -180);
 			}
 		}
 
@@ -184,15 +199,6 @@ void opcontrol()
 			liftSpeed = 0;
 		}
 
-    if(yep)
-    {
-      setMotors(intakeMotors, -120);
-    }
-    else
-    {
-      setMotors(intakeMotors, 0);
-    }
-
 		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
 				{
 					leftMotorPercent = master.get_analog(ANALOG_LEFT_Y);
@@ -215,17 +221,6 @@ void opcontrol()
 					rightMotorPercent = 0;
 				}
 
-				if(!turboMode)
-				{
-					leftMotorPercent *= .8;
-					rightMotorPercent *= .8;
-				}
-				else
-				{
-					leftMotorPercent *= .9;
-					rightMotorPercent *= .9;
-				}
-
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
 				setMotors(intakeMotors, intakeSpeed);
@@ -238,8 +233,9 @@ void opcontrol()
 
 				pros::lcd::set_text(3, "leftLift: " + std::to_string(liftLeft.get_position()));
 				pros::lcd::set_text(4, "rightLift: " + std::to_string(liftRight.get_position()));
-				pros::lcd::set_text(5, "trayLeft: " + std::to_string(trayLeft.get_position()));
-				pros::lcd::set_text(6, "trayRight: " + std::to_string(trayRight.get_position()));
+				//pros::lcd::set_text(5, "trayLeft: " + std::to_string(trayLeft.get_position()));
+				//pros::lcd::set_text(6, "trayRight: " + std::to_string(trayRight.get_position()));
+				//pros::lcd::set_text(6, "gyro: " + std::to_string(gyro.get_value()));
 				pros::delay(loopDelay);
 	}
 }

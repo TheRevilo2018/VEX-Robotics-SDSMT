@@ -104,9 +104,10 @@ void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vec
 }
 
 //function used in autonomous to turn a given degree amount at a given speed
-void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount, double speed)
+void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount)
 {
   double currSpeed;
+  double speed = 100;
   pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
   setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
   setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
@@ -114,34 +115,44 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
   amount *= 10;
   gyro.reset();
 
-  float remainingTicks = amount - gyro.get_value();
-  while( fabs(remainingTicks) >= 10 )
+  float lastRemainingTicks = 99999;
+  float remainingTicks = amount;
+  //white both not close to target and not overshooting
+  while( fabs(remainingTicks) >= 5 && fabs(remainingTicks) - fabs(lastRemainingTicks) <= 1)
   {
-    double multiplier = fmin(1, fabs(remainingTicks / 1000.0));
+    double multiplier = fmax(fmin(1, fabs(remainingTicks / 1250.0)), .25);
     currSpeed = speed;
     currSpeed *= multiplier;
 
     if(remainingTicks < 0)
     {
-      setMotors(leftWheelMotorVector, currSpeed);
-      setMotors(rightWheelMotorVector, -currSpeed);
-    }
-    else
-    {
       setMotors(leftWheelMotorVector, -currSpeed);
       setMotors(rightWheelMotorVector, currSpeed);
     }
+    else
+    {
+      setMotors(leftWheelMotorVector, currSpeed);
+      setMotors(rightWheelMotorVector, -currSpeed);
+    }
+
+  	if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
+    {
+      break;
+    }
     pros::delay(20);
+    lastRemainingTicks = remainingTicks;
+    remainingTicks = amount - gyro.get_value();
+    pros::lcd::set_text(5, "gyro: " + std::to_string(remainingTicks));
+    pros::lcd::set_text(6, "gyro: " + std::to_string(lastRemainingTicks) + " " + std::to_string(fabs(remainingTicks) <= fabs(lastRemainingTicks)));
   }
 
   setMotors(leftWheelMotorVector, 0);
   setMotors(rightWheelMotorVector, 0);
   pros::delay(50);
 
-  setBrakes(leftWheelMotorVector,  prevBrake );
-  setBrakes(rightWheelMotorVector,  prevBrake );
+  setBrakes(leftWheelMotorVector, prevBrake );
+  setBrakes(rightWheelMotorVector, prevBrake );
 
-  remainingTicks = amount - gyro.get_value();
   return;
 }
 
