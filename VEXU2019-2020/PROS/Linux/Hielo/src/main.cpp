@@ -80,7 +80,7 @@ void opcontrol()
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
-	int intakePercent = 0;
+	int intakeSpeed = 0;
 	int traySpeed = 0;
 	int liftSpeed = 0;
 	std::uint32_t debounceButtonA = 0;
@@ -107,6 +107,15 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonX))
 			{
+				intakeSpeed = 12700;
+			}
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+		{
+			if(pressButton(debounceButtonA))
+			{
+				intakeSpeed = -30;
 			}
 		}
 
@@ -114,14 +123,23 @@ void opcontrol()
     {
       if(pressButton(debounceButtonB))
 			{
-        yep = !yep;
+				intakeSpeed = -12700;
       }
     }
 
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
 		{
-			if(pressButton(debounceButtonA))
+			if(pressButton(debounceButtonY))
 			{
+				intakeSpeed = 30;
+			}
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
+		{
+			if(pressButton(debounceButtonDOWN))
+			{
+				intakeSpeed = 0;
 			}
 		}
 
@@ -210,6 +228,7 @@ void opcontrol()
 
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
+				setMotors(intakeMotors, intakeSpeed);
 
 				if(!trayLock)
 				{

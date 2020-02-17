@@ -108,13 +108,14 @@ void opcontrol(void);
 #define LEFT_WHEEL_BOTTOM_PORT 4
 #define LEFT_WHEEL_MIDDLE_PORT 5
 
-#define LEFT_INTAKE_2_PORT 6
-#define RIGHT_INTAKE_1_PORT 7
+#define LEFT_INTAKE_PORT 6
+//7
 #define LEFT_TRAY_PORT 8
 //9
 #define LEFT_WHEEL_TOP_PORT 10
 
 #define RIGHT_LIFT_PORT 12
+#define RIGHT_INTAKE_PORT 13
 #define RIGHT_WHEEL_MIDDLE_PORT 14
 #define RIGHT_WHEEL_BOTTOM_PORT 15
 
@@ -135,8 +136,8 @@ static pros::Motor wheelLeft3(LEFT_WHEEL_BOTTOM_PORT, pros::E_MOTOR_GEARSET_18, 
 static pros::Motor wheelRight1(RIGHT_WHEEL_TOP_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelRight2(RIGHT_WHEEL_BOTTOM_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelRight3(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor intakeLeft(LEFT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor intakeRight(RIGHT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeLeft(LEFT_INTAKE_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeRight(RIGHT_INTAKE_PORT, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor trayLeft(LEFT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor trayRight(RIGHT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor liftLeft(LEFT_LIFT_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
