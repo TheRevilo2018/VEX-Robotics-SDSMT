@@ -107,7 +107,7 @@ void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vec
 void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount)
 {
   double currSpeed;
-  double speed = 100;
+  double speed = 80;
   pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
   setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
   setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
@@ -135,7 +135,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vect
       setMotors(rightWheelMotorVector, -currSpeed);
     }
 
-  	if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
+  	if(master.get_digital(KILL_BUTTON))
     {
       break;
     }
@@ -276,6 +276,80 @@ void autoTurnLeft(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<p
     pros::delay(200);
     setBrakes(leftWheelMotorVector, prevBrake);
     setBrakes(rightWheelMotorVector, prevBrake);
+}
+
+void depositStack()
+{
+  //constant slow intake
+  setMotors(intakeMotors, -20);
+
+  //forward to align
+  setMotors(leftWheelMotorVector, 30);
+  setMotors(rightWheelMotorVector, 30);
+  pros::delay(200);
+
+  setMotors(leftWheelMotorVector, 0);
+  setMotors(rightWheelMotorVector, 0);
+  pros::delay(100);
+
+  //slight back
+  setMotors(leftWheelMotorVector, -30);
+  setMotors(rightWheelMotorVector, -30);
+  pros::delay(200);
+
+  setMotors(leftWheelMotorVector, 0);
+  setMotors(rightWheelMotorVector, 0);
+  pros::delay(100);
+
+  setMotors(intakeMotors, 0);
+
+  //tip up tray
+  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 60);
+  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 60);
+  while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
+  {
+    if(master.get_digital(KILL_BUTTON))
+    {
+      break;
+    }
+    pros::delay(20);
+  }
+  pros::delay(300);
+
+  //slight constant forward
+  setMotors(leftWheelMotorVector, 30);
+  setMotors(rightWheelMotorVector, 30);
+  pros::delay(250);
+
+  setMotors(leftWheelMotorVector, 0);
+  setMotors(rightWheelMotorVector, 0);
+  pros::delay(100);
+
+  //finish tip
+  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 40);
+  trayRight.move_absolute(TRAY_MAX_HEIGHT, 40);
+  while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
+  {
+    if(master.get_digital(KILL_BUTTON))
+    {
+      break;
+    }
+    pros::delay(20);
+  }
+
+  //slight outtake
+  setMotors(intakeMotors, -60);
+
+  //smooth medium speed back
+  setMotors(leftWheelMotorVector, -50);
+  setMotors(rightWheelMotorVector, -50);
+  pros::delay(400);
+
+  setMotors(intakeMotors, 0);
+
+  setMotors(leftWheelMotorVector, 0);
+  setMotors(rightWheelMotorVector, 0);
+  pros::delay(100);
 }
 
 bool pressButton(std::uint32_t  & debounceTime)

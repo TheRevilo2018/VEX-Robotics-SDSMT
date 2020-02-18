@@ -125,6 +125,11 @@ void opcontrol(void);
 #define LEFT_INTAKE_1_PORT 19
 #define RIGHT_WHEEL_TOP_PORT 20
 
+#define DEBOUNCE_DELAY 200
+#define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_UP
+#define TRAY_MAX_HEIGHT 567
+#define TRAY_MIDDLE_HEIGHT 260
+
 //controller declarations
 static pros::Controller master(pros::E_CONTROLLER_MASTER);
 static pros::Controller partner(pros::E_CONTROLLER_PARTNER);
@@ -143,15 +148,12 @@ static pros::Motor trayRight(RIGHT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, true, pr
 static pros::Motor liftLeft(LEFT_LIFT_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor liftRight(RIGHT_LIFT_PORT, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
 
-
-
 //3 wire port declearations
 static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
 static pros::ADIDigitalIn trayBumperLeft(LEFT_TRAY_BUMPER_PORT);
 static pros::ADIDigitalIn trayBumperRight(RIGHT_TRAY_BUMPER_PORT);
 static pros::ADIDigitalOut actuator(ACTUATOR_PORT);
 static pros::ADIGyro gyro (GYRO_PORT);
-//static pros::
 
 //motor grouping declarations
 static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelRight1, wheelRight2, wheelRight3};
@@ -165,7 +167,6 @@ static std::vector<pros::Motor> liftMotors = {liftLeft, liftRight};
 static std::vector<int> liftPositions = {480, 620};
 static std::vector<int> trayPositions = {220, 230};
 
-#define DEBOUNCE_DELAY 200
 
 //pros declarations
 static std::uint32_t now = pros::millis();

@@ -12,5 +12,6 @@ void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Mo
 void autoTurnLeft(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount);
 void autoTurnRight(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount);
 bool pressButton(std::uint32_t  & debounceTime);
+void depositStack();
 
 #endif
