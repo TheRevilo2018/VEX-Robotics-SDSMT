@@ -130,6 +130,8 @@ void opcontrol(void);
 #define TRAY_MAX_HEIGHT 567
 #define TRAY_MIDDLE_HEIGHT 260
 
+enum DIRECTION {FORWARD, BACKWARD};
+
 //controller declarations
 static pros::Controller master(pros::E_CONTROLLER_MASTER);
 static pros::Controller partner(pros::E_CONTROLLER_PARTNER);

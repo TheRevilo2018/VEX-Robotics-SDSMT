@@ -1,5 +1,5 @@
-#include "main.h"
-#include "helperfunctions.h"
+#include "../include/main.h"
+#include "../include/helperfunctions.h"
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -14,7 +14,7 @@
 
 void autonomous()
 {
-
+	driveDist(8, FORWARD, 0);
 }
 
 
@@ -25,7 +25,7 @@ void autonomous()
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
+	/*pros::lcd::initialize();
 	pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
 	//visionSensor.clear_led();
 
@@ -34,7 +34,7 @@ void initialize() {
 	lightSensor.calibrate();
 	setBrakes(intakeMotors, pros::E_MOTOR_BRAKE_HOLD);
 	setBrakes(trayMotors, pros::E_MOTOR_BRAKE_HOLD);
-	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_HOLD);
+	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_HOLD);*/
 	//middleLightSensor.calibrate();
 	}
 

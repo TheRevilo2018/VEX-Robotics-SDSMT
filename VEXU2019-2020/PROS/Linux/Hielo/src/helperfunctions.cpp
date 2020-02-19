@@ -1,4 +1,4 @@
-#include "helperfunctions.h"
+#include "../include/helperfunctions.h"
 #include <algorithm>
 
 //take in a vecor of motors, and set their speed to a value
@@ -29,78 +29,150 @@ void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, doubl
 }
 
 //function used in autononomous to drive for a given distance at a given speed
-void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double distance, double speed)
+
+void driveDist(double target, DIRECTION direction, int numCubes)
 {
-  //TODO add check for stuck motors to prevent damage
-  pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
-  setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
-  setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+    double maxSpeed = 100;
+    double speed = maxSpeed;
 
-  int initialEncoderLeft = leftWheelMotorVector[0].get_raw_position(&now);
-  int initialEncoderRight = rightWheelMotorVector[0].get_raw_position(&now);
-  int allowedDiff = 0;
-  int maxTime = std::max(1000, int(2 * std::fabs(distance)));
-  int currTime = 0;
-  int gyroVal = 0;
-  double diffLeft;
-  double diffRight;
+    double endDistance = 0;
+    double startDistance = 2 * 845;
+    double currDist = 0;
+    double deccelDist = 2 * 845;
+    double averagePos = 0;
+    double distPercent = 0;
 
-  gyro.reset();
+    setDirection(direction);
+    target *= 845;
+    deccelDist = distReq(maxSpeed, numCubes, direction);
+    startDistance = distReq(maxSpeed, numCubes, direction);
+    endDistance = target - deccelDist;
 
-  if(distance < 0)
-  {
-    speed *= -1;
-  }
-  double leftDriveSpeed = speed;
-  double rightDriveSpeed = speed;
-  diffLeft = (leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
-  diffRight = (rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight);
-
-  setMotors(leftWheelMotorVector, speed);
-  setMotors(rightWheelMotorVector, speed);
-
-  while( currTime < maxTime &&
-    (abs(leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft) < fabs(distance) ||
-    abs(rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight) < fabs(distance)))
-  {
-    gyroVal = gyro.get_value();
-
-    diffLeft = (leftWheelMotorVector[0].get_raw_position(&now) - initialEncoderLeft);
-    diffRight = (rightWheelMotorVector[0].get_raw_position(&now) - initialEncoderRight);
-
-    leftDriveSpeed = speed;
-    rightDriveSpeed = speed;
-
-    if(abs(gyroVal) > 5)
+    if ( startDistance + deccelDist > target)
     {
-      if(gyroVal > 0)
-      {
-        if(distance > 0)
-          leftDriveSpeed *= .95;
-        else
-          rightDriveSpeed *= .95;
-      }
-      else
-      {
-        if(distance > 0)
-          rightDriveSpeed *= .95;
-        else
-          leftDriveSpeed *= .95;
-      }
+        distPercent = target / (startDistance + deccelDist);
+        maxSpeed *= distPercent;
+        startDistance *= distPercent;
+        endDistance *= distPercent;
     }
 
-    setMotors(leftWheelMotorVector, leftDriveSpeed);
-    setMotors(rightWheelMotorVector, rightDriveSpeed);
-    currTime += 20;
-    pros::delay(20);
-  }
-  setMotors(leftWheelMotorVector, 0);
-  setMotors(rightWheelMotorVector, 0);
-  pros::delay(50);
+    for (int i = 0; i < 6; i++) //sets the motors to 0
+    {
+        wheelMotorVector[i].set_zero_position(0);
+        wheelMotorVector[i].set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    }
 
-  setBrakes(leftWheelMotorVector,  prevBrake );
-  setBrakes(rightWheelMotorVector,  prevBrake );
-  return;
+    while (averagePos < startDistance)
+    {
+        averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
+                    wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
+        speed = maxSpeed * (averagePos / startDistance) + 14;
+        if (speed > maxSpeed)
+        {
+            speed = maxSpeed;
+        }
+
+        correctDist(rightWheelMotorVector, averagePos, speed);
+        correctDist(leftWheelMotorVector, averagePos, speed);
+        //setMotors(wheelMotorVector, speed);
+        pros::delay(20);
+    }
+
+    while (averagePos < endDistance)
+    {
+        averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
+               wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
+
+        correctDist(rightWheelMotorVector, averagePos, speed);
+        correctDist(leftWheelMotorVector, averagePos, speed);
+        //setMotors(wheelMotorVector, speed);
+
+        pros::delay(20);
+    }
+
+    endDistance = target - averagePos;
+    while (averagePos < target)
+    {
+        averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
+               wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
+        currDist = target - averagePos;
+        speed = maxSpeed * (currDist / endDistance) + 14;
+
+        if (speed > maxSpeed)
+        {
+            speed = maxSpeed;
+        }
+
+        correctDist(rightWheelMotorVector, averagePos, speed);
+        correctDist(leftWheelMotorVector, averagePos, speed);
+        //setMotors(wheelMotorVector, speed);
+        pros::delay(20);
+    }
+
+    //displayPosition();
+
+    setMotors(wheelMotorVector, 0);
+    setDirection(FORWARD);
+}
+
+//a function that finds the best speed based on the distance of the wheels
+void correctDist (std::vector<pros::Motor> motors, double target, double speed)
+{
+    double value = motors[0].get_position() - target;
+
+    if ( value > 2)
+    {
+        setMotors(motors, speed * (0.93));
+    }
+    else if (value < -2)
+    {
+        setMotors(motors, speed * (1.08));
+    }
+    else
+    {
+        setMotors(motors, speed);
+    }
+}
+
+double distReq(double speed, int numCubes, DIRECTION direction)
+{
+    double result = 1.2 * 845;
+
+    /*if (direction == RIGHT || direction == LEFT)
+    {
+        if (numCubes == 7)
+        {
+            result = 2.5 * 845;
+        }
+        if (numCubes >= 8)
+        {
+            result = 3 * 845;
+        }
+    }*/
+
+    return result;
+}
+
+void setDirection(DIRECTION direction)
+{
+    if (direction == FORWARD)
+    {
+        wheelLeft1.set_reversed(false);
+        wheelLeft2.set_reversed(true);
+        wheelLeft3.set_reversed(false);
+        wheelRight1.set_reversed(true);
+        wheelRight2.set_reversed(false);
+        wheelRight3.set_reversed(true);
+    }
+    if (direction == BACKWARD)
+    {
+        wheelLeft1.set_reversed(true);
+        wheelLeft2.set_reversed(false);
+        wheelLeft3.set_reversed(true);
+        wheelRight1.set_reversed(false);
+        wheelRight2.set_reversed(true);
+        wheelRight3.set_reversed(false);
+    }
 }
 
 //function used in autonomous to turn a given degree amount at a given speed
