@@ -168,7 +168,8 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonRIGHT))
 			{
-				unFold();
+				//unFold();
+				driveDist(3, FORWARD, 8);
 			}
 		}
 

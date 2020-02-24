@@ -39,6 +39,9 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
     double distPercent = 0;
     int stopCount = 0;
 
+    gyro.reset();
+
+
     setDirection(direction);
     target *= ROTATION_MUL;
     deccelDist = distReq(maxSpeed, numCubes, direction);
@@ -71,9 +74,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
                 speed = maxSpeed;
             }
 
-            correctDist(rightWheelMotorVector, averagePos, speed);
-            correctDist(leftWheelMotorVector, averagePos, speed);
-        //setMotors(wheelMotorVector, speed);
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
                 stopCount++;
@@ -84,9 +85,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
 
-            correctDist(rightWheelMotorVector, averagePos, speed);
-            correctDist(leftWheelMotorVector, averagePos, speed);
-        //setMotors(wheelMotorVector, speed);
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
 
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
@@ -106,9 +105,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
                speed = maxSpeed;
             }
 
-            correctDist(rightWheelMotorVector, averagePos, speed);
-            correctDist(leftWheelMotorVector, averagePos, speed);
-        //setMotors(wheelMotorVector, speed);
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
                 stopCount++;
@@ -123,9 +120,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
 
-            correctDist(rightWheelMotorVector, averagePos, speed);
-            correctDist(leftWheelMotorVector, averagePos, speed);
-        //setMotors(wheelMotorVector, speed);
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
 
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
@@ -149,22 +144,56 @@ void cubeRun(double target, int numCubes)
 }
 
 //a function that finds the best speed based on the distance of the wheels
-void correctDist (std::vector<pros::Motor> motors, double target, double speed)
+void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> rightMotors, double target, double speed, double gyroVal)
 {
-    double value = motors[0].get_position() - target;
+    double leftValue = 0;
+    double rightValue = 0;
+    for(int i = 0; i < leftMotors.size(); i++)
+    {
+      leftValue += leftMotors[i].get_position();
+      rightValue += rightMotors[i].get_position();
+    }
+    leftValue /= leftMotors.size();
+    leftValue -= target;
 
-    if ( value > 2)
+    rightValue /= rightMotors.size();
+    rightValue -= target;
+
+    double leftSpeed = speed;
+    double rightSpeed = speed;
+
+    if ( rightValue > 2)
     {
-        setMotors(motors, speed * (0.93));
+        leftSpeed *= 0.96;
     }
-    else if (value < -2)
+    else if (rightValue < -2)
     {
-        setMotors(motors, speed * (1.08));
+        leftSpeed *= 1.04;
     }
-    else
+
+
+    if ( rightValue > 2)
     {
-        setMotors(motors, speed);
+        rightSpeed *= 0.96;
     }
+    else if (rightValue < -2)
+    {
+        rightSpeed *= 1.04;
+    }
+
+
+    if(gyroVal < 5)
+    {
+        leftSpeed *= 1.04;
+    }
+    else if(gyroVal > 5)
+    {
+        rightSpeed *= 1.04;
+    }
+
+    setMotors(leftMotors, leftSpeed);
+    setMotors(rightMotors, rightSpeed);
+
 }
 
 double distReq(double speed, int numCubes, DIRECTION direction)
