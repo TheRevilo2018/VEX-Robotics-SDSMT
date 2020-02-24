@@ -12,8 +12,11 @@
  * from where it left off.
  */
 
+
 void autonomous()
 {
+	unFold();
+
 	pros::delay(1000);
 	cubeRun(3.8, 5);
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -32);
@@ -42,7 +45,7 @@ void autonomous()
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	/*pros::lcd::initialize();
+	pros::lcd::initialize();
 	pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
 	//visionSensor.clear_led();
 
@@ -51,7 +54,7 @@ void initialize() {
 	lightSensor.calibrate();
 	setBrakes(intakeMotors, pros::E_MOTOR_BRAKE_HOLD);
 	setBrakes(trayMotors, pros::E_MOTOR_BRAKE_HOLD);
-	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_HOLD);*/
+	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_HOLD);
 	//middleLightSensor.calibrate();
 	}
 
@@ -165,7 +168,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonRIGHT))
 			{
-				depositStack();
+				unFold();
 			}
 		}
 
@@ -173,7 +176,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonLEFT))
 			{
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -180);
+				autonomous();
 			}
 		}
 

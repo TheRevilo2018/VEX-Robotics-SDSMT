@@ -1,7 +1,4 @@
 #include "../include/helperfunctions.h"
-#include <algorithm>
-
-const double ROTATION_MUL = 845;
 
 //take in a vecor of motors, and set their speed to a value
 void setMotors(std::vector<pros::Motor> & motors, double speed)
@@ -31,11 +28,9 @@ void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, doubl
 }
 
 //function used in autononomous to drive for a given distance at a given speed
-
 void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed)
 {
     double speed = maxSpeed;
-
     double endDistance = 0;
     double startDistance = 2 * ROTATION_MUL;
     double currDist = 0;
@@ -66,7 +61,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             wheelMotorVector[i].set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
         }
 
-        while (averagePos < startDistance && stopCount < 100)
+        while (averagePos < startDistance && stopCount < STOP_AMOUNT)
         {
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
                     wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
@@ -84,7 +79,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
                 stopCount++;
         }
 
-        while (averagePos < endDistance && stopCount < 100)
+        while (averagePos < endDistance && stopCount < STOP_AMOUNT)
         {
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
@@ -99,7 +94,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
         }
 
         endDistance = target - averagePos;
-        while (averagePos < target && stopCount < 100)
+        while (averagePos < target && stopCount < STOP_AMOUNT)
         {
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
@@ -123,7 +118,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
     {
         speed = 10;
 
-        while (averagePos < endDistance && stopCount < 100)
+        while (averagePos < endDistance && stopCount < STOP_AMOUNT)
         {
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
@@ -149,7 +144,7 @@ void cubeRun(double target, int numCubes)
     setMotors(intakeMotors, intakeSpeed);
     driveDist(target, FORWARD, -1, 40);
     if (numCubes < 8)
-        pros::delay(500);
+        pros::delay(300);
     setMotors(intakeMotors, 0);
 }
 
@@ -297,8 +292,8 @@ void depositStack()
 
   setMotors(intakeMotors, -30);
   //tip up tray
-  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 50);
-  trayRight.move_absolute(TRAY_MAX_HEIGHT, 50);
+  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
+  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -307,11 +302,11 @@ void depositStack()
     }
     pros::delay(20);
   }
-  pros::delay(300);
+  pros::delay(200);
 
   //finish tip
-  /*trayLeft.move_absolute(TRAY_MAX_HEIGHT, 30);
-  trayRight.move_absolute(TRAY_MAX_HEIGHT, 30);
+  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 25);
+  trayRight.move_absolute(TRAY_MAX_HEIGHT, 25);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -319,7 +314,7 @@ void depositStack()
       break;
     }
     pros::delay(20);
-}*/
+}
 
   //slight outtake
   setMotors(intakeMotors, -50);
@@ -344,7 +339,7 @@ void depositStack()
 void cubeSet()
 {
       setMotors(intakeMotors, 120);
-      pros::delay(1200);
+      pros::delay(600);
       setMotors(intakeMotors, 0);
 }
 
@@ -357,4 +352,10 @@ bool pressButton(std::uint32_t  & debounceTime)
 		return true;
 	}
 	return false;
+}
+
+void unFold()
+{
+  setMotors(intakeMotors, -80);
+  pros::delay(300);
 }
