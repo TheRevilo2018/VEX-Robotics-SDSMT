@@ -17,22 +17,31 @@ void autonomous()
 {
 	unFold();
 
+	//grab ####
 	pros::delay(1000);
 	cubeRun(3.8, 5);
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -32);
 	cubeSet();
-	driveDist(3.3, BACKWARD, 5);
+
+	/*     #
+	grab ###
+	*/
+	driveDist(3.1, BACKWARD, 5);
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 32);
-	cubeRun(1.4, 7);
+	cubeRun(1.2, 7);
 	cubeSet();
+
+	//grab third next to pole
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 30);
-	driveDist(1.1, BACKWARD, 6);
-	//cubeSet();
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 50);
+	driveDist(1.15, BACKWARD, 6);
+	cubeSet();
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 37);
 	cubeRun(1.1, 8);
+
+	//navigate to goal and score
 	driveDist(3.0, BACKWARD, 8);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 115);
-	driveDist(0.9, FORWARD, 8);
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 110);
+	driveDist(1.0, FORWARD, 8);
 	pros::delay(1000);
 	depositStack();
 }
@@ -169,7 +178,7 @@ void opcontrol()
 			if(pressButton(debounceButtonRIGHT))
 			{
 				//unFold();
-				driveDist(3, FORWARD, 8);
+				driveDist(2, FORWARD, 8);
 			}
 		}
 
