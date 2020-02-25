@@ -78,7 +78,6 @@ void competition_initialize() {
 
 void opcontrol()
 {
-	pros::lcd::set_text(5, "Calling op_control: " + std::to_string(pros::millis()));
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
@@ -96,7 +95,7 @@ void opcontrol()
 	std::uint32_t debounceButtonRIGHT = 0;
 	std::uint32_t debounceButtonR1 = 0;
 	int loopDelay = 20;
-	bool trayLock = false;
+	bool liftLock = false;
 	int liftIndex = 0;
 	bool trayHitting = false;
 
@@ -107,7 +106,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonX))
 			{
-				intakeSpeed = 120;
+				intakeSpeed = 120 * .85;
 			}
 		}
 
@@ -123,7 +122,7 @@ void opcontrol()
     {
       if(pressButton(debounceButtonB))
 			{
-				intakeSpeed = -120;
+				intakeSpeed = -120 * .85;
       }
     }
 
@@ -160,7 +159,7 @@ void opcontrol()
 			}
 		}
 
-		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
+		trayHitting = false;//(trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
     {
 			traySpeed = 100;
@@ -179,11 +178,11 @@ void opcontrol()
     {
 			if(pressButton(debounceButtonR1))
 			{
-				trayLock = true;
-				liftLeft.move_absolute(liftPositions[liftIndex], 100);
-				liftRight.move_absolute(liftPositions[liftIndex], 100);
-				trayLeft.move_absolute(trayPositions[liftIndex], 100);
-				trayRight.move_absolute(trayPositions[liftIndex], 100);
+				liftLock = true;
+				liftLeft1.move_absolute(liftPositions[liftIndex], 100);
+				liftLeft2.move_absolute(liftPositions[liftIndex], 100);
+				liftRight1.move_absolute(liftPositions[liftIndex], 100);
+				liftRight2.move_absolute(liftPositions[liftIndex], 100);
 				liftIndex += 1;
 				liftIndex = std::min(1, liftIndex);
 			}
@@ -192,8 +191,8 @@ void opcontrol()
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
 			//unlock automatic control of tray and lift, reset index to medium position, and move down
-			trayLock = false;
-			liftSpeed = -120;
+			liftLock = false;
+			liftSpeed = -40;
 			liftIndex = 0;
 		}
 		else
@@ -226,18 +225,18 @@ void opcontrol()
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
 				setMotors(intakeMotors, intakeSpeed);
+				setMotors(trayMotors, traySpeed);
 
-				if(!trayLock)
+				if(!liftLock)
 				{
-					setMotors(trayMotors, traySpeed * .75);
 					setMotors(liftMotors, liftSpeed);
 				}
 
-				pros::lcd::set_text(3, "leftLift: " + std::to_string(liftLeft.get_position()));
-				pros::lcd::set_text(4, "rightLift: " + std::to_string(liftRight.get_position()));
+				pros::lcd::set_text(3, "leftLift1: " + std::to_string(liftLeft1.get_position()));
+				pros::lcd::set_text(4, "rightLift1: " + std::to_string(liftRight1.get_position()));
 				pros::lcd::set_text(5, "trayLeft: " + std::to_string(trayLeft.get_position()));
 				pros::lcd::set_text(6, "trayRight: " + std::to_string(trayRight.get_position()));
-				pros::lcd::set_text(6, "gyro: " + std::to_string(gyro.get_value()));
+				//pros::lcd::set_text(6, "gyro: " + std::to_string(gyro.get_value()));
 				pros::delay(loopDelay);
 	}
 }

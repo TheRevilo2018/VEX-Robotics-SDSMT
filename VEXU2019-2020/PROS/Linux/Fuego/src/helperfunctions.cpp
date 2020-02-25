@@ -280,9 +280,6 @@ void autoTurnLeft(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<p
 
 void depositStack()
 {
-  //constant slow intake
-  setMotors(intakeMotors, -20);
-
   //forward to align
   setMotors(leftWheelMotorVector, 30);
   setMotors(rightWheelMotorVector, 30);
@@ -291,17 +288,6 @@ void depositStack()
   setMotors(leftWheelMotorVector, 0);
   setMotors(rightWheelMotorVector, 0);
   pros::delay(100);
-
-  //slight back
-  setMotors(leftWheelMotorVector, -30);
-  setMotors(rightWheelMotorVector, -30);
-  pros::delay(200);
-
-  setMotors(leftWheelMotorVector, 0);
-  setMotors(rightWheelMotorVector, 0);
-  pros::delay(100);
-
-  setMotors(intakeMotors, 0);
 
   //tip up tray
   trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 60);
@@ -316,18 +302,26 @@ void depositStack()
   }
   pros::delay(300);
 
-  //slight constant forward
-  setMotors(leftWheelMotorVector, 30);
-  setMotors(rightWheelMotorVector, 30);
-  pros::delay(250);
-
-  setMotors(leftWheelMotorVector, 0);
-  setMotors(rightWheelMotorVector, 0);
-  pros::delay(100);
-
+  int timeOut = 0;
   //finish tip
-  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 40);
-  trayRight.move_absolute(TRAY_MAX_HEIGHT, 40);
+  for(int i = 0; i < 40; i++)
+  {
+    trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT + ((TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT) / 40) * i, 60 - i);
+    trayRight.move_absolute(TRAY_MIDDLE_HEIGHT +  ((TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT) / 40) * i, 60 - i);
+    while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
+    {
+      if(master.get_digital(KILL_BUTTON) || timeOut > 100)
+      {
+        break;
+      }
+      pros::delay(10);
+      timeOut += 10;
+    }
+  }
+
+  //ensure tip is finished
+  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 25);
+  trayRight.move_absolute(TRAY_MAX_HEIGHT, 25);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -337,15 +331,21 @@ void depositStack()
     pros::delay(20);
   }
 
-  //slight outtake
+  pros::delay(200);
+
+  //drop cubes vertically
   setMotors(intakeMotors, -60);
+  pros::delay(400);
+  setMotors(intakeMotors, 0);
+
+  //release
+
 
   //smooth medium speed back
-  setMotors(leftWheelMotorVector, -50);
-  setMotors(rightWheelMotorVector, -50);
+  //setMotors(leftWheelMotorVector, -50);
+  //setMotors(rightWheelMotorVector, -50);
   pros::delay(400);
 
-  setMotors(intakeMotors, 0);
 
   setMotors(leftWheelMotorVector, 0);
   setMotors(rightWheelMotorVector, 0);
