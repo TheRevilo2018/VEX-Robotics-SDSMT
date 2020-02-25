@@ -29,12 +29,6 @@ void initialize() {
 	pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
 	//visionSensor.clear_led();
 
-	//2911 for no ball
-	//1896 for ball
-	lightSensor.calibrate();
-	setBrakes(intakeMotors, pros::E_MOTOR_BRAKE_HOLD);
-	setBrakes(trayMotors, pros::E_MOTOR_BRAKE_HOLD);
-	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_HOLD);
 	//middleLightSensor.calibrate();
 	}
 
@@ -103,102 +97,6 @@ void opcontrol()
 	while (true)
 	{
 
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
-		{
-			if(pressButton(debounceButtonX))
-			{
-				intakeSpeed = 120;
-			}
-		}
-
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
-		{
-			if(pressButton(debounceButtonA))
-			{
-				intakeSpeed = -60;
-			}
-		}
-
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
-    {
-      if(pressButton(debounceButtonB))
-			{
-				intakeSpeed = -120;
-      }
-    }
-
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
-		{
-			if(pressButton(debounceButtonY))
-			{
-				intakeSpeed = 60;
-			}
-		}
-
-		//UP is unbound
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
-		{
-			if(pressButton(debounceButtonDOWN))
-			{
-				intakeSpeed = 0;
-			}
-		}
-
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
-		{
-			if(pressButton(debounceButtonRIGHT))
-			{
-			}
-		}
-
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
-		{
-			if(pressButton(debounceButtonLEFT))
-			{
-			}
-		}
-
-		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
-    {
-			traySpeed = 100;
-    }
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && !trayHitting)
-		{
-			traySpeed = -100;
-		}
-		else
-		{
-			traySpeed = 0;
-		}
-
-
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-    {
-			if(pressButton(debounceButtonR1))
-			{
-				trayLock = true;
-				liftLeft.move_absolute(liftPositions[liftIndex], 100);
-				liftRight.move_absolute(liftPositions[liftIndex], 100);
-				trayLeft.move_absolute(trayPositions[liftIndex], 100);
-				trayRight.move_absolute(trayPositions[liftIndex], 100);
-				liftIndex += 1;
-				liftIndex = std::min(1, liftIndex);
-			}
-    }
-
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-		{
-			//unlock automatic control of tray and lift, reset index to medium position, and move down
-			trayLock = false;
-			liftSpeed = -120;
-			liftIndex = 0;
-		}
-		else
-		{
-			liftSpeed = 0;
-		}
-
 		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
 				{
 					leftMotorPercent = master.get_analog(ANALOG_LEFT_Y);
@@ -223,19 +121,7 @@ void opcontrol()
 
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
-				setMotors(intakeMotors, intakeSpeed);
 
-				if(!trayLock)
-				{
-					setMotors(trayMotors, traySpeed * .75);
-					setMotors(liftMotors, liftSpeed);
-				}
-
-				pros::lcd::set_text(3, "leftLift: " + std::to_string(liftLeft.get_position()));
-				pros::lcd::set_text(4, "rightLift: " + std::to_string(liftRight.get_position()));
-				pros::lcd::set_text(5, "trayLeft: " + std::to_string(trayLeft.get_position()));
-				pros::lcd::set_text(6, "trayRight: " + std::to_string(trayRight.get_position()));
-				pros::lcd::set_text(6, "gyro: " + std::to_string(gyro.get_value()));
 				pros::delay(loopDelay);
 	}
 }
