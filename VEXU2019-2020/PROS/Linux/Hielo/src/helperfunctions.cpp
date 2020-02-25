@@ -182,14 +182,14 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
     }
 
 
-    if(gyroVal < 5)
+    /*if(gyroVal < 10)
     {
-        leftSpeed *= 1.04;
+        leftSpeed *= 0.9;
     }
-    else if(gyroVal > 5)
+    else if(gyroVal > 10)
     {
-        rightSpeed *= 1.04;
-    }
+        rightSpeed *= 0.9;
+    }*/
 
     setMotors(leftMotors, leftSpeed);
     setMotors(rightMotors, rightSpeed);
@@ -204,9 +204,15 @@ double distReq(double speed, int numCubes, DIRECTION direction)
     {
         result = 0.5 * ROTATION_MUL;
     }
+    if (numCubes == -2)
+    {
+        result = 0.05 * ROTATION_MUL;
+    }
     if (direction == BACKWARD)
     {
         result = 2 * ROTATION_MUL;
+        if(numCubes == 8)
+            result = 2.5 * ROTATION_MUL;
     }
 
     return result;
@@ -235,10 +241,12 @@ void setDirection(DIRECTION direction)
 }
 
 //function used in autonomous to turn a given degree amount at a given speed
-void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount)
+void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector,
+    std::vector<pros::Motor> & rightWheelMotorVector, double amount)
 {
   double currSpeed;
   double speed = 80;
+
   pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
   setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
   setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );

@@ -15,7 +15,8 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
 double distReq(double speed, int numCubes, DIRECTION direction);
 void setDirection(DIRECTION direction);
 //void autoDriveDistance(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double distance, double speed);
-void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, double amount);
+void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector,
+    std::vector<pros::Motor> & rightWheelMotorVector, double amount);
 void drive(std::vector<pros::Motor> & leftWheelMotorVector, std::vector<pros::Motor> & rightWheelMotorVector, int distance);
 bool pressButton(std::uint32_t  & debounceTime);
 void cubeSet();
