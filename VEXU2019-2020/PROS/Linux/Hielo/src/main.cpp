@@ -15,7 +15,8 @@
 
 void autonomous()
 {
-	unFold();
+	pros::delay(1100);
+	/*unFold();
 
 	//grab ####
 	pros::delay(1000);
@@ -44,8 +45,9 @@ void autonomous()
 	driveDist(1.4, FORWARD, 8);
 	driveDist(0.3, BACKWARD, -2, 15);
 	pros::delay(500);
-	depositStack();
+	depositStack();*/
 	//driveDist(10, FORWARD, 0);
+	gyroHold(60000);
 }
 
 

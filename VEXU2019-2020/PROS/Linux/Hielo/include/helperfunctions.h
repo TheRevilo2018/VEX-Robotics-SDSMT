@@ -22,5 +22,6 @@ bool pressButton(std::uint32_t  & debounceTime);
 void cubeSet();
 void depositStack();
 void unFold();
+void gyroHold(int time);
 
 #endif

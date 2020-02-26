@@ -1,4 +1,4 @@
-#include "../include/helperfunctions.h" 
+#include "../include/helperfunctions.h"
 
 //take in a vecor of motors, and set their speed to a value
 void setMotors(std::vector<pros::Motor> & motors, double speed)
@@ -401,4 +401,32 @@ void unFold()
 {
   setMotors(intakeMotors, -80);
   pros::delay(300);
+}
+
+
+void gyroHold(int time)
+{
+    double startTime = std::clock();
+    double diff = 0;
+    double value = 0;
+    gyro.reset();
+
+    while (time < diff)
+    {
+        value = gyro.get_value();
+
+        if (value > 5)
+        {
+            setMotors(leftWheelMotorVector, 30);
+            setMotors(rightWheelMotorVector, -30);
+        }
+        if (value < -5)
+        {
+            setMotors(leftWheelMotorVector, -30);
+            setMotors(rightWheelMotorVector, 30);
+        }
+
+
+        diff = std::clock() - startTime;
+    }
 }
