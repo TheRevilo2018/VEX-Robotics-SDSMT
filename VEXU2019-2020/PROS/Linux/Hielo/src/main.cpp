@@ -180,12 +180,8 @@ void opcontrol()
 			if(pressButton(debounceButtonRIGHT))
 			{
 				//unFold();
-<<<<<<< HEAD
 				//driveDist(2, FORWARD, 8);
 				depositStack();
-=======
-				driveDist(4, FORWARD, 8);
->>>>>>> 42c7ee36bb7ea715ac4c414cc40ba9d2230a90c9
 			}
 		}
 
