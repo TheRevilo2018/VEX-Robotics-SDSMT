@@ -16,7 +16,7 @@
 void autonomous()
 {
 	unFold();
-/*
+
 	//grab ####
 	pros::delay(1000);
 	cubeRun(3.8, 5);
@@ -44,8 +44,8 @@ void autonomous()
 	driveDist(1.4, FORWARD, 8);
 	driveDist(0.3, BACKWARD, -2, 15);
 	pros::delay(500);
-	depositStack();*/
-	driveDist(10, FORWARD, 0);
+	depositStack();
+	//driveDist(10, FORWARD, 0);
 }
 
 
@@ -180,7 +180,8 @@ void opcontrol()
 			if(pressButton(debounceButtonRIGHT))
 			{
 				//unFold();
-				driveDist(2, FORWARD, 8);
+				//driveDist(2, FORWARD, 8);
+				depositStack();
 			}
 		}
 
