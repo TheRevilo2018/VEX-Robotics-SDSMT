@@ -41,6 +41,8 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
 
     gyro.reset();
 
+    pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
+    setBrakes(wheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
 
     setDirection(direction);
     target *= ROTATION_MUL;
@@ -131,6 +133,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
 
     setMotors(wheelMotorVector, 0);
     setDirection(FORWARD);
+    setBrakes(wheelMotorVector,  prevBrake);
 }
 
 void cubeRun(double target, int numCubes)
@@ -148,11 +151,14 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
 {
     double leftValue = 0;
     double rightValue = 0;
+    double adjustUp = 1.1;
+    double adjustDown = 0.9;
     for(int i = 0; i < leftMotors.size(); i++)
     {
       leftValue += leftMotors[i].get_position();
       rightValue += rightMotors[i].get_position();
     }
+
     leftValue /= leftMotors.size();
     leftValue -= target;
 
@@ -162,37 +168,39 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
     double leftSpeed = speed;
     double rightSpeed = speed;
 
+    //unknown if actually works, can't really test
     if ( rightValue > 2)
     {
-        leftSpeed *= 0.96;
+        leftSpeed *= adjustDown;
     }
     else if (rightValue < -2)
     {
-        leftSpeed *= 1.04;
+        leftSpeed *= adjustUp;
     }
 
 
-    if ( rightValue > 2)
+    if ( leftValue > 2)
     {
-        rightSpeed *= 0.96;
+        leftSpeed *= adjustDown;
     }
-    else if (rightValue < -2)
+    else if (leftValue < -2)
     {
-        rightSpeed *= 1.04;
+        leftSpeed *= adjustUp;
     }
 
 
-    /*if(gyroVal < 10)
+    if(gyroVal < -10)
     {
-        leftSpeed *= 0.9;
+        rightSpeed *= adjustDown;
     }
     else if(gyroVal > 10)
     {
-        rightSpeed *= 0.9;
-    }*/
+        leftSpeed *= adjustDown;
+    }
 
     setMotors(leftMotors, leftSpeed);
     setMotors(rightMotors, rightSpeed);
+
 
 }
 
@@ -248,8 +256,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector,
   double speed = 80;
 
   pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
-  setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
-  setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
+  setBrakes(wheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
 
   amount *= 10;
   gyro.reset();
@@ -292,8 +299,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector,
   setMotors(rightWheelMotorVector, 0);
   pros::delay(50);
 
-  setBrakes(leftWheelMotorVector, prevBrake );
-  setBrakes(rightWheelMotorVector, prevBrake );
+  setBrakes(wheelMotorVector,  prevBrake);
 
   return;
 }
