@@ -16,7 +16,7 @@
 void autonomous()
 {
 	unFold();
-/*
+
 	//grab ####
 	pros::delay(1000);
 	cubeRun(3.8, 5);
@@ -27,13 +27,13 @@ void autonomous()
 	//grab ###
 
 	driveDist(3.1, BACKWARD, 5);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 32);
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 40);
 	cubeRun(1.2, 7);
 	cubeSet();
 
 	//grab third next to pole
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 30);
-	driveDist(1.15, BACKWARD, 6);
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 38);
+	driveDist(1.25, BACKWARD, 6);
 	cubeSet();
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 37);
 	cubeRun(1.2, 8);
@@ -41,11 +41,12 @@ void autonomous()
 	//navigate to goal and score
 	driveDist(2.3, BACKWARD, 8);
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 125);
+	cubeSet();
 	driveDist(1.4, FORWARD, 8);
 	driveDist(0.3, BACKWARD, -2, 15);
-	pros::delay(500);
-	depositStack();*/
-	driveDist(10, FORWARD, 0);
+	//pros::delay(500);
+	depositStack();
+	//driveDist(10, FORWARD, 0);
 }
 
 
