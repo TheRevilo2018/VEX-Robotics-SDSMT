@@ -18,7 +18,7 @@ void autonomous()
 	unFold();
 
 	//grab ####
-	pros::delay(1000);
+	driveDist(0.3, BACKWARD, -2);
 	cubeRun(3.8, 5);
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -35);
 	cubeSet();
@@ -42,7 +42,7 @@ void autonomous()
 	driveDist(2.7, BACKWARD, 8);
 	cubeSet();
 	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 120);
-	cubeSet();
+	//cubeSet();
 	driveDist(1.4, FORWARD, 8);
 	//driveDist(0.3, BACKWARD, -2, 15);
 	//pros::delay(500);
@@ -227,6 +227,8 @@ void opcontrol()
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
 			//unlock automatic control of tray and lift, reset index to medium position, and move down
+			setBrakes(trayMotors, pros::E_MOTOR_BRAKE_COAST);
+			setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
 			trayLock = false;
 			liftSpeed = -120;
 			liftIndex = 0;
