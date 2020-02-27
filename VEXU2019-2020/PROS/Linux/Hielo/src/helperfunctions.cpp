@@ -101,7 +101,8 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
             currDist = target - averagePos;
             speed = maxSpeed * (currDist / endDistance) + 14;
-
+            if(speed < 20)
+                speed = 20;
             if (speed > maxSpeed)
             {
                speed = maxSpeed;
@@ -140,7 +141,7 @@ void cubeRun(double target, int numCubes)
 {
     double intakeSpeed = 120;
     setMotors(intakeMotors, intakeSpeed);
-    driveDist(target, FORWARD, -1, 40);
+    driveDist(target, FORWARD, -2, 40);
     if (numCubes < 8)
         pros::delay(300);
     setMotors(intakeMotors, 0);
@@ -166,7 +167,7 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
     double leftSpeed = speed;
     double rightSpeed = speed;
 
-    /*if ( rightValue > 2)
+    if ( rightValue > 2)
     {
         leftSpeed *= 0.96;
     }
@@ -183,17 +184,17 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
     else if (rightValue < -2)
     {
         rightSpeed *= 1.04;
-    }*/
+    }
 
     if(direction == FORWARD)
     {
         if(gyroVal < -10)
         {
-            rightSpeed *= 0.85;
+            rightSpeed *= 0.92;
         }
         else if(gyroVal > 10)
         {
-            leftSpeed *= 0.85;
+            leftSpeed *= 0.92;
         }
     }
     else
@@ -270,6 +271,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector,
 
   amount *= 10;
   gyro.reset();
+  pros::delay(100);
 
   float lastRemainingTicks = 99999;
   float remainingTicks = amount;
