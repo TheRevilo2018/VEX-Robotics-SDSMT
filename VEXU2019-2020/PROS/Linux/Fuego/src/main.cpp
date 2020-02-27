@@ -198,11 +198,11 @@ void opcontrol()
 		}
 
 		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))// && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
     {
 			traySpeed = 100;
     }
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && !trayHitting)
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))// && !trayHitting)
 		{
 			traySpeed = -100;
 		}
