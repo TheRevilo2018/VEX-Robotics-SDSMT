@@ -133,6 +133,10 @@ void opcontrol()
 	int liftIndex = 0;
 	bool trayHitting = false;
 
+
+	setBrakes(trayMotors, pros::E_MOTOR_BRAKE_COAST);
+	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
+
 	while (true)
 	{
 
@@ -181,8 +185,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonRIGHT))
 			{
-				//unFold();
-				driveDist(2, FORWARD, 8);
+				depositStack();
 			}
 		}
 

@@ -108,14 +108,14 @@ void opcontrol(void);
 #define LEFT_WHEEL_BOTTOM_PORT 4
 #define LEFT_WHEEL_MIDDLE_PORT 5
 
-#define LEFT_INTAKE_PORT 6
+#define LEFT_INTAKE_2_PORT 6
 //7
 #define LEFT_TRAY_PORT 8
 //9
 #define LEFT_WHEEL_TOP_PORT 10
 
 #define RIGHT_LIFT_PORT 12
-#define RIGHT_INTAKE_PORT 13
+#define RIGHT_INTAKE_1_PORT 13
 #define RIGHT_WHEEL_MIDDLE_PORT 14
 #define RIGHT_WHEEL_BOTTOM_PORT 11
 
@@ -143,12 +143,14 @@ static pros::Motor wheelLeft3(LEFT_WHEEL_BOTTOM_PORT, pros::E_MOTOR_GEARSET_18, 
 static pros::Motor wheelRight1(RIGHT_WHEEL_TOP_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelRight2(RIGHT_WHEEL_BOTTOM_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelRight3(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor intakeLeft(LEFT_INTAKE_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor intakeRight(RIGHT_INTAKE_PORT, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeLeft1(LEFT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeLeft2(LEFT_INTAKE_2_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeRight1(RIGHT_INTAKE_1_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor intakeRight2(RIGHT_INTAKE_2_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor trayLeft(LEFT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
 static pros::Motor trayRight(RIGHT_TRAY_PORT, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor liftLeft(LEFT_LIFT_PORT, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_DEGREES);
-static pros::Motor liftRight(RIGHT_LIFT_PORT, pros::E_MOTOR_GEARSET_36, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor liftLeft(LEFT_LIFT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_DEGREES);
+static pros::Motor liftRight(RIGHT_LIFT_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_DEGREES);
 
 //3 wire port declearations
 static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
@@ -161,12 +163,12 @@ static pros::ADIGyro gyro (GYRO_PORT);
 static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelRight1, wheelRight2, wheelRight3};
 static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3 };
 static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3};
-static std::vector<pros::Motor> intakeMotors = {intakeLeft, intakeRight};
+static std::vector<pros::Motor> intakeMotors = {intakeLeft1, intakeLeft2, intakeRight1, intakeRight2};
 static std::vector<pros::Motor> trayMotors = {trayLeft, trayRight};
 static std::vector<pros::Motor> liftMotors = {liftLeft, liftRight};
 
 //position constants
-static std::vector<int> liftPositions = {480, 620};
+static std::vector<int> liftPositions = {1440, 1860};
 static std::vector<int> trayPositions = {220, 230};
 
 
