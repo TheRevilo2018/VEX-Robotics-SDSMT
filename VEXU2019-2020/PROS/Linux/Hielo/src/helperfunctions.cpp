@@ -63,7 +63,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
         for (int i = 0; i < 6; i++) //sets the motors to 0
         {
             wheelMotorVector[i].set_zero_position(0);
-            wheelMotorVector[i].set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+            wheelMotorVector[i].set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         }
 
         while (averagePos < startDistance && stopCount < STOP_AMOUNT)
@@ -71,12 +71,14 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
                     wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
                     speed = maxSpeed * (averagePos / startDistance) + 14;
+            if(speed < 20)
+                speed = 20;
             if (speed > maxSpeed)
             {
                 speed = maxSpeed;
             }
 
-            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value(), direction);
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
                 stopCount++;
@@ -87,7 +89,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
 
-            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value(), direction);
 
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
@@ -101,13 +103,14 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
             currDist = target - averagePos;
             speed = maxSpeed * (currDist / endDistance) + 14;
-
+            if(speed < 20)
+                speed = 20;
             if (speed > maxSpeed)
             {
                speed = maxSpeed;
             }
 
-            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value(), direction);
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
                 stopCount++;
@@ -122,7 +125,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
             averagePos = (wheelLeft1.get_position() + wheelRight1.get_position() +
             wheelLeft3.get_position() + wheelRight3.get_position()) / 4;
 
-            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value());
+            correctDist(leftWheelMotorVector, rightWheelMotorVector, averagePos, speed, gyro.get_value(), direction);
 
             pros::delay(20);
             if (wheelLeft1.get_actual_velocity() <= 5)
@@ -133,21 +136,22 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
 
     setMotors(wheelMotorVector, 0);
     setDirection(FORWARD);
-    setBrakes(wheelMotorVector,  prevBrake);
+    pros::delay(150);
 }
 
 void cubeRun(double target, int numCubes)
 {
     double intakeSpeed = 120;
     setMotors(intakeMotors, intakeSpeed);
-    driveDist(target, FORWARD, -1, 40);
+    driveDist(target, FORWARD, -2, 40);
     if (numCubes < 8)
         pros::delay(300);
     setMotors(intakeMotors, 0);
 }
 
 //a function that finds the best speed based on the distance of the wheels
-void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> rightMotors, double target, double speed, double gyroVal)
+void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> rightMotors,
+    double target, double speed, double gyroVal, DIRECTION direction)
 {
     double leftValue = 0;
     double rightValue = 0;
@@ -189,13 +193,27 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
     }
 
 
-    if(gyroVal < -10)
+    if(direction == FORWARD)
     {
-        rightSpeed *= adjustDown;
+        if(gyroVal < -10)
+        {
+            rightSpeed *= 0.92;
+        }
+        else if(gyroVal > 10)
+        {
+            leftSpeed *= 0.92;
+        }
     }
-    else if(gyroVal > 10)
+    else
     {
-        leftSpeed *= adjustDown;
+        if(gyroVal < -10)
+        {
+            leftSpeed *= 1.15;
+        }
+        else if(gyroVal > 10)
+        {
+            rightSpeed *= 1.15;
+        }
     }
 
     setMotors(leftMotors, leftSpeed);
@@ -206,7 +224,7 @@ void correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> 
 
 double distReq(double speed, int numCubes, DIRECTION direction)
 {
-    double result = 1.2 * ROTATION_MUL;
+    double result = 1.0 * ROTATION_MUL;
 
     if (numCubes == -1)
     {
@@ -218,9 +236,9 @@ double distReq(double speed, int numCubes, DIRECTION direction)
     }
     if (direction == BACKWARD)
     {
-        result = 2 * ROTATION_MUL;
+        result = 1.8 * ROTATION_MUL;
         if(numCubes == 8)
-            result = 2.5 * ROTATION_MUL;
+            result = 2.2 * ROTATION_MUL;
     }
 
     return result;
@@ -260,6 +278,7 @@ void autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector,
 
   amount *= 10;
   gyro.reset();
+  pros::delay(100);
 
   float lastRemainingTicks = 99999;
   float remainingTicks = amount;
@@ -375,8 +394,9 @@ void depositStack()
   driveDist(0.5, BACKWARD, -1);
 
   setMotors(intakeMotors, 0);
-  trayLeft.move_absolute(0, 75);
-  trayRight.move_absolute(0, 75);
+  while(trayBumperLeft.get_value() == false && trayBumperRight.get_value() == false)
+      setMotors(trayMotors, -75);
+  setMotors(trayMotors, 0);
 }
 
 void cubeSet()

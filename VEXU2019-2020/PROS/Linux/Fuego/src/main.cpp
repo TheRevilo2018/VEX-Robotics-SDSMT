@@ -1,5 +1,5 @@
-#include "main.h"
-#include "helperfunctions.h"
+#include "../include/main.h"
+#include "../include/helperfunctions.h"
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -12,9 +12,42 @@
  * from where it left off.
  */
 
+
 void autonomous()
 {
+	unFold();
 
+	//grab ####
+	pros::delay(1000);
+	cubeRun(3.8, 5);
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -35);
+	cubeSet();
+
+	//     #
+	//grab ###
+
+	driveDist(3.3, BACKWARD, 5);
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 40);
+	cubeRun(1.4, 7);
+	cubeSet();
+
+	//grab third next to pole
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 35);
+	driveDist(1.25, BACKWARD, 6);
+	cubeSet();
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 37);
+	cubeRun(1.2, 8);
+
+	//navigate to goal and score
+	driveDist(2.7, BACKWARD, 8);
+	cubeSet();
+	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 120);
+	cubeSet();
+	driveDist(1.4, FORWARD, 8);
+	//driveDist(0.3, BACKWARD, -2, 15);
+	//pros::delay(500);
+	depositStack();
+	//driveDist(10, FORWARD, 0);
 }
 
 
@@ -78,6 +111,7 @@ void competition_initialize() {
 
 void opcontrol()
 {
+	pros::lcd::set_text(5, "Calling op_control: " + std::to_string(pros::millis()));
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
@@ -95,7 +129,7 @@ void opcontrol()
 	std::uint32_t debounceButtonRIGHT = 0;
 	std::uint32_t debounceButtonR1 = 0;
 	int loopDelay = 20;
-	bool liftLock = false;
+	bool trayLock = false;
 	int liftIndex = 0;
 	bool trayHitting = false;
 
@@ -106,7 +140,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonX))
 			{
-				intakeSpeed = 120 * .85;
+				intakeSpeed = 120;
 			}
 		}
 
@@ -122,7 +156,7 @@ void opcontrol()
     {
       if(pressButton(debounceButtonB))
 			{
-				intakeSpeed = -120 * .85;
+				intakeSpeed = -120;
       }
     }
 
@@ -147,7 +181,8 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonRIGHT))
 			{
-				depositStack();
+				//unFold();
+				driveDist(2, FORWARD, 8);
 			}
 		}
 
@@ -155,11 +190,11 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonLEFT))
 			{
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -180);
+				autonomous();
 			}
 		}
 
-		trayHitting = false;//(trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
+		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
     {
 			traySpeed = 100;
@@ -178,11 +213,11 @@ void opcontrol()
     {
 			if(pressButton(debounceButtonR1))
 			{
-				liftLock = true;
-				liftLeft1.move_absolute(liftPositions[liftIndex], 100);
-				liftLeft2.move_absolute(liftPositions[liftIndex], 100);
-				liftRight1.move_absolute(liftPositions[liftIndex], 100);
-				liftRight2.move_absolute(liftPositions[liftIndex], 100);
+				trayLock = true;
+				liftLeft.move_absolute(liftPositions[liftIndex], 100);
+				liftRight.move_absolute(liftPositions[liftIndex], 100);
+				trayLeft.move_absolute(trayPositions[liftIndex], 100);
+				trayRight.move_absolute(trayPositions[liftIndex], 100);
 				liftIndex += 1;
 				liftIndex = std::min(1, liftIndex);
 			}
@@ -191,8 +226,8 @@ void opcontrol()
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
 			//unlock automatic control of tray and lift, reset index to medium position, and move down
-			liftLock = false;
-			liftSpeed = -40;
+			trayLock = false;
+			liftSpeed = -120;
 			liftIndex = 0;
 		}
 		else
@@ -225,18 +260,18 @@ void opcontrol()
 				setMotors(leftWheelMotorVector, leftMotorPercent);
 				setMotors(rightWheelMotorVector, rightMotorPercent);
 				setMotors(intakeMotors, intakeSpeed);
-				setMotors(trayMotors, traySpeed);
 
-				if(!liftLock)
+				if(!trayLock)
 				{
+					setMotors(trayMotors, traySpeed * .75);
 					setMotors(liftMotors, liftSpeed);
 				}
 
-				pros::lcd::set_text(3, "leftLift1: " + std::to_string(liftLeft1.get_position()));
-				pros::lcd::set_text(4, "rightLift1: " + std::to_string(liftRight1.get_position()));
+				pros::lcd::set_text(3, "leftLift: " + std::to_string(liftLeft.get_position()));
+				pros::lcd::set_text(4, "rightLift: " + std::to_string(liftRight.get_position()));
 				pros::lcd::set_text(5, "trayLeft: " + std::to_string(trayLeft.get_position()));
 				pros::lcd::set_text(6, "trayRight: " + std::to_string(trayRight.get_position()));
-				//pros::lcd::set_text(6, "gyro: " + std::to_string(gyro.get_value()));
+				pros::lcd::set_text(6, "gyro: " + std::to_string(gyro.get_value()));
 				pros::delay(loopDelay);
 	}
 }
