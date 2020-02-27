@@ -39,6 +39,8 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
     double distPercent = 0;
     int stopCount = 0;
 
+    auto previous_brake = leftWheelMotorVector[0].get_brake_mode();
+    setBrakes(wheelMotorVector,  pros::E_MOTOR_BRAKE_COAST);
     gyro.reset();
 
 
@@ -58,10 +60,9 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
 
     if (maxSpeed > 10)
     {
-        for (int i = 0; i < 6; i++) //sets the motors to 0
+        for (int i = 0; i < wheelMotorVector.size(); i++) //sets the motors to 0
         {
             wheelMotorVector[i].set_zero_position(0);
-            wheelMotorVector[i].set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         }
 
         while (averagePos < startDistance && stopCount < STOP_AMOUNT)
@@ -135,6 +136,8 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
     setMotors(wheelMotorVector, 0);
     setDirection(FORWARD);
     pros::delay(150);
+    setBrakes(leftWheelMotorVector,  previous_brake );
+    setBrakes(rightWheelMotorVector,  previous_brake );
 }
 
 void cubeRun(double target, int numCubes)

@@ -217,10 +217,10 @@ void opcontrol()
 			if(pressButton(debounceButtonR1))
 			{
 				trayLock = true;
-				liftLeft.move_absolute(liftPositions[liftIndex], 100);
-				liftRight.move_absolute(liftPositions[liftIndex], 100);
-				trayLeft.move_absolute(trayPositions[liftIndex], 100);
-				trayRight.move_absolute(trayPositions[liftIndex], 100);
+				liftLeft.move_absolute(liftPositions[liftIndex], 120);
+				liftRight.move_absolute(liftPositions[liftIndex], 120);
+				trayLeft.move_absolute(trayPositions[liftIndex], 120);
+				trayRight.move_absolute(trayPositions[liftIndex], 120);
 				liftIndex += 1;
 				liftIndex = std::min(1, liftIndex);
 			}
