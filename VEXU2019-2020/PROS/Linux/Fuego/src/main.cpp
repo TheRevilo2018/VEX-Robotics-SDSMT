@@ -133,6 +133,10 @@ void opcontrol()
 	int liftIndex = 0;
 	bool trayHitting = false;
 
+
+	setBrakes(trayMotors, pros::E_MOTOR_BRAKE_COAST);
+	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
+
 	while (true)
 	{
 
@@ -181,8 +185,7 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonRIGHT))
 			{
-				//unFold();
-				driveDist(2, FORWARD, 8);
+				depositStack();
 			}
 		}
 
@@ -195,11 +198,11 @@ void opcontrol()
 		}
 
 		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))// && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
     {
 			traySpeed = 100;
     }
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && !trayHitting)
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))// && !trayHitting)
 		{
 			traySpeed = -100;
 		}
@@ -214,10 +217,10 @@ void opcontrol()
 			if(pressButton(debounceButtonR1))
 			{
 				trayLock = true;
-				liftLeft.move_absolute(liftPositions[liftIndex], 100);
-				liftRight.move_absolute(liftPositions[liftIndex], 100);
-				trayLeft.move_absolute(trayPositions[liftIndex], 100);
-				trayRight.move_absolute(trayPositions[liftIndex], 100);
+				liftLeft.move_absolute(liftPositions[liftIndex], 120);
+				liftRight.move_absolute(liftPositions[liftIndex], 120);
+				trayLeft.move_absolute(trayPositions[liftIndex], 120);
+				trayRight.move_absolute(trayPositions[liftIndex], 120);
 				liftIndex += 1;
 				liftIndex = std::min(1, liftIndex);
 			}

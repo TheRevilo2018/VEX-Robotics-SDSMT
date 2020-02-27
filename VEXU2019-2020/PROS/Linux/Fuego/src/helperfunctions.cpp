@@ -39,6 +39,8 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
     double distPercent = 0;
     int stopCount = 0;
 
+    auto previous_brake = leftWheelMotorVector[0].get_brake_mode();
+    setBrakes(wheelMotorVector,  pros::E_MOTOR_BRAKE_HOLD);
     gyro.reset();
 
 
@@ -58,10 +60,9 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
 
     if (maxSpeed > 10)
     {
-        for (int i = 0; i < 6; i++) //sets the motors to 0
+        for (int i = 0; i < wheelMotorVector.size(); i++) //sets the motors to 0
         {
             wheelMotorVector[i].set_zero_position(0);
-            wheelMotorVector[i].set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         }
 
         while (averagePos < startDistance && stopCount < STOP_AMOUNT)
@@ -135,6 +136,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
     setMotors(wheelMotorVector, 0);
     setDirection(FORWARD);
     pros::delay(150);
+    setBrakes(wheelMotorVector,  previous_brake );
 }
 
 void cubeRun(double target, int numCubes)
@@ -244,8 +246,8 @@ void setDirection(DIRECTION direction)
         wheelLeft2.set_reversed(true);
         wheelLeft3.set_reversed(false);
         wheelRight1.set_reversed(true);
-        wheelRight2.set_reversed(false);
-        wheelRight3.set_reversed(true);
+        wheelRight2.set_reversed(true);
+        wheelRight3.set_reversed(false);
     }
     if (direction == BACKWARD)
     {
@@ -253,8 +255,8 @@ void setDirection(DIRECTION direction)
         wheelLeft2.set_reversed(false);
         wheelLeft3.set_reversed(true);
         wheelRight1.set_reversed(false);
-        wheelRight2.set_reversed(true);
-        wheelRight3.set_reversed(false);
+        wheelRight2.set_reversed(false);
+        wheelRight3.set_reversed(true);
     }
 }
 
@@ -346,7 +348,6 @@ void depositStack()
   setMotors(intakeMotors, 0);*/
 
 
-  setMotors(intakeMotors, -30);
   //tip up tray
   trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
   trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
@@ -373,7 +374,7 @@ void depositStack()
 }
 
   //slight outtake
-  setMotors(intakeMotors, -50);
+  //setMotors(intakeMotors, -50);
 
   //smooth medium speed back
   /*setMotors(leftWheelMotorVector, -50);
@@ -385,12 +386,15 @@ void depositStack()
   setMotors(leftWheelMotorVector, 0);
   setMotors(rightWheelMotorVector, 0);
   pros::delay(100);*/
+  pros::delay(200);
+  setMotors(intakeMotors, -30);
+
   driveDist(0.5, BACKWARD, -1);
 
-  setMotors(intakeMotors, 0);
   while(trayBumperLeft.get_value() == false && trayBumperRight.get_value() == false)
       setMotors(trayMotors, -75);
   setMotors(trayMotors, 0);
+  setMotors(intakeMotors, 0);
 }
 
 void cubeSet()
