@@ -15,26 +15,65 @@
 
 void autonomous()
 {
-	cubeRun(1.5, 2);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -80);
-	cubeSet();
+	int blueAuton = 0;
+	int spitLeft = 1;
+	int spitRight = 2;
+	switch(spitLeft)
+	{
+			case(2):
+			{
+				unFold();
+				driveDist(0.5, BACKWARD, -1);
+				cubeRun(1.5, 2);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
+				cubeSet();
 
-	//     #
-	//grab ###
-	cubeRun(2.5, 3);
-	cubeSet();
+				//     #
+				//grab ###
+				cubeRun(2.5, 3);
+				cubeSet();
 
-	//grab third next to pole
-	//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -5);
-	//cubeRun(1.1, 3);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 80);
-	//cubeSet();
-	driveDist(2.4, BACKWARD, 4);
-	driveDist(0.4, FORWARD, -1);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 85);
-	driveDist(3.1, FORWARD, 4);
-	depositStack();
-}
+				//grab third next to pole
+				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -5);
+				//cubeRun(1.1, 3);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 80);
+				//cubeSet();
+				driveDist(2.4, BACKWARD, 4);
+				driveDist(0.4, FORWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 85);
+				driveDist(3.1, FORWARD, 4);
+				depositStack();
+				break;
+			}
+			case (1):
+			{
+				unFold();
+				pros::delay(3000);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
+				//oof
+				driveDist(1.0, BACKWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
+				setMotors(intakeMotors, 100);
+				driveDist(2.5, FORWARD, -1);
+				setMotors(intakeMotors, 0);
+
+
+				break;
+			}
+			case(2):
+			{
+				unFold();
+				pros::delay(3000);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 60);
+				driveDist(1.0, BACKWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
+				setMotors(intakeMotors, 100);
+				driveDist(2.0, FORWARD, -1);
+				setMotors(intakeMotors, 0);
+				break;
+			}
+		}
+	}
 
 
 /**
@@ -179,18 +218,18 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonLEFT))
 			{
-				autonomous();
+				//unFold();
 			}
 		}
 
 		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
     {
-			traySpeed = 100;
+			traySpeed = 70;
     }
 		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && !trayHitting)
 		{
-			traySpeed = -100;
+			traySpeed = -70;
 		}
 		else
 		{
@@ -252,7 +291,7 @@ void opcontrol()
 
 				if(!trayLock)
 				{
-					setMotors(trayMotors, traySpeed * .75);
+					setMotors(trayMotors, traySpeed);
 					setMotors(liftMotors, liftSpeed);
 				}
 

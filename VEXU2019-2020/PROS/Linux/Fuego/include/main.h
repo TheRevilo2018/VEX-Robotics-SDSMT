@@ -120,15 +120,15 @@ void opcontrol(void);
 #define RIGHT_WHEEL_BOTTOM_PORT 11
 
 #define RIGHT_TRAY_PORT 16
-//17
+#define LEFT_INTAKE_1_PORT 17
 #define RIGHT_INTAKE_2_PORT 18
-#define LEFT_INTAKE_1_PORT 19
+//19
 #define RIGHT_WHEEL_TOP_PORT 20
 
 #define DEBOUNCE_DELAY 200
-#define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_UP
+#define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_DOWN
 
-#define TRAY_MAX_HEIGHT 586
+#define TRAY_MAX_HEIGHT 648
 #define TRAY_MIDDLE_HEIGHT 400
 
 enum DIRECTION {FORWARD, BACKWARD};
@@ -165,7 +165,7 @@ static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, whee
 static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3 };
 static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3};
 static std::vector<pros::Motor> intakeMotors = {intakeLeft1, intakeLeft2, intakeRight1, intakeRight2};
-static std::vector<pros::Motor> trayMotors = {trayLeft};
+static std::vector<pros::Motor> trayMotors = {trayLeft, trayRight};
 static std::vector<pros::Motor> liftMotors = {liftLeft, liftRight};
 
 //position constants

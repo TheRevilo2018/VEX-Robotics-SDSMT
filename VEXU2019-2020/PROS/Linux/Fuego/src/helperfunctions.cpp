@@ -349,8 +349,8 @@ void depositStack()
 
 
   //tip up tray past the hardest part
-  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 100);
-  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 100);
+  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
+  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -363,12 +363,16 @@ void depositStack()
 
   //smooth the transition
   double lastTrayDist = (TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT) / 10.0;
-  double speedDiff = (100 - 25) / 10
+  double speedDiff = (70 - 25) / 10;
   for (int i = 0; i < 10; i++)
   {
-    trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT + lastTrayDist * i), (100 - speedDiff) * 10);
-    trayRight.move_absolute(TRAY_MIDDLE_HEIGHT + lastTrayDist * i), (100 - speedDiff) * 10);
-    pros::delay(100);
+    trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT + (lastTrayDist * i), (70 - speedDiff) * 10);
+    trayRight.move_absolute(TRAY_MIDDLE_HEIGHT + (lastTrayDist * i), (70 - speedDiff) * 10);
+    if(master.get_digital(KILL_BUTTON))
+    {
+      break;
+    }
+    pros::delay(75);
   }
 
 
@@ -397,8 +401,8 @@ void depositStack()
   setMotors(leftWheelMotorVector, 0);
   setMotors(rightWheelMotorVector, 0);
   pros::delay(100);*/
-  pros::delay(200);
   setMotors(intakeMotors, -30);
+  pros::delay(200);
 
   driveDist(0.5, BACKWARD, -1);
 
@@ -430,4 +434,5 @@ void unFold()
 {
   setMotors(intakeMotors, -80);
   pros::delay(300);
+  setMotors(intakeMotors, 0);
 }
