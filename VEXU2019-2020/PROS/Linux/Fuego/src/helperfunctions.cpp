@@ -348,9 +348,9 @@ void depositStack()
   setMotors(intakeMotors, 0);*/
 
 
-  //tip up tray
-  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
-  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
+  //tip up tray past the hardest part
+  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 100);
+  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 100);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -360,6 +360,17 @@ void depositStack()
     pros::delay(20);
   }
   pros::delay(200);
+
+  //smooth the transition
+  double lastTrayDist = (TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT) / 10.0;
+  double speedDiff = (100 - 25) / 10
+  for (int i = 0; i < 10; i++)
+  {
+    trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT + lastTrayDist * i), (100 - speedDiff) * 10);
+    trayRight.move_absolute(TRAY_MIDDLE_HEIGHT + lastTrayDist * i), (100 - speedDiff) * 10);
+    pros::delay(100);
+  }
+
 
   //finish tip
   trayLeft.move_absolute(TRAY_MAX_HEIGHT, 25);
