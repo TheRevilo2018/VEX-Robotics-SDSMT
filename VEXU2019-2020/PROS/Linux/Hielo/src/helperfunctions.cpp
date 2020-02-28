@@ -41,7 +41,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
 
     gyro.reset();
 
-    pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
+    auto oldBrake = wheelMotorVector[0].get_brake_mode();
     setBrakes(wheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
 
     setDirection(direction);
@@ -60,10 +60,9 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
 
     if (maxSpeed > 10)
     {
-        for (int i = 0; i < 6; i++) //sets the motors to 0
+        for (int i = 0; i < wheelMotorVector.size(); i++) //sets the motors to 0
         {
             wheelMotorVector[i].set_zero_position(0);
-            wheelMotorVector[i].set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         }
 
         while (averagePos < startDistance && stopCount < STOP_AMOUNT)
@@ -137,6 +136,7 @@ void driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed
     setMotors(wheelMotorVector, 0);
     setDirection(FORWARD);
     pros::delay(150);
+    setBrakes(wheelMotorVector,  oldBrake );
 }
 
 void cubeRun(double target, int numCubes)
@@ -419,8 +419,23 @@ bool pressButton(std::uint32_t  & debounceTime)
 
 void unFold()
 {
-  setMotors(intakeMotors, -80);
-  pros::delay(300);
+    //setMotors(intakeMotors, -30);
+    liftLeft.move_absolute(liftPositions[0] * 0.5, 100);
+    liftRight.move_absolute(liftPositions[0] * 0.5, 100);
+    trayLeft.move_absolute(trayPositions[0] * 0.5, 100);
+    trayRight.move_absolute(trayPositions[0] * 0.5, 100);
+    pros::delay(600);
+    setMotors(intakeMotors, -30);
+    setMotors(liftMotors, -75);
+    pros::delay(300);
+
+    while(fabs(liftLeft.get_actual_velocity()) >= 5)
+    {
+        if (trayBumperLeft.get_value() == false && trayBumperRight.get_value() == false)
+            setMotors(trayMotors, -40);
+        pros::delay(20);
+    }
+    setMotors(intakeMotors, 0);
 }
 
 
