@@ -18,9 +18,10 @@ void autonomous()
 	int blueAuton = 0;
 	int spitLeft = 1;
 	int spitRight = 2;
-	switch(spitLeft)
+
+	switch(spitRight)
 	{
-			case(2):
+			case(0):
 			{
 				unFold();
 				driveDist(0.5, BACKWARD, -1);
@@ -49,26 +50,53 @@ void autonomous()
 			{
 				unFold();
 				pros::delay(3000);
+
+				//align on wall
 				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
-				//oof
 				driveDist(1.0, BACKWARD, -1);
+
+				//grab corner cube
 				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
 				setMotors(intakeMotors, 100);
-				driveDist(2.5, FORWARD, -1);
+				driveDist(2.0, FORWARD, -1);
+
+				//back up and grab cube near middle tower
+				driveDist(0.7, BACKWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
+				driveDist(1.9, FORWARD, -1);
+				driveDist(0.5, BACKWARD, -1);
+
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -13);
+				driveDist(0.8, FORWARD, -1);
+
+				pros::delay(500);
 				setMotors(intakeMotors, 0);
-
-
 				break;
 			}
 			case(2):
 			{
 				unFold();
 				pros::delay(3000);
+
+				//align on wall
 				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 60);
 				driveDist(1.0, BACKWARD, -1);
+
+				//grab corner cube
 				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
 				setMotors(intakeMotors, 100);
 				driveDist(2.0, FORWARD, -1);
+
+				//back up and grab cube near middle tower
+				driveDist(0.7, BACKWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 70);
+				driveDist(1.9, FORWARD, -1);
+				driveDist(0.5, BACKWARD, -1);
+
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 13);
+				driveDist(0.8, FORWARD, -1);
+
+				pros::delay(500);
 				setMotors(intakeMotors, 0);
 				break;
 			}
