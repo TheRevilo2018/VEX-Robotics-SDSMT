@@ -15,14 +15,14 @@
 
 void autonomous()
 {
-	int blueAuton = 0;
-	int spitLeft = 1;
-	int spitRight = 2;
+	int blue = 1;
+	int red = 2;
 
-	switch(spitRight)
+	switch(blue)
 	{
 			case(0):
 			{
+				/*
 				unFold();
 				driveDist(0.5, BACKWARD, -1);
 				cubeRun(1.5, 2);
@@ -45,7 +45,9 @@ void autonomous()
 				driveDist(3.1, FORWARD, 4);
 				depositStack();
 				break;
+				*/
 			}
+			//blue auton
 			case (1):
 			{
 				unFold();
@@ -60,19 +62,27 @@ void autonomous()
 				setMotors(intakeMotors, 100);
 				driveDist(2.0, FORWARD, -1);
 
-				//back up and grab cube near middle tower
+				//grab cube between first and goal
 				driveDist(0.7, BACKWARD, -1);
 				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
 				driveDist(1.9, FORWARD, -1);
 				driveDist(0.5, BACKWARD, -1);
 
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -13);
+				//back up and grab cube near middle tower
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
 				driveDist(0.8, FORWARD, -1);
 
 				pros::delay(500);
 				setMotors(intakeMotors, 0);
+
+				//back up, spin and deposit
+				//driveDist(3.0, BACKWARD, -1);
+				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
+				///driveDist(3.0, FORWARD, -1);
+				//depositStack();
 				break;
 			}
+			//red auton
 			case(2):
 			{
 				unFold();
@@ -93,7 +103,7 @@ void autonomous()
 				driveDist(1.9, FORWARD, -1);
 				driveDist(0.5, BACKWARD, -1);
 
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 13);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
 				driveDist(0.8, FORWARD, -1);
 
 				pros::delay(500);
