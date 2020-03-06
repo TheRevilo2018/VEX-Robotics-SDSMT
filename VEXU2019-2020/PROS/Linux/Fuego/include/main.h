@@ -165,7 +165,7 @@ static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, whee
 static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3 };
 static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3};
 static std::vector<pros::Motor> intakeMotors = {intakeLeft1, intakeLeft2, intakeRight1, intakeRight2};
-static std::vector<pros::Motor> trayMotors = {trayLeft};
+static std::vector<pros::Motor> trayMotors = {trayLeft, trayRight};
 static std::vector<pros::Motor> liftMotors = {liftLeft, liftRight};
 
 //position constants

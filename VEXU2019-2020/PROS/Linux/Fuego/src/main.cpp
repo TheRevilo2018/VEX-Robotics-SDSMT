@@ -15,26 +15,103 @@
 
 void autonomous()
 {
-	cubeRun(1.5, 2);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -80);
-	cubeSet();
+	int blue = 1;
+	int red = 2;
 
-	//     #
-	//grab ###
-	cubeRun(2.5, 3);
-	cubeSet();
+	switch(blue)
+	{
+			case(0):
+			{
+				/*
+				unFold();
+				driveDist(0.5, BACKWARD, -1);
+				cubeRun(1.5, 2);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
+				cubeSet();
 
-	//grab third next to pole
-	//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -5);
-	//cubeRun(1.1, 3);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 80);
-	//cubeSet();
-	driveDist(2.4, BACKWARD, 4);
-	driveDist(0.4, FORWARD, -1);
-	autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 85);
-	driveDist(3.1, FORWARD, 4);
-	depositStack();
-}
+				//     #
+				//grab ###
+				cubeRun(2.5, 3);
+				cubeSet();
+
+				//grab third next to pole
+				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -5);
+				//cubeRun(1.1, 3);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 80);
+				//cubeSet();
+				driveDist(2.4, BACKWARD, 4);
+				driveDist(0.4, FORWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 85);
+				driveDist(3.1, FORWARD, 4);
+				depositStack();
+				break;
+				*/
+			}
+			//blue auton
+			case (1):
+			{
+				unFold();
+				pros::delay(3000);
+
+				//align on wall
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
+				driveDist(1.0, BACKWARD, -1);
+
+				//grab corner cube
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
+				setMotors(intakeMotors, 100);
+				driveDist(2.0, FORWARD, -1);
+
+				//grab cube between first and goal
+				driveDist(0.7, BACKWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
+				driveDist(1.9, FORWARD, -1);
+				driveDist(0.5, BACKWARD, -1);
+
+				//back up and grab cube near middle tower
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
+				driveDist(0.8, FORWARD, -1);
+
+				pros::delay(500);
+				setMotors(intakeMotors, 0);
+
+				//back up, spin and deposit
+				//driveDist(3.0, BACKWARD, -1);
+				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
+				///driveDist(3.0, FORWARD, -1);
+				//depositStack();
+				break;
+			}
+			//red auton
+			case(2):
+			{
+				unFold();
+				pros::delay(3000);
+
+				//align on wall
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 60);
+				driveDist(1.0, BACKWARD, -1);
+
+				//grab corner cube
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
+				setMotors(intakeMotors, 100);
+				driveDist(2.0, FORWARD, -1);
+
+				//back up and grab cube near middle tower
+				driveDist(0.7, BACKWARD, -1);
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 70);
+				driveDist(1.9, FORWARD, -1);
+				driveDist(0.5, BACKWARD, -1);
+
+				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
+				driveDist(0.8, FORWARD, -1);
+
+				pros::delay(500);
+				setMotors(intakeMotors, 0);
+				break;
+			}
+		}
+	}
 
 
 /**
@@ -179,16 +256,16 @@ void opcontrol()
 		{
 			if(pressButton(debounceButtonLEFT))
 			{
-				autonomous();
+				//unFold();
 			}
 		}
 
 		trayHitting = (trayBumperLeft.get_value() == 1 || trayBumperRight.get_value() == 1);
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))// && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && trayLeft.get_position() < TRAY_MAX_HEIGHT && trayRight.get_position() < TRAY_MAX_HEIGHT)
     {
 			traySpeed = 100;
     }
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))// && !trayHitting)
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && !trayHitting)
 		{
 			traySpeed = -100;
 		}
@@ -252,7 +329,7 @@ void opcontrol()
 
 				if(!trayLock)
 				{
-					setMotors(trayMotors, traySpeed * .75);
+					setMotors(trayMotors, traySpeed);
 					setMotors(liftMotors, liftSpeed);
 				}
 

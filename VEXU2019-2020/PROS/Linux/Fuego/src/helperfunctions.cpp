@@ -348,9 +348,9 @@ void depositStack()
   setMotors(intakeMotors, 0);*/
 
 
-  //tip up tray
-  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
-  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
+  //tip up tray past the hardest part
+  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT , 100);
+  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 100);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -359,11 +359,27 @@ void depositStack()
     }
     pros::delay(20);
   }
-  pros::delay(200);
+
+  double remainingDistLeft = TRAY_MAX_HEIGHT - trayLeft.get_position();
+  double remainingDistRight = TRAY_MAX_HEIGHT - trayLeft.get_position();
+  double speed = 100;
+  double distToCover = TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT;
+  //smooth the transition
+  while(remainingDistLeft > 10 && remainingDistRight > 10)
+  {
+    speed = (((remainingDistLeft + remainingDistRight) / 2) / distToCover) * 127;
+    speed = std::max(speed, 20.0);
+    speed = std::min(speed, 100.0);
+    trayLeft = speed;
+    trayRight = speed;
+    remainingDistLeft = TRAY_MAX_HEIGHT - trayLeft.get_position();
+    remainingDistRight = TRAY_MAX_HEIGHT - trayLeft.get_position();
+    pros::delay(10);
+  }
 
   //finish tip
-  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 25);
-  trayRight.move_absolute(TRAY_MAX_HEIGHT, 25);
+  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 20);
+  trayRight.move_absolute(TRAY_MAX_HEIGHT, 20);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -372,6 +388,7 @@ void depositStack()
     }
     pros::delay(20);
 }
+pros::delay(200);
 
   //slight outtake
   //setMotors(intakeMotors, -50);
@@ -386,15 +403,16 @@ void depositStack()
   setMotors(leftWheelMotorVector, 0);
   setMotors(rightWheelMotorVector, 0);
   pros::delay(100);*/
-  pros::delay(200);
   setMotors(intakeMotors, -30);
+  pros::delay(400);
 
-  driveDist(0.5, BACKWARD, -1);
+  setMotors(wheelMotorVector, -50);
 
   while(trayBumperLeft.get_value() == false && trayBumperRight.get_value() == false)
       setMotors(trayMotors, -75);
   setMotors(trayMotors, 0);
   setMotors(intakeMotors, 0);
+  setMotors(wheelMotorVector, 0);
 }
 
 void cubeSet()
@@ -419,4 +437,5 @@ void unFold()
 {
   setMotors(intakeMotors, -80);
   pros::delay(300);
+  setMotors(intakeMotors, 0);
 }
