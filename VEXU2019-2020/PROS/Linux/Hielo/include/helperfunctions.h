@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-const double ROTATION_MUL = 845;
+const double ROTATION_MUL = 845; 
 const int STOP_AMOUNT = 100;
 
 void setMotors(std::vector<pros::Motor> & motors, double speed);

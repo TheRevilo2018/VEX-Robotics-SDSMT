@@ -107,13 +107,10 @@ void opcontrol(void);
 #define LEFT_WHEEL_BOTTOM_PORT 4
 #define LEFT_WHEEL_MIDDLE_PORT 5
 
-<<<<<<< HEAD
 #define LEFT_INTAKE_PORT 7
 //7
-=======
 //6 BURNT
 #define LEFT_INTAKE_PORT 7
->>>>>>> 22e85b40ece817b786256075c7c57d0654ed03e1
 #define LEFT_TRAY_PORT 8
 //9
 #define LEFT_WHEEL_TOP_PORT 10
