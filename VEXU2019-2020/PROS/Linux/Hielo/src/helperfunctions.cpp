@@ -376,7 +376,7 @@ void depositStack()
       break;
     }
     pros::delay(20);
-}
+  }
 
   //slight outtake
   setMotors(intakeMotors, -50);
