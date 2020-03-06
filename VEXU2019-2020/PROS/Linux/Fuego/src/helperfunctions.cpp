@@ -365,9 +365,9 @@ void depositStack()
   double speed = 100;
   double distToCover = TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT;
   //smooth the transition
-  while(remainingDistLeft > 50 && remainingDistRight > 50)
+  while(remainingDistLeft > 10 && remainingDistRight > 10)
   {
-    speed = (((remainingDistLeft + remainingDistRight) / 2) / distToCover) * 100;
+    speed = (((remainingDistLeft + remainingDistRight) / 2) / distToCover) * 127;
     speed = std::max(speed, 20.0);
     speed = std::min(speed, 100.0);
     trayLeft = speed;
@@ -404,14 +404,15 @@ pros::delay(200);
   setMotors(rightWheelMotorVector, 0);
   pros::delay(100);*/
   setMotors(intakeMotors, -30);
-  pros::delay(200);
+  pros::delay(400);
 
-  driveDist(0.5, BACKWARD, -1);
+  setMotors(wheelMotorVector, -50);
 
   while(trayBumperLeft.get_value() == false && trayBumperRight.get_value() == false)
       setMotors(trayMotors, -75);
   setMotors(trayMotors, 0);
   setMotors(intakeMotors, 0);
+  setMotors(wheelMotorVector, 0);
 }
 
 void cubeSet()
