@@ -359,7 +359,6 @@ void depositStack()
     }
     pros::delay(20);
   }
-  pros::delay(200);
 
   double remainingDistLeft = TRAY_MAX_HEIGHT - trayLeft.get_position();
   double remainingDistRight = TRAY_MAX_HEIGHT - trayLeft.get_position();
@@ -379,8 +378,8 @@ void depositStack()
   }
 
   //finish tip
-  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 25);
-  trayRight.move_absolute(TRAY_MAX_HEIGHT, 25);
+  trayLeft.move_absolute(TRAY_MAX_HEIGHT, 20);
+  trayRight.move_absolute(TRAY_MAX_HEIGHT, 20);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -389,6 +388,7 @@ void depositStack()
     }
     pros::delay(20);
 }
+pros::delay(200);
 
   //slight outtake
   //setMotors(intakeMotors, -50);
