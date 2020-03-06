@@ -349,8 +349,8 @@ void depositStack()
 
 
   //tip up tray past the hardest part
-  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
-  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 70);
+  trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT , 100);
+  trayRight.move_absolute(TRAY_MIDDLE_HEIGHT, 100);
   while(trayLeft.get_target_position() - trayLeft.get_position() > 0 && trayRight.get_target_position() - trayRight.get_position() > 0)
   {
     if(master.get_digital(KILL_BUTTON))
@@ -361,20 +361,22 @@ void depositStack()
   }
   pros::delay(200);
 
+  double remainingDistLeft = TRAY_MAX_HEIGHT - trayLeft.get_position();
+  double remainingDistRight = TRAY_MAX_HEIGHT - trayLeft.get_position();
+  double speed = 100;
+  double distToCover = TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT;
   //smooth the transition
-  double lastTrayDist = (TRAY_MAX_HEIGHT - TRAY_MIDDLE_HEIGHT) / 10.0;
-  double speedDiff = (70 - 25) / 10;
-  for (int i = 0; i < 10; i++)
+  while(remainingDistLeft > 50 && remainingDistRight > 50)
   {
-    trayLeft.move_absolute(TRAY_MIDDLE_HEIGHT + (lastTrayDist * i), (70 - speedDiff) * 10);
-    trayRight.move_absolute(TRAY_MIDDLE_HEIGHT + (lastTrayDist * i), (70 - speedDiff) * 10);
-    if(master.get_digital(KILL_BUTTON))
-    {
-      break;
-    }
-    pros::delay(75);
+    speed = (((remainingDistLeft + remainingDistRight) / 2) / distToCover) * 100;
+    speed = std::max(speed, 20.0);
+    speed = std::min(speed, 100.0);
+    trayLeft = speed;
+    trayRight = speed;
+    remainingDistLeft = TRAY_MAX_HEIGHT - trayLeft.get_position();
+    remainingDistRight = TRAY_MAX_HEIGHT - trayLeft.get_position();
+    pros::delay(10);
   }
-
 
   //finish tip
   trayLeft.move_absolute(TRAY_MAX_HEIGHT, 25);

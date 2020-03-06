@@ -108,8 +108,8 @@ void opcontrol(void);
 #define LEFT_WHEEL_BOTTOM_PORT 4
 #define LEFT_WHEEL_MIDDLE_PORT 5
 
-#define LEFT_INTAKE_2_PORT 6
-//7
+//6 BURNT
+#define LEFT_INTAKE_2_PORT 7
 #define LEFT_TRAY_PORT 8
 //9
 #define LEFT_WHEEL_TOP_PORT 10
@@ -128,8 +128,8 @@ void opcontrol(void);
 #define DEBOUNCE_DELAY 200
 #define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_DOWN
 
-#define TRAY_MAX_HEIGHT 648
-#define TRAY_MIDDLE_HEIGHT 400
+#define TRAY_MAX_HEIGHT 605
+#define TRAY_MIDDLE_HEIGHT 350
 
 enum DIRECTION {FORWARD, BACKWARD};
 
