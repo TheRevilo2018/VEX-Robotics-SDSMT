@@ -22,30 +22,6 @@ void autonomous()
 	{
 			case(0):
 			{
-				/*
-				unFold();
-				driveDist(0.5, BACKWARD, -1);
-				cubeRun(1.5, 2);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
-				cubeSet();
-
-				//     #
-				//grab ###
-				cubeRun(2.5, 3);
-				cubeSet();
-
-				//grab third next to pole
-				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -5);
-				//cubeRun(1.1, 3);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 80);
-				//cubeSet();
-				driveDist(2.4, BACKWARD, 4);
-				driveDist(0.4, FORWARD, -1);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 85);
-				driveDist(3.1, FORWARD, 4);
-				depositStack();
-				break;
-				*/
 			}
 			//blue auton
 			case (1):
@@ -74,12 +50,6 @@ void autonomous()
 
 				pros::delay(500);
 				setMotors(intakeMotors, 0);
-
-				//back up, spin and deposit
-				//driveDist(3.0, BACKWARD, -1);
-				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
-				///driveDist(3.0, FORWARD, -1);
-				//depositStack();
 				break;
 			}
 			//red auton

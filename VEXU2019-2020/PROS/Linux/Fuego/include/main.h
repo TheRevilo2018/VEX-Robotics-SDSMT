@@ -35,7 +35,7 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
-
+#include "../fourwheeldrive/header.h"
 /**
  * You should add more #includes here
  */
@@ -129,8 +129,6 @@ void opcontrol(void);
 
 #define TRAY_MAX_HEIGHT 660
 #define TRAY_MIDDLE_HEIGHT 375
-
-enum DIRECTION {FORWARD, BACKWARD};
 
 //controller declarations
 static pros::Controller master(pros::E_CONTROLLER_MASTER);
