@@ -15,10 +15,18 @@
 
 void autonomous()
 {
+
 	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector);
 
 	int blue = 1;
 	int red = 2;
+
+	driveBase.driveDist(4.0, FORWARD);
+
+	rightWheelMotorVector[2].set_zero_position(0);
+
+	pros::lcd::set_text(6, "auton finished " + std::to_string(rightWheelMotorVector[2].get_position()));
+
 
 	switch(blue)
 	{
@@ -28,58 +36,11 @@ void autonomous()
 			//blue auton
 			case (1):
 			{
-				pros::delay(3000);
-
-				//align on wall
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
-				driveDist(1.0, BACKWARD, -1);
-
-				//grab corner cube
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
-				driveDist(2.0, FORWARD, -1);
-
-				//grab cube between first and goal
-				driveDist(0.7, BACKWARD, -1);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
-				driveDist(1.9, FORWARD, -1);
-				driveDist(0.5, BACKWARD, -1);
-
-				//back up and grab cube near middle tower
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
-				driveDist(0.8, FORWARD, -1);
-
-				pros::delay(500);
-
-				//back up, spin and deposit
-				//driveDist(3.0, BACKWARD, -1);
-				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -70);
-				///driveDist(3.0, FORWARD, -1);
-				//depositStack();
 				break;
 			}
 			//red auton
 			case(2):
 			{
-				pros::delay(3000);
-
-				//align on wall
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 60);
-				driveDist(1.0, BACKWARD, -1);
-
-				//grab corner cube
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
-				driveDist(2.0, FORWARD, -1);
-
-				//back up and grab cube near middle tower
-				driveDist(0.7, BACKWARD, -1);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 70);
-				driveDist(1.9, FORWARD, -1);
-				driveDist(0.5, BACKWARD, -1);
-
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
-				driveDist(0.8, FORWARD, -1);
-
-				pros::delay(500);
 				break;
 			}
 		}

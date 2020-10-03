@@ -104,9 +104,9 @@ void opcontrol(void);
 
 //Motor port defines
 #define RIGHT_WHEEL_FRONT_PORT 1
+#define RIGHT_WHEEL_MIDDLE_PORT 6
 #define RIGHT_WHEEL_BACK_PORT 10
-#define LEFT_WHEEL_FRONT_PORT 11
-#define RIGHT_WHEEL_MIDDLE_PORT 14
+#define LEFT_WHEEL_FRONT_PORT 12
 #define LEFT_WHEEL_MIDDLE_PORT 16
 #define LEFT_WHEEL_BACK_PORT 20
 
@@ -122,8 +122,8 @@ static pros::Motor wheelLeft1(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, f
 static pros::Motor wheelLeft2(LEFT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelLeft3(LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelRight1(RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight2(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight3(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelRight2(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelRight3(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 
 //3 wire port declearations
 static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);

@@ -1,47 +1,127 @@
 #include "../include/drive.h"
 
-FourWheelDrive::FourWheelDrive(std::vector<pros::Motor> & right, std::vector<pros::Motor> & left)
-{
-    /*rightMotors.insert(rightMotors.begin(), right.begin(), right.end());
-    leftMotors.insert(leftMotors.begin(), left.begin(), left.end());
-    allMotors.insert(rightMotors.begin(), right.begin(), right.end());
-    allMotors.insert(allMotors.end(), leftMotors.end(), leftMotors.end());*/
+using namespace pros;
+using namespace std;
 
-    numMotors = allMotors.size();
+FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left)
+{
+    vector<Motor> *rightPointer = &right;
+    vector<Motor> *leftPointer = &left;
+
+    rightMotors = rightPointer;
+    leftMotors = leftPointer;
     //gyro = (* inputGyro);
 }
 
 FourWheelDrive::~FourWheelDrive(){}
 
+
+
 //take in a vector of motors, and set their speed to a value
-void FourWheelDrive::setMotors(std::vector<pros::Motor> & motors, double speed)
+void FourWheelDrive::setMotors(vector<Motor> *motors, double speed)
 {
-  for(auto motor : motors)
+  for(auto motor : *motors)
   {
     motor = speed;
   }
 }
 
-//take in a vector of motors, and set their brake type to a given type
-void FourWheelDrive::setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t brakeType)
+void FourWheelDrive::setMotors(double speed)
 {
-  for(auto motor: motors)
+    for(auto motor : *leftMotors)
+    {
+      motor = speed;
+    }
+
+    for(auto motor : *rightMotors)
+    {
+      motor = speed;
+    }
+}
+
+//take in a vector of motors, and set their brake type to a given type
+void FourWheelDrive::setBrakes(vector<Motor> *motors,  motor_brake_mode_e_t brakeType)
+{
+  for(auto motor: *motors)
   {
     motor.set_brake_mode(brakeType);
   }
 }
 
-//tqke in a vector of motors, and call the move relative function for all of them with a given distance and speed
-void FourWheelDrive::setMotorsRelative(std::vector<pros::Motor> & motors, double distance, double speed)
+void FourWheelDrive::setBrakes(motor_brake_mode_e_t brakeType)
 {
-  for(auto motor : motors)
+  for(auto motor: *leftMotors)
+  {
+    motor.set_brake_mode(brakeType);
+  }
+
+  for(auto motor: *rightMotors)
+  {
+    motor.set_brake_mode(brakeType);
+  }
+}
+
+void FourWheelDrive::setDirection(DIRECTION inputDirection)
+{
+    if (inputDirection != direction)
+    {
+        for(int i = 0; i < leftMotors->size(); i++)
+        {
+            (*leftMotors)[i].set_reversed(true);
+        }
+
+        for(int i = 0; i < rightMotors->size(); i++)
+        {
+            (*rightMotors)[i].set_reversed(true);
+        }
+    }
+}
+
+//tqke in a vector of motors, and call the move relative function for all of them with a given distance and speed
+void FourWheelDrive::setMotorsRelative(vector<Motor> * motors, double distance, double speed)
+{
+  for(auto motor : *motors)
   {
     motor.move_relative(distance, speed);
   }
 }
 
+void FourWheelDrive::setMotorsRelative(double distance, double speed)
+{
+  for(auto motor : *leftMotors)
+  {
+    motor.move_relative(distance, speed);
+  }
+
+  for(auto motor : *rightMotors)
+  {
+    motor.move_relative(distance, speed);
+  }
+}
+
+void FourWheelDrive::setZeroPosition(vector<Motor> * motors)
+{
+    for (int i = 0; i < motors->size(); i++) //sets the motors to 0
+    {
+        (*motors)[i].set_zero_position(0);
+    }
+}
+
+void FourWheelDrive::setZeroPosition()
+{
+    for (int i = 0; i < leftMotors->size(); i++) //sets the motors to 0
+    {
+        (*leftMotors)[i].set_zero_position(0);
+    }
+
+    for (int i = 0; i < rightMotors->size(); i++) //sets the motors to 0
+    {
+        (*rightMotors)[i].set_zero_position(0);
+    }
+}
+
 //function used in autononomous to drive for a given distance at a given speed
-void FourWheelDrive::driveDist(double target, DIRECTION direction, int numCubes, double maxSpeed)
+void FourWheelDrive::driveDist(double target, DIRECTION direction, double maxSpeed)
 {
     double speed = maxSpeed;
     double endDistance = 0;
@@ -52,15 +132,15 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, int numCubes,
     double distPercent = 0;
     int stopCount = 0;
 
-    auto previous_brake = leftMotors[0].get_brake_mode();
-    setBrakes(allMotors,  pros::E_MOTOR_BRAKE_HOLD);
+    auto previous_brake = (*leftMotors)[0].get_brake_mode();
+    setBrakes(pros::E_MOTOR_BRAKE_HOLD);
     //gyro.reset();
 
 
     setDirection(direction);
     target *= ROTATION_MUL;
-    deccelDist = distReq(maxSpeed, numCubes, direction);
-    startDistance = distReq(maxSpeed, numCubes, direction);
+    deccelDist = distReq(maxSpeed, direction);
+    startDistance = distReq(maxSpeed, direction);
     endDistance = target - deccelDist;
 
     if ( startDistance + deccelDist > target)
@@ -71,18 +151,16 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, int numCubes,
         endDistance *= distPercent;
     }
 
+    setZeroPosition();
+
     if (maxSpeed > 10)
     {
-        for (int i = 0; i < allMotors.size(); i++) //sets the motors to 0
-        {
-            allMotors[i].set_zero_position(0);
-        }
-
         while (averagePos < startDistance && stopCount < STOP_AMOUNT)
         {
-            averagePos = (leftMotors.front().get_position() + rightMotors.front().get_position() +
-                    leftMotors.back().get_position() + leftMotors.back().get_position()) / 4;
+            averagePos = (rightMotors->front().get_position() + rightMotors->front().get_position() +
+                    leftMotors->back().get_position() + leftMotors->back().get_position()) / 4;
                     speed = maxSpeed * (averagePos / startDistance) + 14;
+
             if(speed < 20)
                 speed = 20;
             if (speed > maxSpeed)
@@ -92,27 +170,27 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, int numCubes,
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
             pros::delay(20);
-            if (leftMotors.front().get_actual_velocity() <= 5)
+            if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
 
         while (averagePos < endDistance && stopCount < STOP_AMOUNT)
         {
-            averagePos = (leftMotors.front().get_position() + rightMotors.front().get_position() +
-            leftMotors.back().get_position() + leftMotors.back().get_position()) / 4;
+            averagePos = (leftMotors->front().get_position() + rightMotors->front().get_position() +
+            leftMotors->back().get_position() + leftMotors->back().get_position()) / 4;
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
 
             pros::delay(20);
-            if (leftMotors.front().get_actual_velocity() <= 5)
+            if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
 
         endDistance = target - averagePos;
         while (averagePos < target && stopCount < STOP_AMOUNT)
         {
-            averagePos = (leftMotors.front().get_position() + rightMotors.front().get_position() +
-            leftMotors.back().get_position() + leftMotors.back().get_position()) / 4;
+            averagePos = (leftMotors->front().get_position() + rightMotors->front().get_position() +
+            leftMotors->back().get_position() + leftMotors->back().get_position()) / 4;
             currDist = target - averagePos;
             speed = maxSpeed * (currDist / endDistance) + 14;
             if(speed < 20)
@@ -124,7 +202,7 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, int numCubes,
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
             pros::delay(20);
-            if (leftMotors.front().get_actual_velocity() <= 5)
+            if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
     }
@@ -134,39 +212,39 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, int numCubes,
 
         while (averagePos < endDistance && stopCount < STOP_AMOUNT)
         {
-            averagePos = (leftMotors.front().get_position() + rightMotors.front().get_position() +
-            leftMotors.back().get_position() + leftMotors.back().get_position()) / 4;
+            averagePos = (leftMotors->front().get_position() + rightMotors->front().get_position() +
+            leftMotors->back().get_position() + leftMotors->back().get_position()) / 4;
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
 
             pros::delay(20);
-            if (leftMotors.front().get_actual_velocity() <= 5)
+            if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
     }
     //displayPosition();
 
-    setMotors(allMotors, 0);
+    setMotors(0);
     setDirection(FORWARD);
     pros::delay(150);
-    setBrakes(allMotors,  previous_brake );
+    setBrakes(previous_brake);
 }
 
 //a function that finds the best speed based on the distance of the wheels
-void FourWheelDrive::correctDist (std::vector<pros::Motor> leftMotors, std::vector<pros::Motor> rightMotors,
+void FourWheelDrive::correctDist (std::vector<pros::Motor> *leftMotors, std::vector<pros::Motor> *rightMotors,
     double target, double speed, DIRECTION direction)
 {
     double leftValue = 0;
     double rightValue = 0;
-    for(int i = 0; i < leftMotors.size(); i++)
+    for(int i = 0; i < leftMotors->size(); i++)
     {
-      leftValue += leftMotors[i].get_position();
-      rightValue += rightMotors[i].get_position();
+      leftValue += (*leftMotors)[i].get_position();
+      rightValue += (*rightMotors)[i].get_position();
     }
-    leftValue /= leftMotors.size();
+    leftValue /= leftMotors->size();
     leftValue -= target;
 
-    rightValue /= rightMotors.size();
+    rightValue /= rightMotors->size();
     rightValue -= target;
 
     double leftSpeed = speed;
@@ -219,47 +297,26 @@ void FourWheelDrive::correctDist (std::vector<pros::Motor> leftMotors, std::vect
 
 }
 
-double FourWheelDrive::distReq(double speed, int numCubes, DIRECTION direction)
+double FourWheelDrive::distReq(double speed, DIRECTION direction)
 {
     double result = 1.0 * ROTATION_MUL;
 
-    if (numCubes == -1)
-    {
-        result = 0.5 * ROTATION_MUL;
-    }
-    if (numCubes == -2)
-    {
-        result = 0.05 * ROTATION_MUL;
-    }
     if (direction == BACKWARD)
     {
         result = 1.8 * ROTATION_MUL;
-        if(numCubes == 8)
-            result = 2.2 * ROTATION_MUL;
     }
 
     return result;
 }
 
-void FourWheelDrive::setDirection(DIRECTION inputDirection)
-{
-    if (inputDirection != direction)
-    {
-        for(int i = 0; i < numMotors; i++)
-        {
-            allMotors[i].set_reversed(true);
-        }
-    }
-}
-
 //function used in autonomous to turn a given degree amount at a given speed
-void FourWheelDrive::autoTurnRelative(std::vector<pros::Motor> & leftWheelMotorVector,
-    std::vector<pros::Motor> & rightWheelMotorVector, double amount)
+void FourWheelDrive::autoTurnRelative(std::vector<pros::Motor> *leftWheelMotorVector,
+    std::vector<pros::Motor> *rightWheelMotorVector, double amount)
 {
   double currSpeed;
   double speed = 80;
 
-  pros::motor_brake_mode_e_t prevBrake = leftWheelMotorVector[0].get_brake_mode();
+  pros::motor_brake_mode_e_t prevBrake = (*leftWheelMotorVector)[0].get_brake_mode();
   setBrakes(leftWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
   setBrakes(rightWheelMotorVector,  pros::E_MOTOR_BRAKE_BRAKE );
 
