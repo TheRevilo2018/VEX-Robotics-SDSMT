@@ -15,6 +15,8 @@
 
 void autonomous()
 {
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector);
+
 	int blue = 1;
 	int red = 2;
 
@@ -22,35 +24,10 @@ void autonomous()
 	{
 			case(0):
 			{
-				/*
-				unFold();
-				driveDist(0.5, BACKWARD, -1);
-				cubeRun(1.5, 2);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -60);
-				cubeSet();
-
-				//     #
-				//grab ###
-				cubeRun(2.5, 3);
-				cubeSet();
-
-				//grab third next to pole
-				//autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -5);
-				//cubeRun(1.1, 3);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 80);
-				//cubeSet();
-				driveDist(2.4, BACKWARD, 4);
-				driveDist(0.4, FORWARD, -1);
-				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 85);
-				driveDist(3.1, FORWARD, 4);
-				depositStack();
-				break;
-				*/
 			}
 			//blue auton
 			case (1):
 			{
-				unFold();
 				pros::delay(3000);
 
 				//align on wall
@@ -59,7 +36,6 @@ void autonomous()
 
 				//grab corner cube
 				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, 20);
-				setMotors(intakeMotors, 100);
 				driveDist(2.0, FORWARD, -1);
 
 				//grab cube between first and goal
@@ -73,7 +49,6 @@ void autonomous()
 				driveDist(0.8, FORWARD, -1);
 
 				pros::delay(500);
-				setMotors(intakeMotors, 0);
 
 				//back up, spin and deposit
 				//driveDist(3.0, BACKWARD, -1);
@@ -85,7 +60,6 @@ void autonomous()
 			//red auton
 			case(2):
 			{
-				unFold();
 				pros::delay(3000);
 
 				//align on wall
@@ -94,7 +68,6 @@ void autonomous()
 
 				//grab corner cube
 				autoTurnRelative(leftWheelMotorVector, rightWheelMotorVector, -20);
-				setMotors(intakeMotors, 100);
 				driveDist(2.0, FORWARD, -1);
 
 				//back up and grab cube near middle tower
@@ -107,7 +80,6 @@ void autonomous()
 				driveDist(0.8, FORWARD, -1);
 
 				pros::delay(500);
-				setMotors(intakeMotors, 0);
 				break;
 			}
 		}
@@ -128,9 +100,6 @@ void initialize() {
 	//2911 for no ball
 	//1896 for ball
 	lightSensor.calibrate();
-	setBrakes(intakeMotors, pros::E_MOTOR_BRAKE_HOLD);
-	setBrakes(trayMotors, pros::E_MOTOR_BRAKE_HOLD);
-	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_HOLD);
 	//middleLightSensor.calibrate();
 	}
 
@@ -179,9 +148,6 @@ void opcontrol()
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
-	int intakeSpeed = 0;
-	int traySpeed = 0;
-	int liftSpeed = 0;
 	std::uint32_t debounceButtonA = 0;
 	std::uint32_t debounceButtonB = 0;
 	std::uint32_t debounceButtonX = 0;
@@ -196,10 +162,6 @@ void opcontrol()
 	int liftIndex = 0;
 	bool trayHitting = false;
 
-
-	setBrakes(trayMotors, pros::E_MOTOR_BRAKE_COAST);
-	setBrakes(liftMotors, pros::E_MOTOR_BRAKE_COAST);
-
 	while (true)
 	{
 		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
@@ -209,13 +171,13 @@ void opcontrol()
 
 					if(master.get_analog(ANALOG_RIGHT_X) > turnThreshold)
 		      {
-		        leftMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X));
-		      	rightMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X));
+		        leftMotorPercent += abs(master.get_analog(ANALOG_RIGHT_X));
+		      	rightMotorPercent -= abs(master.get_analog(ANALOG_RIGHT_X));
 		      }
 		      else
 		      {
-		        leftMotorPercent -= fabs(master.get_analog(ANALOG_RIGHT_X));
-		        rightMotorPercent += fabs(master.get_analog(ANALOG_RIGHT_X));
+		        leftMotorPercent -= abs(master.get_analog(ANALOG_RIGHT_X));
+		        rightMotorPercent += abs(master.get_analog(ANALOG_RIGHT_X));
 		      }
 				}
 				else
