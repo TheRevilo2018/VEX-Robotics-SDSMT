@@ -3,19 +3,36 @@
 using namespace pros;
 using namespace std;
 
-FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left)
+FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left) : logger("Drivebase")
 {
     vector<Motor> *rightPointer = &right;
-    vector<Motor> *leftPointer = &left; 
+    vector<Motor> *leftPointer = &left;
 
     rightMotors = rightPointer;
     leftMotors = leftPointer;
     //gyro = (* inputGyro);
 }
 
-FourWheelDrive::~FourWheelDrive(){}
+FourWheelDrive::~FourWheelDrive() {}
 
 
+//calibration
+void FourWheelDrive::readCalibration()
+{
+	FILE* usd_file_read = fopen("/usd/example.txt", "r");
+	char buf[50]; // This just needs to be larger than the contents of the file
+	fread(buf, 1, 50, usd_file_read); // passing 1 because a `char` is 1 byte, and 50 b/c it's the length of buf
+	string newBuf(buf);
+	pros::lcd::set_text(2, "File output: " + newBuf);
+	fclose(usd_file_read); // always close files when you're done with them
+}
+
+void FourWheelDrive::calibrate()
+{
+    FILE* usd_file_write = fopen("/usd/example.txt", "w");
+    fputs("Example text", usd_file_write);
+    fclose(usd_file_write);
+}
 
 //take in a vector of motors, and set their speed to a value
 void FourWheelDrive::setMotors(vector<Motor> *motors, double speed)

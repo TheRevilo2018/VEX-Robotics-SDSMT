@@ -1,6 +1,8 @@
 #include "../include/main.h"
 #include "../include/helperfunctions.h"
 #include "four_wheel_drive/drive.h"
+
+using namespace std;
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
