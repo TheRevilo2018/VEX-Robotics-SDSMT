@@ -4,6 +4,7 @@
 #include "api.h"
 #include "../logger/logger.h"
 #include <vector>
+#include <sstream>
 
 enum DIRECTION {FORWARD, BACKWARD};
 
@@ -17,7 +18,8 @@ class FourWheelDrive
     //pros::ADIGyro gyro;
 
     //calibration values
-    std::string fileStream;
+    std::stringstream fileStream;
+
     double maxSpeed;
     double minSpeed;
     double LRHandicap;
@@ -38,7 +40,8 @@ public:
     ~FourWheelDrive();
 
     void readCalibration();
-    void calibrate();
+    void writeCalibration();
+    void calibrate(pros::Controller master);
 
     void setMotorsRelative(std::vector<pros::Motor> *motors, double distance, double speed);
     void setMotorsRelative(double distance, double speed);

@@ -89,6 +89,11 @@ void competition_initialize() {
 	pros::lcd::set_text(4, "Calling competition_initialize: " + std::to_string(pros::millis()));
 }
 
+void calibrate()
+{
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector);
+	driveBase.calibrate(master);
+}
 
 
 /*
@@ -126,10 +131,15 @@ void opcontrol()
 	int liftIndex = 0;
 	bool trayHitting = false;
 
+	if (master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_R1))
+	{
+		calibrate();
+	}
+
 	while (true)
 	{
 		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
-				{
+		{
 					leftMotorPercent = master.get_analog(ANALOG_LEFT_Y);
 					rightMotorPercent = master.get_analog(ANALOG_LEFT_Y);
 
