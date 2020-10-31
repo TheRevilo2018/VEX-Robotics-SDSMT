@@ -103,6 +103,7 @@ void opcontrol(void);
 
 //Motor port defines
 #define RIGHT_WHEEL_FRONT_PORT 1
+#define INERTIAL_SENSOR_PORT 3
 #define RIGHT_WHEEL_MIDDLE_PORT 6
 #define RIGHT_WHEEL_BACK_PORT 10
 #define LEFT_WHEEL_FRONT_PORT 12
