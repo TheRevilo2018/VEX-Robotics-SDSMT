@@ -43,12 +43,28 @@ void FourWheelDrive::writeCalibration()
 
 void FourWheelDrive::calibrate(pros::Controller master)
 {
-    master.clear();
+    delay(3000);
+    master.set_text(0, 2, "calibrate drive");
+    delay(3000);
+    master.set_text(0, 2, "check brain    ");
 
-    master.set_text(4, 3, "calibrate drive");
-    delay(1500);
-    //master.clear();
-    master.set_text(2, 4, "min speed");
+
+    //set minSpeed
+    double speed = 0;
+    while(!master.get_digital(E_CONTROLLER_DIGITAL_A))
+    {
+        delay(50);
+    }
+
+    while(master.get_digital(E_CONTROLLER_DIGITAL_A))
+    {
+        speed = speed + 0.05;
+        setMotors(speed);
+        delay(50);
+    }
+    minSpeed = speed;
+
+
 
 
     writeCalibration();

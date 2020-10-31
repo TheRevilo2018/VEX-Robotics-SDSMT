@@ -94,12 +94,12 @@ void opcontrol(void);
 
 #endif
 
-//3 wire port defines
+//sensor port defines
 #define LEFT_TRAY_BUMPER_PORT 'A'
 #define RIGHT_TRAY_BUMPER_PORT 'B'
 #define LIGHT_SENSOR_PORT 'C'
 #define ACTUATOR_PORT 'H'
-#define GYRO_PORT 'G'
+#define INERTIAL_SENSOR_PORT 3
 
 //Motor port defines
 #define RIGHT_WHEEL_FRONT_PORT 1
@@ -116,7 +116,7 @@ void opcontrol(void);
 static pros::Controller master(pros::E_CONTROLLER_MASTER);
 static pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 
-//standard port declarations
+//motor declarations
 static pros::Motor wheelLeft1(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelLeft2(LEFT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelLeft3(LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
@@ -124,12 +124,12 @@ static pros::Motor wheelRight1(RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18,
 static pros::Motor wheelRight2(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelRight3(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 
-//3 wire port declearations
+//sensor declearations
+static pros::Imu inertial_sensor(INERTIAL_SENSOR_PORT);
 static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
 static pros::ADIDigitalIn trayBumperLeft(LEFT_TRAY_BUMPER_PORT);
 static pros::ADIDigitalIn trayBumperRight(RIGHT_TRAY_BUMPER_PORT);
 static pros::ADIDigitalOut actuator(ACTUATOR_PORT);
-static pros::ADIGyro gyro (GYRO_PORT);
 
 //motor grouping declarations
 static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelRight1, wheelRight2, wheelRight3};

@@ -10,7 +10,7 @@
  * This file should not be modified by users, since it gets replaced whenever
  * a kernel upgrade occurs.
  *
- * Copyright (c) 2017-2019, Purdue University ACM SIGBots.
+ * Copyright (c) 2017-2020, Purdue University ACM SIGBots.
  * All rights reservered.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -126,6 +126,30 @@ typedef enum {
 #define DIGITAL_A E_CONTROLLER_DIGITAL_A
 #endif
 #endif
+
+/*
+Given an id and a port, this macro sets the port 
+variable based on the id and allows the mutex to take that port.
+
+Returns error (in the function/scope it's in) if the controller
+failed to connect or an invalid id is given.
+*/
+#define CONTROLLER_PORT_MUTEX_TAKE(id, port) \
+	switch (id) {							\
+		case E_CONTROLLER_MASTER:			\
+			port = V5_PORT_CONTROLLER_1;	\
+			break;							\
+		case E_CONTROLLER_PARTNER:			\
+			port = V5_PORT_CONTROLLER_2;	\
+			break;							\
+		default:							\
+			errno = EINVAL;					\
+			return PROS_ERR;				\
+	}										\
+	if (!internal_port_mutex_take(port)) {	\
+		errno = EACCES;						\
+		return PROS_ERR;					\
+	}										\
 
 #ifdef __cplusplus
 namespace c {
@@ -337,7 +361,8 @@ int32_t controller_clear_line(controller_id_e_t id, uint8_t line);
  * Clears all of the lines on the controller screen.
  *
  * \note Controller text setting is currently in beta, so continuous, fast
- * updates will not work well.
+ * updates will not work well. On vexOS version 1.0.0 this function will block
+ * for 110ms.
  *
  * This function uses the following values of errno when an error state is
  * reached:
@@ -422,6 +447,13 @@ double battery_get_temperature(void);
  * \return The current capacity of the battery
  */
 double battery_get_capacity(void);
+
+/**
+ * Checks if the SD card is installed.
+ *
+ * \return 1 if the SD card is installed, 0 otherwise
+ */
+int32_t usd_is_installed(void);
 
 #ifdef __cplusplus
 }

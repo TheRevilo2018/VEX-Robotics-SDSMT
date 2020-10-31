@@ -2,7 +2,7 @@
 #include "../include/helperfunctions.h"
 #include "four_wheel_drive/drive.h"
 
-using namespace std;
+using namespace std; 
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -135,33 +135,35 @@ void opcontrol()
 	{
 		calibrate();
 	}
-
-	while (true)
+	else
 	{
-		if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
+		while (true)
 		{
-					leftMotorPercent = master.get_analog(ANALOG_LEFT_Y);
-					rightMotorPercent = master.get_analog(ANALOG_LEFT_Y);
+			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
+			{
+				leftMotorPercent = master.get_analog(ANALOG_LEFT_Y);
+				rightMotorPercent = master.get_analog(ANALOG_LEFT_Y);
 
-					if(master.get_analog(ANALOG_RIGHT_X) > turnThreshold)
-		      {
-		        leftMotorPercent += abs(master.get_analog(ANALOG_RIGHT_X));
-		      	rightMotorPercent -= abs(master.get_analog(ANALOG_RIGHT_X));
-		      }
-		      else
-		      {
-		        leftMotorPercent -= abs(master.get_analog(ANALOG_RIGHT_X));
-		        rightMotorPercent += abs(master.get_analog(ANALOG_RIGHT_X));
-		      }
-				}
-				else
-				{
-					leftMotorPercent = 0;
-					rightMotorPercent = 0;
-				}
+				if(master.get_analog(ANALOG_RIGHT_X) > turnThreshold)
+		      	{
+		        	leftMotorPercent += abs(master.get_analog(ANALOG_RIGHT_X));
+		      		rightMotorPercent -= abs(master.get_analog(ANALOG_RIGHT_X));
+		      	}
+		      	else
+		      	{
+		        	leftMotorPercent -= abs(master.get_analog(ANALOG_RIGHT_X));
+		        	rightMotorPercent += abs(master.get_analog(ANALOG_RIGHT_X));
+		      	}
+			}
+			else
+			{
+				leftMotorPercent = 0;
+				rightMotorPercent = 0;
+			}
 
-				setMotors(leftWheelMotorVector, leftMotorPercent);
-				setMotors(rightWheelMotorVector, rightMotorPercent);
-				pros::delay(loopDelay);
+			setMotors(leftWheelMotorVector, leftMotorPercent);
+			setMotors(rightWheelMotorVector, rightMotorPercent);
+			pros::delay(loopDelay);
+		}
 	}
 }
