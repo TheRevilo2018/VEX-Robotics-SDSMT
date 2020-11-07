@@ -34,7 +34,7 @@ class FourWheelDrive
 
 
     DIRECTION direction = FORWARD;
-    int numMotors;
+    int numMotors; //number of motors on ONE side
 
 public:
     FourWheelDrive(std::vector<pros::Motor> &right, std::vector<pros::Motor> &left, pros::Imu&);
@@ -56,6 +56,7 @@ public:
         std::vector<pros::Motor> *rightWheelMotorVector, double amount);
     void drive(std::vector<pros::Motor> *leftWheelMotorVector,
         std::vector<pros::Motor> *rightWheelMotorVector, int distance);
+    double getAllSpeed();
 
 private:
     void setMotors(std::vector<pros::Motor> *motors, double speed);

@@ -143,6 +143,7 @@ static std::vector<pros::Motor> wheelMotorVector =
     {wheelFrontLeft, wheelBackLeft, wheelFrontRight, wheelBackRight};
 static std::vector<pros::Motor> leftWheelMotorVector = {wheelFrontLeft, wheelBackLeft};
 static std::vector<pros::Motor> rightWheelMotorVector = {wheelFrontRight, wheelBackRight};
+static std::vector<pros::Motor> intakeMotorVector = {leftIntake, rightIntake};
 
 //drive base class
 

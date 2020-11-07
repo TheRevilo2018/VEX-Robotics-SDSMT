@@ -65,6 +65,8 @@ void initialize()
 	//1896 for ball
 	inertialSensor.reset();
 	//middleLightSensor.calibrate();
+
+	inserter.set_brake_mode(MOTOR_BRAKE_HOLD);
 }
 
 /**

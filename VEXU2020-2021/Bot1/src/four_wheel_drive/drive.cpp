@@ -13,6 +13,7 @@ FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left,
     rightMotors = rightPointer;
     leftMotors = leftPointer;
     inertialSensor = inertialPointer;
+    numMotors = rightMotors->size();
 }
 
 FourWheelDrive::~FourWheelDrive() {}
@@ -22,6 +23,10 @@ FourWheelDrive::~FourWheelDrive() {}
 void FourWheelDrive::readCalibration()
 {
 	FILE* usd_file_read = fopen("/usd/calibration.txt", "r");
+    if(usd_file_read == NULL)
+    {
+        pros::lcd::set_text(0, "file couldn't open");
+    }
 	char buf[2048]; // This just needs to be larger than the contents of the file
 	fread(buf, 1, 2048, usd_file_read); // passing 1 because a `char` is 1 byte, and 50 b/c it's the length of buf
 	fclose(usd_file_read); // always close files when you're done with them
@@ -52,12 +57,20 @@ void FourWheelDrive::calibrate(pros::Controller master)
 
 
     //set minSpeed
-    double speed = 0;
+    /*double speed = 0;
     while(!master.get_digital(E_CONTROLLER_DIGITAL_A))
     {
         delay(50);
     }
 
+    while(master.get_digital(E_CONTROLLER_DIGITAL_A))
+    {
+        speed = speed + 0.05;
+        setMotors(speed);
+        delay(50);
+    }
+    minSpeed = speed;*/
+    double speed = 0;
     while(master.get_digital(E_CONTROLLER_DIGITAL_A))
     {
         speed = speed + 0.05;
@@ -411,8 +424,8 @@ void FourWheelDrive::autoTurnRelative(std::vector<pros::Motor> *leftWheelMotorVe
     pros::delay(20);
     //lastRemainingTicks = remainingTicks;
     //remainingTicks = amount - gyro.get_value();
-    pros::lcd::set_text(5, "gyro: " + std::to_string(remainingTicks));
-    pros::lcd::set_text(6, "gyro: " + std::to_string(lastRemainingTicks) + " " + std::to_string(fabs(remainingTicks) <= fabs(lastRemainingTicks)));
+    lcd::set_text(5, "gyro: " + to_string(remainingTicks));
+    pros::lcd::set_text(6, "gyro: " + to_string(lastRemainingTicks) + " " + to_string(fabs(remainingTicks) <= fabs(lastRemainingTicks)));
   }
 
   setMotors(leftWheelMotorVector, 0);
@@ -423,4 +436,16 @@ void FourWheelDrive::autoTurnRelative(std::vector<pros::Motor> *leftWheelMotorVe
   setBrakes(rightWheelMotorVector, prevBrake );
 
   return;
+}
+
+double FourWheelDrive::getAllSpeed()
+{
+    double averageSpeed = 0;
+    for(int i = 0; i < numMotors; i++)
+    {
+        averageSpeed += leftMotors->at(i).get_actual_velocity();
+        averageSpeed += rightMotors->at(i).get_actual_velocity();
+    }
+
+    return averageSpeed / (numMotors * 2);
 }
