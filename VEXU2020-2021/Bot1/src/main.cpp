@@ -2,7 +2,7 @@
 #include "../include/helperfunctions.h"
 #include "four_wheel_drive/drive.h"
 
-using namespace std; 
+using namespace std;
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -19,7 +19,7 @@ using namespace std;
 void autonomous()
 {
 
-	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector);
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor);
 
 	int blue = 1;
 	int red = 2;
@@ -91,7 +91,7 @@ void competition_initialize() {
 
 void calibrate()
 {
-	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector);
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor);
 	driveBase.calibrate(master);
 }
 

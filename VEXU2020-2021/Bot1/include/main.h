@@ -126,7 +126,7 @@ static pros::Motor wheelRight2(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18
 static pros::Motor wheelRight3(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 
 //sensor declearations
-static pros::Imu inertial_sensor(INERTIAL_SENSOR_PORT);
+static pros::Imu inertialSensor(INERTIAL_SENSOR_PORT);
 static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
 static pros::ADIDigitalIn trayBumperLeft(LEFT_TRAY_BUMPER_PORT);
 static pros::ADIDigitalIn trayBumperRight(RIGHT_TRAY_BUMPER_PORT);

@@ -12,6 +12,7 @@ class FourWheelDrive
 {
     std::vector<pros::Motor> *rightMotors;
     std::vector<pros::Motor> *leftMotors;
+    pros::Imu *inertialSensor;
 
     Logger logger;
 
@@ -36,7 +37,7 @@ class FourWheelDrive
     int numMotors;
 
 public:
-    FourWheelDrive(std::vector<pros::Motor> &right, std::vector<pros::Motor> &left);
+    FourWheelDrive(std::vector<pros::Motor> &right, std::vector<pros::Motor> &left, pros::Imu&);
     ~FourWheelDrive();
 
     void readCalibration();

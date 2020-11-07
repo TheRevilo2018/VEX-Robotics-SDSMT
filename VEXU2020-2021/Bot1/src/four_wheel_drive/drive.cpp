@@ -3,14 +3,16 @@
 using namespace pros;
 using namespace std;
 
-FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left) : logger("Drivebase")
+FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left,
+    Imu & sensor) : logger("Drivebase")
 {
     vector<Motor> *rightPointer = &right;
     vector<Motor> *leftPointer = &left;
+    Imu *inertialPointer = &sensor;
 
     rightMotors = rightPointer;
     leftMotors = leftPointer;
-    //gyro = (* inputGyro);
+    inertialSensor = inertialPointer;
 }
 
 FourWheelDrive::~FourWheelDrive() {}
@@ -189,7 +191,7 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, double maxSpe
 
     auto previous_brake = (*leftMotors)[0].get_brake_mode();
     setBrakes(pros::E_MOTOR_BRAKE_HOLD);
-    //gyro.reset();
+    inertialSensor->reset();
 
 
     setDirection(direction);
