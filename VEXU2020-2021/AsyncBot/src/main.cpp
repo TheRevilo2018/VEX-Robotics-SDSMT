@@ -55,24 +55,25 @@ void autonomous()
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {
+void initialize()
+{
 	pros::lcd::initialize();
 	pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
 	//visionSensor.clear_led();
 
 	//2911 for no ball
 	//1896 for ball
-	lightSensor.calibrate();
 	inertialSensor.reset();
 	//middleLightSensor.calibrate();
-	}
+}
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {
+void disabled()
+{
 	pros::lcd::set_text(3, "Calling disabled: " + std::to_string(pros::millis()));
 }
 

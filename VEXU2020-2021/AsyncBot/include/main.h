@@ -97,20 +97,20 @@ void opcontrol(void);
 #endif
 
 //3 wire port defines
-#define LEFT_TRAY_BUMPER_PORT 'A'
-#define RIGHT_TRAY_BUMPER_PORT 'B'
-#define LIGHT_SENSOR_PORT 'C'
-#define ACTUATOR_PORT 'H'
 #define GYRO_PORT 'G'
 
 //Motor port defines
-#define RIGHT_WHEEL_FRONT_PORT 1
-#define INERTIAL_SENSOR_PORT 3
-#define RIGHT_WHEEL_MIDDLE_PORT 6
-#define RIGHT_WHEEL_BACK_PORT 10
-#define LEFT_WHEEL_FRONT_PORT 12
-#define LEFT_WHEEL_MIDDLE_PORT 16
-#define LEFT_WHEEL_BACK_PORT 20
+#define RIGHT_WHEEL_FRONT_PORT 9
+#define RIGHT_WHEEL_BACK_PORT 2
+#define LEFT_WHEEL_FRONT_PORT 10
+#define LEFT_WHEEL_BACK_PORT 1
+
+#define LEFT_INTAKE 11
+#define RIGHT_INTAKE 20
+#define BOTTOM_ROLLER 19
+#define INSERTER 18
+
+#define INERTIAL_SENSOR_PORT 12
 
 #define DEBOUNCE_DELAY 200
 #define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_DOWN
@@ -123,25 +123,26 @@ static pros::Controller alpha(pros::E_CONTROLLER_MASTER);
 static pros::Controller beta(pros::E_CONTROLLER_PARTNER);
 
 // Standard port declarations
-static pros::Motor wheelLeft1(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelLeft2(LEFT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelLeft3(LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight1(RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight2(RIGHT_WHEEL_MIDDLE_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelRight3(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+//Left robot ports
+static pros::Motor wheelFrontLeft(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelBackLeft(LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelFrontRight(RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelBackRight(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+
+static pros::Motor leftIntake(LEFT_INTAKE, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor rightIntake(RIGHT_INTAKE, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor bottomRoller(BOTTOM_ROLLER, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor inserter(INSERTER, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+
 
 // 3 wire port declearations
-static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
-static pros::ADIDigitalIn trayBumperLeft(LEFT_TRAY_BUMPER_PORT);
-static pros::ADIDigitalIn trayBumperRight(RIGHT_TRAY_BUMPER_PORT);
-static pros::ADIDigitalOut actuator(ACTUATOR_PORT);
-static pros::ADIGyro gyro (GYRO_PORT);
 static pros::Imu inertialSensor(INERTIAL_SENSOR_PORT);
 
 // Motor grouping declarations
-static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelRight1, wheelRight2, wheelRight3};
-static std::vector<pros::Motor> leftWheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3 };
-static std::vector<pros::Motor> rightWheelMotorVector = {wheelRight1, wheelRight2, wheelRight3};
+static std::vector<pros::Motor> wheelMotorVector =
+    {wheelFrontLeft, wheelBackLeft, wheelFrontRight, wheelBackRight};
+static std::vector<pros::Motor> leftWheelMotorVector = {wheelFrontLeft, wheelBackLeft};
+static std::vector<pros::Motor> rightWheelMotorVector = {wheelFrontRight, wheelBackRight};
 
 //drive base class
 
