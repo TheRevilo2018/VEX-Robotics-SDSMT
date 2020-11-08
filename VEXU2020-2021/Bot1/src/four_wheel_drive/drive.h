@@ -30,7 +30,7 @@ class FourWheelDrive
 
     const double ROTATION_MUL = 845;
     const int STOP_AMOUNT = 100;
-
+    const int LOOP_DELAY = 20;
 
 
     DIRECTION direction = FORWARD;

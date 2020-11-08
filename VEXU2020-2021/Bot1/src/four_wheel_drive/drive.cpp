@@ -25,7 +25,7 @@ void FourWheelDrive::readCalibration()
 	FILE* usd_file_read = fopen("/usd/calibration.txt", "r");
     if(usd_file_read == NULL)
     {
-        pros::lcd::set_text(0, "file couldn't open");
+        pros::lcd::set_text(6, "file couldn't open");
     }
 	char buf[2048]; // This just needs to be larger than the contents of the file
 	fread(buf, 1, 2048, usd_file_read); // passing 1 because a `char` is 1 byte, and 50 b/c it's the length of buf
@@ -50,39 +50,64 @@ void FourWheelDrive::writeCalibration()
 
 void FourWheelDrive::calibrate(pros::Controller master)
 {
-    delay(3000);
-    master.set_text(0, 2, "calibrate drive");
-    delay(3000);
-    master.set_text(0, 2, "check brain    ");
+    const double GYRO_TOLERENCE = 2;
 
-
-    //set minSpeed
-    /*double speed = 0;
-    while(!master.get_digital(E_CONTROLLER_DIGITAL_A))
-    {
-        delay(50);
-    }
-
-    while(master.get_digital(E_CONTROLLER_DIGITAL_A))
-    {
-        speed = speed + 0.05;
-        setMotors(speed);
-        delay(50);
-    }
-    minSpeed = speed;*/
     double speed = 0;
-    while(master.get_digital(E_CONTROLLER_DIGITAL_A))
+    int count = 0;
+    bool complete = false;
+
+    lcd::set_text(4, "calling calibration");
+    delay(1000);
+    master.set_text(0, 2, "calibrate drive");
+
+    //set min speed
+    while(count < 100)
     {
-        speed = speed + 0.05;
-        setMotors(speed);
-        delay(50);
+        if (getAllSpeed() > 0)
+        {
+            count++;
+        }
+        else
+        {
+            speed = speed + 0.02;
+            lcd::set_text(5, "calibrating min speed: " + to_string(speed));
+            setMotors(speed);
+            count = 0;
+        }
+        delay(LOOP_DELAY);
     }
     minSpeed = speed;
+    speed = 0;
+
+    //max acceleration in speed/loop
+    /*maxAccelerationForward = 200;
+    while(!complete)
+    {
+        while(!master.get_digital(E_CONTROLLER_DIGITAL_A) && !master.get_digital(E_CONTROLLER_DIGITAL_B) &&
+            inertialSensor->get_pitch() < GYRO_TOLERENCE)
+        {
+
+        }
+    }
+
+    //max speed
+    maxSpeed = 100000;
+    while(!complete)
+    {
+        while(!master.get_digital(E_CONTROLLER_DIGITAL_A) && !master.get_digital(E_CONTROLLER_DIGITAL_B))
+        {
+
+        }
+    }*/
+
+
+
 
 
 
 
     writeCalibration();
+    lcd::set_text(6, "calibration complete");
 }
 
 
@@ -239,7 +264,7 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, double maxSpe
             }
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
-            pros::delay(20);
+            pros::delay(LOOP_DELAY);
             if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
@@ -251,7 +276,7 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, double maxSpe
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
 
-            pros::delay(20);
+            pros::delay(LOOP_DELAY);
             if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
@@ -271,7 +296,7 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, double maxSpe
             }
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
-            pros::delay(20);
+            pros::delay(LOOP_DELAY);
             if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
@@ -287,7 +312,7 @@ void FourWheelDrive::driveDist(double target, DIRECTION direction, double maxSpe
 
             correctDist(leftMotors, rightMotors, averagePos, speed, direction);
 
-            pros::delay(20);
+            pros::delay(LOOP_DELAY);
             if (leftMotors->front().get_actual_velocity() <= 5)
                 stopCount++;
         }
@@ -421,7 +446,7 @@ void FourWheelDrive::autoTurnRelative(std::vector<pros::Motor> *leftWheelMotorVe
     //{
     //  break;
     //}
-    pros::delay(20);
+    pros::delay(LOOP_DELAY);
     //lastRemainingTicks = remainingTicks;
     //remainingTicks = amount - gyro.get_value();
     lcd::set_text(5, "gyro: " + to_string(remainingTicks));
