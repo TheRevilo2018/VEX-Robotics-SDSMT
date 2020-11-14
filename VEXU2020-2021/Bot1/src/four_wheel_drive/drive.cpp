@@ -76,38 +76,57 @@ void FourWheelDrive::calibrate(pros::Controller master)
         }
         delay(LOOP_DELAY);
     }
+
+    count = 0;
     minSpeed = speed;
     speed = 0;
+    setMotors(speed);
+
+
+/*
+    //max speed
+    maxSpeed = 0;
+    while(count < 100)
+    {
+        speed = speed + 0.2;
+        lcd::set_text(6, "calibrating max speed: " + to_string(maxSpeed));
+        setMotors(speed);
+
+        if (maxSpeed < getAllSpeed())
+        {
+            maxSpeed = getAllSpeed();
+            count = 0;
+        }
+        else
+        {
+            count++;
+        }
+        delay(LOOP_DELAY);
+    }
+
+    speed = 0;
+    setMotors(speed);
+
+    */
 
     //max acceleration in speed/loop
-    /*maxAccelerationForward = 200;
+    maxAccelerationForward = 0;
+    maxAccelerationBackward = 0;
     while(!complete)
     {
         while(!master.get_digital(E_CONTROLLER_DIGITAL_A) && !master.get_digital(E_CONTROLLER_DIGITAL_B) &&
             inertialSensor->get_pitch() < GYRO_TOLERENCE)
         {
-
+            speed += maxAccelerationForward;
+            setMotors(speed);
+            maxAccelerationForward++;
+            delay(LOOP_DELAY);
         }
     }
 
-    //max speed
-    maxSpeed = 100000;
-    while(!complete)
-    {
-        while(!master.get_digital(E_CONTROLLER_DIGITAL_A) && !master.get_digital(E_CONTROLLER_DIGITAL_B))
-        {
 
-        }
-    }*/
-
-
-
-
-
-
-
-    writeCalibration();
-    lcd::set_text(6, "calibration complete");
+    //writeCalibration();
+    //lcd::set_text(6, "calibration complete");
 }
 
 
