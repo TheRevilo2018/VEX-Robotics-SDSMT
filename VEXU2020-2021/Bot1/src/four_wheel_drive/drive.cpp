@@ -48,19 +48,31 @@ void FourWheelDrive::writeCalibration()
     fclose(usd_file_write);
 }
 
-void FourWheelDrive::calibrate(pros::Controller master)
+void FourWheelDrive::calibrateAll(pros::Controller master)
 {
-    const double GYRO_TOLERENCE = 2;
-
-    double speed = 0;
     int count = 0;
-    bool complete = false;
-
     lcd::set_text(4, "calling calibration");
-    delay(1000);
+    inertialSensor->reset();
+    while(inertialSensor->is_calibrating())
+    {
+        lcd::set_text(7, "calling calibration   " + to_string(count));
+        delay(LOOP_DELAY);
+        count++;
+    }
     master.set_text(0, 2, "calibrate drive");
 
-    //set min speed
+    //calibrateMinSpeed();
+    calibrateMaxAcceleration(master, 10);
+
+    //writeCalibration();
+    //lcd::set_text(6, "calibration complete");
+}
+
+void FourWheelDrive::calibrateMinSpeed()
+{
+    double speed = 0;
+    int count = 0;
+
     while(count < 100)
     {
         if (getAllSpeed() > 0)
@@ -77,56 +89,77 @@ void FourWheelDrive::calibrate(pros::Controller master)
         delay(LOOP_DELAY);
     }
 
-    count = 0;
     minSpeed = speed;
-    speed = 0;
-    setMotors(speed);
+    setMotors(0);
+}
 
+void FourWheelDrive::calibrateMaxAcceleration(pros::Controller master, double returnSpeed)
+{
+    const double GYRO_TOLERENCE = 2;
+    const int NUM_LOOPS = 100;
+    bool complete = false;
+    double speed = 0;
+    int count = 0;
 
-/*
-    //max speed
-    maxSpeed = 0;
-    while(count < 100)
-    {
-        speed = speed + 0.2;
-        lcd::set_text(6, "calibrating max speed: " + to_string(maxSpeed));
-        setMotors(speed);
-
-        if (maxSpeed < getAllSpeed())
-        {
-            maxSpeed = getAllSpeed();
-            count = 0;
-        }
-        else
-        {
-            count++;
-        }
-        delay(LOOP_DELAY);
-    }
-
-    speed = 0;
-    setMotors(speed);
-
-    */
-
-    //max acceleration in speed/loop
     maxAccelerationForward = 0;
-    maxAccelerationBackward = 0;
     while(!complete)
     {
-        while(!master.get_digital(E_CONTROLLER_DIGITAL_A) && !master.get_digital(E_CONTROLLER_DIGITAL_B) &&
-            inertialSensor->get_pitch() < GYRO_TOLERENCE)
+        maxAccelerationForward++;
+        lcd::set_text(5, "max acceleration: " + to_string(maxAccelerationForward));
+        while(!master.get_digital(E_CONTROLLER_DIGITAL_A) && !master.get_digital(E_CONTROLLER_DIGITAL_B)
+            && count < NUM_LOOPS)
+        {
+            lcd::set_text(6, "gyro pitch: " + to_string(inertialSensor->get_pitch()));
+            speed += maxAccelerationForward;
+            setMotors(speed);
+            complete = (inertialSensor->get_pitch() > GYRO_TOLERENCE);
+            delay(LOOP_DELAY);
+            count++;
+        }
+        speed = 0;
+        count = 0;
+
+        setBrakes(E_MOTOR_BRAKE_COAST);
+        setMotors(0);
+        delay(LOOP_DELAY *  NUM_LOOPS);
+        //driveTillColide(returnSpeed * -1);
+    }
+
+    complete = false;
+    while(!complete)
+    {
+        maxAccelerationForward -= 0.1;
+                lcd::set_text(5, "max acceleration: " + to_string(maxAccelerationForward));
+        while(!master.get_digital(E_CONTROLLER_DIGITAL_A) && !master.get_digital(E_CONTROLLER_DIGITAL_B)
+            && count < NUM_LOOPS)
         {
             speed += maxAccelerationForward;
             setMotors(speed);
-            maxAccelerationForward++;
+            complete = (inertialSensor->get_pitch() > GYRO_TOLERENCE);
             delay(LOOP_DELAY);
+            count++;
         }
+        speed = 0;
+        count = 0;
+
+        setBrakes(E_MOTOR_BRAKE_COAST);
+        setMotors(0);
+        delay(LOOP_DELAY *  NUM_LOOPS);
+        //driveTillColide(speed * -1);
+    }
+}
+
+void FourWheelDrive::driveTillColide(double speed)
+{
+    setMotors(speed);
+    delay(5 * LOOP_DELAY);
+
+    while (fabs(getAllSpeed()) > fabs(0.1 * speed))
+    {
+        delay(LOOP_DELAY);
     }
 
-
-    //writeCalibration();
-    //lcd::set_text(6, "calibration complete");
+    setMotors(0);
 }
 
 

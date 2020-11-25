@@ -42,12 +42,16 @@ public:
 
     void readCalibration();
     void writeCalibration();
-    void calibrate(pros::Controller master);
+    void calibrateAll(pros::Controller master);
+    void calibrateMinSpeed();
+    void calibrateMaxAcceleration(pros::Controller master, double returnSpeed);
+    void driveTillColide(double speed);
 
     void setMotorsRelative(std::vector<pros::Motor> *motors, double distance, double speed);
     void setMotorsRelative(double distance, double speed);
     void setBrakes(std::vector<pros::Motor> *motors,  pros::motor_brake_mode_e_t brakeType);
     void setBrakes(pros::motor_brake_mode_e_t brakeType);
+
 
     void driveDist(double target, DIRECTION direction, double maxSpeed = 100);
     double distReq(double speed, DIRECTION direction);
