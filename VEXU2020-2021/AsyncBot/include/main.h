@@ -100,17 +100,17 @@ void opcontrol(void);
 #define GYRO_PORT 'G'
 
 //Motor port defines
+#define RIGHT_WHEEL_BACK_PORT 1
+#define LEFT_WHEEL_FRONT_PORT 2
+
+#define RIGHT_INTAKE 4
+#define BOTTOM_ROLLER 5
+#define INSERTER_PORT 7
+#define LEFT_INTAKE 8
 #define RIGHT_WHEEL_FRONT_PORT 9
-#define RIGHT_WHEEL_BACK_PORT 2
-#define LEFT_WHEEL_FRONT_PORT 10
-#define LEFT_WHEEL_BACK_PORT 1
+#define LEFT_WHEEL_BACK_PORT 10
 
-#define LEFT_INTAKE 11
-#define RIGHT_INTAKE 20
-#define BOTTOM_ROLLER 19
-#define INSERTER 18
-
-#define INERTIAL_SENSOR_PORT 12
+#define INERTIAL_SENSOR_PORT 21
 
 #define DEBOUNCE_DELAY 200
 #define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_DOWN
@@ -124,15 +124,15 @@ static pros::Controller beta(pros::E_CONTROLLER_PARTNER);
 
 // Standard port declarations
 //Left robot ports
-static pros::Motor wheelFrontLeft(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelFrontLeft(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelBackLeft(LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor wheelFrontRight(RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelBackRight(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelBackRight(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 
 static pros::Motor leftIntake(LEFT_INTAKE, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor rightIntake(RIGHT_INTAKE, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor bottomRoller(BOTTOM_ROLLER, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor inserter(INSERTER, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor inserter(INSERTER_PORT, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
 
 
 // 3 wire port declearations
