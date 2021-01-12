@@ -58,7 +58,7 @@ void autonomous()
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Calling initialize: " + std::to_string(pros::millis()));
+	pros::lcd::set_text(0, "Calling initialize: " + std::to_string(pros::millis()));
 	//visionSensor.clear_led();
 
 	//2911 for no ball
@@ -86,7 +86,7 @@ void disabled() {
  * starts.
  */
 void competition_initialize() {
-	pros::lcd::set_text(2, "Calling competition_initialize: " + std::to_string(pros::millis()));
+	pros::lcd::set_text(1, "Calling competition_initialize: " + std::to_string(pros::millis()));
 }
 
 void calibrate()
@@ -112,7 +112,7 @@ void calibrate()
 
 void opcontrol()
 {
-	pros::lcd::set_text(3, "Calling op_control: " + std::to_string(pros::millis()));
+	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;

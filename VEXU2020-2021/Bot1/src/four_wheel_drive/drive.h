@@ -70,6 +70,7 @@ private:
 
     void correctDist (std::vector<pros::Motor> *leftMotors, std::vector<pros::Motor> *rightMotors,
         double target, double speed, DIRECTION direction);
+        bool panic(pros::Controller master);
 
 };
 #endif
