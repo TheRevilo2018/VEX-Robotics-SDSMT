@@ -19,7 +19,7 @@ using namespace std;
 void autonomous()
 {
 
-	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor);
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 
 	int blue = 1;
 	int red = 2;
@@ -91,7 +91,7 @@ void competition_initialize() {
 
 void calibrate()
 {
-	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor);
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 	driveBase.calibrateAll(master);
 }
 

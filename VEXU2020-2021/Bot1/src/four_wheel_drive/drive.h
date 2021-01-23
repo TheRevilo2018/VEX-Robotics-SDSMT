@@ -40,8 +40,8 @@ class FourWheelDrive
     int numMotors; //number of motors on ONE side
 
 public:
-    FourWheelDrive::FourWheelDrive(std::vector<pros::Motor>&, std::vector<pros::Motor>&,
-        pros::Imu & sensor, pros::Controller & masterIn);
+    FourWheelDrive(std::vector<pros::Motor>&, std::vector<pros::Motor>&,
+        pros::Imu & , pros::Controller & );
 
     void readCalibration();
     void writeCalibration();

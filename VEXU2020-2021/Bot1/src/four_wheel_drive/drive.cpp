@@ -18,8 +18,6 @@ FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left,
     numMotors = rightMotors->size();
 }
 
-FourWheelDrive::~FourWheelDrive() {}
-
 //take in a vector of motors, and set their speed to a value
 void FourWheelDrive::setMotors(vector<Motor> *motors, double speed)
 {
