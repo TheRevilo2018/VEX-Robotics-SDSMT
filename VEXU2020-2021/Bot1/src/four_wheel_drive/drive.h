@@ -5,6 +5,7 @@
 #include "../logger/logger.h"
 #include <vector>
 #include <sstream>
+#include "math.h"
 
 enum DIRECTION {FORWARD, BACKWARD};
 
@@ -13,6 +14,7 @@ class FourWheelDrive
     std::vector<pros::Motor> *rightMotors;
     std::vector<pros::Motor> *leftMotors;
     pros::Imu *inertialSensor;
+    pros::Controller *master;
 
     Logger logger;
 
@@ -21,7 +23,8 @@ class FourWheelDrive
     //calibration values
     std::stringstream fileStream;
 
-    double maxSpeed;
+    double maxActualSpeed;
+    double maxInstructedSpeed;
     double minSpeed;
     double LRHandicap;
     double maxAccelerationForward;
@@ -37,13 +40,14 @@ class FourWheelDrive
     int numMotors; //number of motors on ONE side
 
 public:
-    FourWheelDrive(std::vector<pros::Motor> &right, std::vector<pros::Motor> &left, pros::Imu&);
-    ~FourWheelDrive();
+    FourWheelDrive::FourWheelDrive(std::vector<pros::Motor>&, std::vector<pros::Motor>&,
+        pros::Imu & sensor, pros::Controller & masterIn);
 
     void readCalibration();
     void writeCalibration();
     void calibrateAll(pros::Controller master);
     void calibrateMinSpeed();
+    void calibrateMaxSpeed();
     void calibrateMaxAcceleration(pros::Controller master, double returnSpeed);
     void driveTillColide(double speed);
 
@@ -51,7 +55,8 @@ public:
     void setMotorsRelative(double distance, double speed);
     void setBrakes(std::vector<pros::Motor> *motors,  pros::motor_brake_mode_e_t brakeType);
     void setBrakes(pros::motor_brake_mode_e_t brakeType);
-
+    double getAllSpeed();
+    double getAllPosition();
 
     void driveDist(double target, DIRECTION direction, double maxSpeed = 100);
     double distReq(double speed, DIRECTION direction);
@@ -60,7 +65,6 @@ public:
         std::vector<pros::Motor> *rightWheelMotorVector, double amount);
     void drive(std::vector<pros::Motor> *leftWheelMotorVector,
         std::vector<pros::Motor> *rightWheelMotorVector, int distance);
-    double getAllSpeed();
 
 private:
     void setMotors(std::vector<pros::Motor> *motors, double speed);
@@ -71,6 +75,10 @@ private:
     void correctDist (std::vector<pros::Motor> *leftMotors, std::vector<pros::Motor> *rightMotors,
         double target, double speed, DIRECTION direction);
         bool panic(pros::Controller master);
+
+
+
+    void checkGyro();
 
 };
 #endif

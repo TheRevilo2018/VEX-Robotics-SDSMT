@@ -4,15 +4,17 @@ using namespace pros;
 using namespace std;
 
 FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left,
-    Imu & sensor) : logger("Drivebase")
+    Imu & sensor, Controller & masterIn) : logger("Drivebase")
 {
     vector<Motor> *rightPointer = &right;
     vector<Motor> *leftPointer = &left;
     Imu *inertialPointer = &sensor;
+    Controller *controllerPointer = &masterIn;
 
     rightMotors = rightPointer;
     leftMotors = leftPointer;
     inertialSensor = inertialPointer;
+    master = controllerPointer;
     numMotors = rightMotors->size();
 }
 
@@ -379,4 +381,16 @@ double FourWheelDrive::getAllSpeed()
     }
 
     return averageSpeed / (numMotors * 2);
+}
+
+double FourWheelDrive::getAllPosition()
+{
+    double averagePosition = 0;
+    for(int i = 0; i < numMotors; i++)
+    {
+        averagePosition += leftMotors->at(i).get_position();
+        averagePosition += rightMotors->at(i).get_position();
+    }
+
+    return averagePosition / (numMotors * 2);
 }
