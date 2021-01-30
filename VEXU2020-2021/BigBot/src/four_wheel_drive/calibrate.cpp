@@ -32,25 +32,32 @@ void FourWheelDrive::writeCalibration()
     fclose(usd_file_write);
 }
 
-void FourWheelDrive::calibrateAll(pros::Controller master)
+void FourWheelDrive::calibrateAll(pros::Controller & master)
 {
     int count = 0;
-    lcd::set_text(3, "calling calibration");
+    lcd::set_text(2, "Calling calibration");
     inertialSensor->reset();
+		lcd::set_text(2, "status: " + to_string(inertialSensor->get_status()));
+		lcd::set_text(3,  strerror(errno));
+
+
+		pros::delay(2000);
     while(inertialSensor->is_calibrating())
     {
-        lcd::set_text(7, "is calibrating   " + to_string(count));
+        lcd::set_text(4, "is calibrating   " + to_string(count));
         delay(LOOP_DELAY);
         count++;
     }
-    master.set_text(0, 2, "calibrate drive");
+    master.set_text(0, 2, "calibrated drive ");
+		lcd::set_text(2, "status:" + to_string(inertialSensor->get_status()));
+		lcd::set_text(3,  strerror(errno));
 
-	//checkGyro();
+ 		checkGyro();
 
     //calibrateMinSpeed();
     //calibrateMaxAcceleration(master, 10);
 	maxAccelerationForward = 5; //remove once actual is found
-    calibrateMaxSpeed();
+    //calibrateMaxSpeed();
     //calibrateDrift(master)
 
     //writeCalibration();
@@ -61,17 +68,21 @@ void FourWheelDrive::checkGyro()
 {
 	int count = 0;
 	double pitch = 0;
+	lcd::set_text(5, "Starting Gyro Checks");
 
 	while( pitch != infinity())
 	{
-		lcd::set_text(6, strerror(errno));
+		lcd::set_text(2, "status:" + to_string(inertialSensor->get_status()));
+		lcd::set_text(3, strerror(errno));
 		pitch = inertialSensor->get_pitch();
-		lcd::set_text(3, "pitch: " + to_string(pitch));
-		lcd::set_text(4, "num pitch sensor loops: " + to_string(count));
-		lcd::set_text(7, strerror(errno));
+		lcd::set_text(1, "pitch: " + to_string(pitch));
+		lcd::set_text(6, "num pitch sensor loops: " + to_string(count));
+		lcd::set_text(4, "status:" + to_string(inertialSensor->get_status()));
+		lcd::set_text(5, strerror(errno));
 		delay(LOOP_DELAY);
 		count++;
 	}
+	
 
 	lcd::set_text(5, "pitch sensor loops done");
 }
@@ -160,7 +171,7 @@ void FourWheelDrive::calibrateMinSpeed()
     setMotors(0);
 }
 
-void FourWheelDrive::calibrateMaxAcceleration(pros::Controller master, double returnSpeed)
+void FourWheelDrive::calibrateMaxAcceleration(pros::Controller & master, double returnSpeed)
 {
     const double GYRO_TOLERENCE = 8;
     const int NUM_LOOPS = 30;
@@ -285,7 +296,7 @@ void FourWheelDrive::driveTillColide(double speed)
     setMotors(0);
 }
 
-bool FourWheelDrive::panic(pros::Controller master)
+bool FourWheelDrive::panic(pros::Controller & master)
 {
     return master.get_digital(E_CONTROLLER_DIGITAL_A) || master.get_digital(E_CONTROLLER_DIGITAL_B);
 }

@@ -45,10 +45,10 @@ public:
 
     void readCalibration();
     void writeCalibration();
-    void calibrateAll(pros::Controller master);
+    void calibrateAll(pros::Controller & master);
     void calibrateMinSpeed();
     void calibrateMaxSpeed();
-    void calibrateMaxAcceleration(pros::Controller master, double returnSpeed);
+    void calibrateMaxAcceleration(pros::Controller & master, double returnSpeed);
     void driveTillColide(double speed);
 
     void setMotorsRelative(std::vector<pros::Motor> *motors, double distance, double speed);
@@ -74,7 +74,7 @@ private:
 
     void correctDist (std::vector<pros::Motor> *leftMotors, std::vector<pros::Motor> *rightMotors,
         double target, double speed, DIRECTION direction);
-        bool panic(pros::Controller master);
+        bool panic(pros::Controller & master);
 
 
 
