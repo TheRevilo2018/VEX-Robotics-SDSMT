@@ -1,7 +1,4 @@
-/**
- * @author Jonathan Bayless, Team BLRS
- * @author Ryan Benasutti, WPI
- *
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -38,7 +35,8 @@ class PIDTuner {
            std::size_t inumIterations = 5,
            std::size_t inumParticles = 16,
            double ikSettle = 1,
-           double ikITAE = 2);
+           double ikITAE = 2,
+           const std::shared_ptr<Logger> &ilogger = Logger::getDefaultLogger());
 
   virtual ~PIDTuner();
 
@@ -61,11 +59,10 @@ class PIDTuner {
     double bestError;
   };
 
-  Logger *logger;
+  std::shared_ptr<Logger> logger;
+  TimeUtil timeUtil;
   std::shared_ptr<ControllerInput<double>> input;
   std::shared_ptr<ControllerOutput<double>> output;
-  TimeUtil timeUtil;
-  std::unique_ptr<AbstractRate> rate;
 
   const QTime timeout;
   const std::int32_t goal;

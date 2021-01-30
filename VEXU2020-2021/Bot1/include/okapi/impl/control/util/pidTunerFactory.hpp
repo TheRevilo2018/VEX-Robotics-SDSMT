@@ -1,7 +1,4 @@
-/**
- * @author Jonathan Bayless, Team BLRS
- * @author Ryan Benasutti, WPI
- *
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -27,7 +24,8 @@ class PIDTunerFactory {
                          std::int32_t inumIterations = 5,
                          std::int32_t inumParticles = 16,
                          double ikSettle = 1,
-                         double ikITAE = 2);
+                         double ikITAE = 2,
+                         const std::shared_ptr<Logger> &ilogger = Logger::getDefaultLogger());
 
   static std::unique_ptr<PIDTuner>
   createPtr(const std::shared_ptr<ControllerInput<double>> &iinput,
@@ -43,6 +41,7 @@ class PIDTunerFactory {
             std::int32_t inumIterations = 5,
             std::int32_t inumParticles = 16,
             double ikSettle = 1,
-            double ikITAE = 2);
+            double ikITAE = 2,
+            const std::shared_ptr<Logger> &ilogger = Logger::getDefaultLogger());
 };
 } // namespace okapi

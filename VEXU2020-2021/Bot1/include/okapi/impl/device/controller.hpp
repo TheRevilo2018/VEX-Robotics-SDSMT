@@ -1,6 +1,4 @@
-/**
- * @author Ryan Benasutti, WPI
- *
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -25,16 +23,6 @@ class Controller {
    * @return true if the controller is connected
    */
   virtual bool isConnected();
-
-  /**
-   * Returns the full connection state of the controller.
-   *  0 = disconnected
-   *  1 = tethered
-   *  2 = VEXnet
-   *
-   * @return the connection state of the controller
-   */
-  virtual std::int32_t getConnectionState();
 
   /**
    * Returns the current analog reading for the channel in the range [-1, 1]. Returns 0 if the
@@ -65,15 +53,16 @@ class Controller {
   /**
    * Sets text to the controller LCD screen.
    *
-   * @param iline the line number at which the text will be displayed [0-2]
-   * @param icol the column number at which the text will be displayed [0-14]
+   * @param iline the line number in the range [0-2] at which the text will be displayed
+   * @param icol the column number in the range [0-14] at which the text will be displayed
    * @param itext the string to display
    * @return 1 if the operation was successful, PROS_ERR otherwise
    */
   virtual std::int32_t setText(std::uint8_t iline, std::uint8_t icol, std::string itext);
 
   /**
-   * Clears all of the lines of the controller screen.
+   * Clears all of the lines of the controller screen. On vexOS version 1.0.0 this function will
+   * block for 110ms.
    *
    * @return 1 if the operation was successful, PROS_ERR otherwise
    */
@@ -82,7 +71,7 @@ class Controller {
   /**
    * Clears an individual line of the controller screen.
    *
-   * @param iline the line number to clear
+   * @param iline the line number to clear in the range [0, 2].
    * @return 1 if the operation was successful, PROS_ERR otherwise
    */
   virtual std::int32_t clearLine(std::uint8_t iline);
@@ -122,8 +111,8 @@ class Controller {
   virtual std::int32_t getBatteryLevel();
 
   protected:
-  ControllerId m_id;
-  pros::Controller controller;
-  static std::array<ControllerButton *, 12> buttonArray;
+  ControllerId okapiId;
+  pros::controller_id_e_t prosId;
+  std::array<ControllerButton *, 12> buttonArray{};
 };
 } // namespace okapi

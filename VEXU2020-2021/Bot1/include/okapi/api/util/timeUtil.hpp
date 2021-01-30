@@ -1,6 +1,4 @@
-/**
- * @author Ryan Benasutti, WPI
- *
+/*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -29,11 +27,11 @@ class TimeUtil {
 
   std::unique_ptr<SettledUtil> getSettledUtil() const;
 
-  const Supplier<std::unique_ptr<AbstractTimer>> getTimerSupplier() const;
+  Supplier<std::unique_ptr<AbstractTimer>> getTimerSupplier() const;
 
-  const Supplier<std::unique_ptr<AbstractRate>> getRateSupplier() const;
+  Supplier<std::unique_ptr<AbstractRate>> getRateSupplier() const;
 
-  const Supplier<std::unique_ptr<SettledUtil>> getSettledUtilSupplier() const;
+  Supplier<std::unique_ptr<SettledUtil>> getSettledUtilSupplier() const;
 
   protected:
   Supplier<std::unique_ptr<AbstractTimer>> timerSupplier;
