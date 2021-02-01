@@ -45,12 +45,12 @@ void FourWheelDrive::calibrateAll(pros::Controller master)
     }
     master.set_text(0, 2, "calibrate drive");
 
-	//checkGyro();
+	checkGyro();
 
     //calibrateMinSpeed();
     //calibrateMaxAcceleration(master, 10);
-	maxAccelerationForward = 5; //remove once actual is found
-    calibrateMaxSpeed();
+	//maxAccelerationForward = 5; //remove once actual is found
+    //calibrateMaxSpeed();
     //calibrateDrift(master)
 
     //writeCalibration();
@@ -62,7 +62,21 @@ void FourWheelDrive::checkGyro()
 	int count = 0;
 	double pitch = 0;
 
-	while( pitch != infinity())
+
+
+
+	lcd::set_text(6, strerror(errno));
+
+	delay(LOOP_DELAY);
+	pitch = inertialSensor->get_pitch();
+
+	lcd::set_text(7, strerror(errno));
+
+
+
+
+
+	/*while( pitch != infinity())
 	{
 		lcd::set_text(6, strerror(errno));
 		pitch = inertialSensor->get_pitch();
@@ -71,7 +85,7 @@ void FourWheelDrive::checkGyro()
 		lcd::set_text(7, strerror(errno));
 		delay(LOOP_DELAY);
 		count++;
-	}
+	}*/
 
 	lcd::set_text(5, "pitch sensor loops done");
 }
