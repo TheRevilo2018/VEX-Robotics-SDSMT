@@ -111,7 +111,7 @@ void opcontrol(void);
 #define UPPER_DRUM_PORT 1
 #define LOWER_DRUM_PORT 3
 #define LEFT_ARM_PORT 20
-#define RIGHT_ARM_PORT 12
+#define RIGHT_ARM_PORT 16
 
 #define DEBOUNCE_DELAY 200
 #define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_DOWN

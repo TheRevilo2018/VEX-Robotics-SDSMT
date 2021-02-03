@@ -80,12 +80,14 @@ void autonomous() {}
 	const int inserterConst = 110;
 	const int inserterRestingConst = -40;
 	const int intakeConst = 85;
+	const int pooperConst = 85;
 
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
 	int intakePercent = 0;
+	int pooperPercent = 0;
 	int inserterPercent = inserterRestingConst;
  	std::uint32_t debounceButtonA = 0;
  	std::uint32_t debounceButtonB = 0;
@@ -106,6 +108,7 @@ void autonomous() {}
 
  		while (true)
  		{
+			//toggle in
 			if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
 	  		{
 	  			if(pressButton(debounceButtonR1))
@@ -120,6 +123,7 @@ void autonomous() {}
 	          		}
 	  			}
 	  		}
+			//toggle out
 	        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 	        {
 	            if(pressButton(debounceButtonR2))
@@ -135,20 +139,41 @@ void autonomous() {}
 	            }
 	        }
 
-	        if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+			// toggle score
+			if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
 	        {
 	            if(pressButton(debounceButtonL1))
 	            {
 	                if (inserterPercent <= 0)
 	                {
 	                    inserterPercent = inserterConst;
+						pooperPercent = -pooperConst;
 	                }
 	                else
 	                {
 	                    inserterPercent = inserterRestingConst;
+						pooperPercent = 0;
 	                }
 	            }
 	        }
+
+			//toggle eject
+			else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+			{
+				if(pressButton(debounceButtonL2))
+				{
+					if (pooperPercent <= 0)
+					{
+						inserterPercent = -inserterConst;
+						pooperPercent = pooperConst;
+					}
+					else
+					{
+						inserterPercent = inserterRestingConst;
+						pooperPercent = 0;
+					}
+				}
+			}
 
  			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
  			{
@@ -177,6 +202,7 @@ void autonomous() {}
 			setMotors(intakeMotorVector, intakePercent);
 			bottomDrum = intakePercent;
 			topDrum = inserterPercent;
+			pooper = pooperPercent;
  			pros::delay(loopDelay);
  		}
  }
