@@ -79,6 +79,7 @@ private:
 
 
     void checkGyro();
+    void correctGyroCalibration(float accel);
 
 };
 #endif

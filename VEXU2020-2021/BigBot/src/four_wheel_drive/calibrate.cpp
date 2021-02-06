@@ -52,17 +52,22 @@ void FourWheelDrive::calibrateAll(pros::Controller & master)
 		lcd::set_text(2, "status:" + to_string(inertialSensor->get_status()));
 		lcd::set_text(3,  strerror(errno));
 
- 		checkGyro();
+ 	//checkGyro();
+	correctGyroCalibration(0.2);
 
-    //calibrateMinSpeed();
+	//calibrateMinSpeed();
     //calibrateMaxAcceleration(master, 10);
-	maxAccelerationForward = 5; //remove once actual is found
+	//maxAccelerationForward = 5; //remove once actual is found
     //calibrateMaxSpeed();
-    //calibrateDrift(master)
+    //calibrateDrift(master);
 
     //writeCalibration();
     //lcd::set_text(6, "calibration complete");
 }
+
+
+
+
 
 void FourWheelDrive::checkGyro()
 {
@@ -70,19 +75,12 @@ void FourWheelDrive::checkGyro()
 	double pitch = 0;
 	lcd::set_text(5, "Starting Gyro Checks");
 
-
-
-
 	lcd::set_text(6, strerror(errno));
 
 	delay(LOOP_DELAY);
 	pitch = inertialSensor->get_pitch();
 
 	lcd::set_text(7, strerror(errno));
-
-
-
-
 
 	while( pitch != infinity())
 	{
@@ -101,6 +99,56 @@ void FourWheelDrive::checkGyro()
 	lcd::set_text(5, "pitch sensor loops done");
 }
 
+void FourWheelDrive::correctGyroCalibration(float accel)
+{
+	const int stationary = 100;
+	const int moving = 250;
+	float speed = 0;
+	float intercept = 0;
+	float mod = 0;
+	float totalMod = 0;
+
+	float pitch;
+	float accelMeter;
+
+	for(int i = 0; i < stationary; i++)
+	{
+		intercept += inertialSensor->get_pitch();
+		delay(LOOP_DELAY);
+	}
+	intercept = intercept / stationary;
+	lcd::set_text(2, "intercept: " + to_string(intercept));
+	lcd::set_text(0, "accel: " + to_string(accel));
+
+
+	for( int i = 0; i < moving; i++)
+	{
+		speed += accel;
+		setMotors(speed);
+		delay(LOOP_DELAY);
+
+		pitch = inertialSensor->get_pitch();
+		accelMeter = inertialSensor->get_accel().x;
+
+		lcd::set_text(1, "speed: " + to_string(speed));
+		lcd::set_text(5, "pitch: " + to_string(pitch));
+		lcd::set_text(6, "accelMeter: " + to_string(accelMeter));
+
+		mod = (-pitch - intercept) / accelMeter;
+		totalMod += mod;
+
+		lcd::set_text(3, "mod: " + to_string(pitch));
+
+	}
+
+	mod = totalMod / moving;
+	setMotors(0);
+	lcd::set_text(3, "mod: " + to_string(pitch));
+}
+
+
+
+
 void FourWheelDrive::calibrateMaxSpeed()
 {
 	const int LOOPS = 10;
@@ -109,15 +157,17 @@ void FourWheelDrive::calibrateMaxSpeed()
 	maxActualSpeed = 0;
 	maxInstructedSpeed = 0;
 	int count = 0;
-    lcd::set_text(4, "calibrating max speed");
+    lcd::set_text(3, "calibrating max speed");
 
 	while(count < LOOPS)
 	{
 		setMotors(tempInstructedSpeed);
 		delay(LOOP_DELAY);
 		tempActualSpeed = getAllSpeed();
-		lcd::set_text(5, "act: " + to_string(maxActualSpeed)
+		lcd::set_text(4, "act: " + to_string(maxActualSpeed)
 		 	+ " inst: " + to_string(tempInstructedSpeed));
+		lcd::set_text(7, strerror(errno));
+
 		tempInstructedSpeed += maxAccelerationForward;
 		if(tempActualSpeed > maxActualSpeed)
 		{
@@ -143,8 +193,9 @@ void FourWheelDrive::calibrateMaxSpeed()
 		setMotors(tempInstructedSpeed);
 		delay(LOOP_DELAY);
 		tempActualSpeed = getAllSpeed();
-		lcd::set_text(6, "act: " + to_string(maxActualSpeed)
+		lcd::set_text(5, "act: " + to_string(maxActualSpeed)
 		 	+ " inst: " + to_string(maxInstructedSpeed));
+		lcd::set_text(7, strerror(errno));
 		if(tempActualSpeed >= tempActualMax)
 		{
 			tempInstructedSpeed += maxAccelerationForward;
@@ -156,7 +207,7 @@ void FourWheelDrive::calibrateMaxSpeed()
 	setMotors(0);
 	maxInstructedSpeed = tempActualSpeed;
 
-	lcd::set_text(7, "calibrating max speed finished");
+	lcd::set_text(6, "calibrating max speed finished");
 }
 
 void FourWheelDrive::calibrateMinSpeed()
@@ -178,6 +229,7 @@ void FourWheelDrive::calibrateMinSpeed()
             setMotors(speed);
             count = 0;
         }
+		lcd::set_text(7, strerror(errno));
         delay(LOOP_DELAY);
     }
 
@@ -203,7 +255,7 @@ void FourWheelDrive::calibrateMaxAcceleration(pros::Controller & master, double 
     maxAccelerationForward = 0;
     maxAccelerationBackward = 0;
     setBrakes(E_MOTOR_BRAKE_COAST);
-    lcd::set_text(4, "calibrating max acceleration");
+    lcd::set_text(1, "calibrating max acceleration");
 
     //part 1
     while(!(forwardComplete && backwardComplete))
@@ -219,45 +271,54 @@ void FourWheelDrive::calibrateMaxAcceleration(pros::Controller & master, double 
 		inertialSensor->get_pitch();
 		double tempval = inertialSensor->get_accel().x;
 		loopForwardRecorded = tempval;
-		lcd::set_text(1, strerror(errno));
 
 		//drive forward
         count = 0;
-        lcd::set_text(5, "max accel forwards: " + to_string(maxAccelerationForward));
+        lcd::set_text(2, "max accel forwards: " + to_string(maxAccelerationForward));
         while(!panic(master) && count < NUM_LOOPS)
         {
             speed += maxAccelerationForward;
+			float pitch = inertialSensor->get_pitch();
+
             setMotors(speed);
-            forwardComplete = (inertialSensor->get_pitch() > GYRO_TOLERENCE) || forwardComplete;
-            delay(LOOP_DELAY);
+            forwardComplete = (pitch > GYRO_TOLERENCE) || forwardComplete;
 			double tempval = inertialSensor->get_accel().x;
 			loopForwardRecorded += tempval;
             count++;
+
+			lcd::set_text(4, "Gyro pitch: " + to_string(pitch));
+			delay(LOOP_DELAY);
         }
-		lcd::set_text(2, strerror(errno));
 		//stop
         while(!panic(master) && speed > 0)
         {
             speed -= maxAccelerationBackward;
             setMotors(speed);
-            backwardComplete = (inertialSensor->get_pitch() < -GYRO_TOLERENCE) || backwardComplete;
-            delay(LOOP_DELAY);
+			float pitch = inertialSensor->get_pitch();
+            backwardComplete = (pitch < -GYRO_TOLERENCE) || backwardComplete;
+
 			double tempval = inertialSensor->get_accel().x;
 			loopBackwardRecorded += tempval;
+
+			delay(LOOP_DELAY);
+			lcd::set_text(4, "Gyro pitch: " + to_string(pitch));
         }
 
 		//drive backward
         count = 0;
-        lcd::set_text(6, "max accel backwards: " + to_string(maxAccelerationBackward));
+        lcd::set_text(3, "max accel backwards: " + to_string(maxAccelerationBackward));
         while(!panic(master) && count < NUM_LOOPS)
         {
             speed -= maxAccelerationBackward;
+			float pitch = inertialSensor->get_pitch();
             setMotors(speed);
-            backwardComplete = (inertialSensor->get_pitch() < -GYRO_TOLERENCE) || backwardComplete;
-            delay(LOOP_DELAY);
+            backwardComplete = (pitch < -GYRO_TOLERENCE) || backwardComplete;
 			double tempval = inertialSensor->get_accel().x;
 			loopBackwardRecorded += tempval;
             count++;
+
+		 	delay(LOOP_DELAY);
+			lcd::set_text(4, "Gyro pitch: " + to_string(pitch));
         }
 		//stop
         while(!panic(master) && speed < 0)
@@ -273,8 +334,9 @@ void FourWheelDrive::calibrateMaxAcceleration(pros::Controller & master, double 
 		loopForwardRecorded = loopForwardRecorded / (NUM_LOOPS*2);
 		loopBackwardRecorded = loopBackwardRecorded / (NUM_LOOPS*2);
 
-		lcd::set_text(3, "loop accel forwards: " + to_string(loopForwardRecorded));
-		lcd::set_text(4, "loop accel backwards: " + to_string(loopBackwardRecorded));
+		lcd::set_text(5, "loop accel forwards: " + to_string(loopForwardRecorded));
+		lcd::set_text(6, "loop accel backwards: " + to_string(loopBackwardRecorded));
+		lcd::set_text(7, strerror(errno));
 
 		if(maxForwardRecorded <= loopForwardRecorded)
 			{maxForwardRecorded = loopForwardRecorded;}
@@ -285,10 +347,9 @@ void FourWheelDrive::calibrateMaxAcceleration(pros::Controller & master, double 
 		else
 			{backwardComplete = true;}
     }
+
+	lcd::set_text(1, "max acceleration calibration finished");
 }
-
-
-
 
 
 

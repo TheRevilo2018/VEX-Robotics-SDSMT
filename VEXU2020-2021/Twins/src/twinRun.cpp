@@ -55,15 +55,24 @@ namespace twin
                 if ( intakePercent >= 0)
                 {
                     intakePercent = -intakeConst;
-                  }
+                }
                 else
                 {
                     intakePercent = 0;
-                  }
+                }
             }
         }
 
         if(alpha.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+        {
+            inserterPercent = inserterConst;
+        }
+        else
+        {
+            inserterPercent = inserterRestingConst;
+        }
+
+        /*if(alpha.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
         {
             if(pressButton(debounceButtonL1))
             {
@@ -76,7 +85,7 @@ namespace twin
                     inserterPercent = inserterRestingConst;
                 }
             }
-        }
+        }*/
 
     //drive controls
       if(abs(alpha.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(alpha.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
