@@ -297,7 +297,7 @@ void FourWheelDrive::calibrateMaxAcceleration(pros::Controller & master, double 
 
 
 
-void FourWheelDrive::driveTillColide(double speed)
+void FourWheelDrive::driveTillCollide(double speed)
 {
     setMotors(speed);
     delay(5 * LOOP_DELAY);

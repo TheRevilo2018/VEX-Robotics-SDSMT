@@ -49,7 +49,7 @@ public:
     void calibrateMinSpeed();
     void calibrateMaxSpeed();
     void calibrateMaxAcceleration(pros::Controller & master, double returnSpeed);
-    void driveTillColide(double speed);
+    void driveTillCollide(double speed);
 
     void setMotorsRelative(std::vector<pros::Motor> *motors, double distance, double speed);
     void setMotorsRelative(double distance, double speed);
@@ -65,6 +65,8 @@ public:
         std::vector<pros::Motor> *rightWheelMotorVector, double amount);
     void drive(std::vector<pros::Motor> *leftWheelMotorVector,
         std::vector<pros::Motor> *rightWheelMotorVector, int distance);
+    void driveTilesPID(float numTiles, float desiredSpeed= 100);
+    void turnDegreesPID(float numDegrees, float desiredSpeed= 100);
 
 private:
     void setMotors(std::vector<pros::Motor> *motors, double speed);
@@ -74,10 +76,7 @@ private:
 
     void correctDist (std::vector<pros::Motor> *leftMotors, std::vector<pros::Motor> *rightMotors,
         double target, double speed, DIRECTION direction);
-        bool panic(pros::Controller & master);
-
-
-
+    bool panic(pros::Controller & master);
     void checkGyro();
 
 };

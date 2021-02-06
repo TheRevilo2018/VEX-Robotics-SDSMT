@@ -392,3 +392,69 @@ double FourWheelDrive::getAllPosition()
 
     return averagePosition / (numMotors * 2);
 }
+
+void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
+{
+  float INTEGRATOR_MAX_MAGNITUDE = 100;
+  float DELTA_T = LOOP_DELAY / 1000.0;
+  float currentDistance = 0;
+
+  float kP = 1;
+  float kI = .5;
+  float kD = .005;
+
+  float porportionalAmount = 0;
+  float integralAmount = 0;
+  float derivativeAmount = 0;
+
+  long iterations = 1;
+  float lastDistance = 0;
+  float accumulatedDistance = 0;
+
+  float lastEncoderVal = leftMotors->at(0).get_position();
+  while (abs(numTiles - currentDistance) > 0.1)
+  {
+    porportionalAmount = numTiles - currentDistance;
+    accumulatedDistance += porportionalAmount;
+
+    if (accumulatedDistance > INTEGRATOR_MAX_MAGNITUDE)
+    {
+      accumulatedDistance = INTEGRATOR_MAX_MAGNITUDE;
+    }
+    else if(accumulatedDistance < -INTEGRATOR_MAX_MAGNITUDE)
+    {
+      accumulatedDistance = -INTEGRATOR_MAX_MAGNITUDE;
+    }
+
+    integralAmount = accumulatedDistance * DELTA_T;
+
+    derivativeAmount = (lastDistance - currentDistance) / DELTA_T;
+
+    float total = porportionalAmount * kP + integralAmount * kI + derivativeAmount * kD;
+    float speed = total * desiredSpeed;
+
+    float currentEncoderVal = leftMotors->at(0).get_position();
+
+    currentDistance += (currentEncoderVal - lastEncoderVal) / 1000.0;
+
+
+    lcd::set_text(3, "Desired " + to_string(numTiles));
+    lcd::set_text(4, "Current: " + to_string(currentDistance));
+    lcd::set_text(5, "Raw Vals: " + to_string(porportionalAmount) + " " + to_string(integralAmount) + " " + to_string(derivativeAmount));
+    lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
+    lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance));
+
+    setMotors(rightMotors, speed);
+    setMotors(leftMotors, speed);
+
+    iterations++;
+    lastDistance = porportionalAmount;
+    lastEncoderVal = currentEncoderVal;
+    pros::delay(LOOP_DELAY);
+  }
+}
+
+void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
+{
+
+}

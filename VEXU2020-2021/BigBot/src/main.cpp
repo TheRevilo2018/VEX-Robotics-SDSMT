@@ -112,6 +112,7 @@ void calibrate()
 
 void opcontrol()
 {
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
 	int turnThreshold = 10;
 	int driveThreshold = 10;
@@ -159,6 +160,14 @@ void opcontrol()
 			{
 				leftMotorPercent = 0;
 				rightMotorPercent = 0;
+			}
+
+			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+			{
+			 	if(pressButton(debounceButtonA))
+			 	{
+					driveBase.driveTilesPID(4.0, 75);
+			 	}
 			}
 
 			setMotors(leftWheelMotorVector, leftMotorPercent);
