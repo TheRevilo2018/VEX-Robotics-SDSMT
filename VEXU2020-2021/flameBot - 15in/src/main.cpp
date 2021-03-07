@@ -89,6 +89,7 @@ void autonomous() {}
 	int intakePercent = 0;
 	int pooperPercent = 0;
 	int inserterPercent = inserterRestingConst;
+
  	std::uint32_t debounceButtonA = 0;
  	std::uint32_t debounceButtonB = 0;
  	std::uint32_t debounceButtonX = 0;
@@ -200,7 +201,9 @@ void autonomous() {}
  			setMotors(leftWheelMotorVector, leftMotorPercent);
  			setMotors(rightWheelMotorVector, rightMotorPercent);
 			setMotors(intakeMotorVector, intakePercent);
-			bottomDrum = intakePercent;
+			// Run bottom drum idle speed
+			bottomDrum = intakeConst;
+			// Run top drum on variable speed
 			topDrum = inserterPercent;
 			pooper = pooperPercent;
  			pros::delay(loopDelay);

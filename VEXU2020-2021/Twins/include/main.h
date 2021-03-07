@@ -156,8 +156,8 @@ static pros::Motor wheelBackRightBeta(B_RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEA
 
 static pros::Motor leftIntakeBeta(B_LEFT_INTAKE, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
 static pros::Motor rightIntakeBeta(B_RIGHT_INTAKE, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor bottomRollerBeta(B_BOTTOM_ROLLER, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor inserterBeta(B_INSERTER_PORT, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor bottomRollerBeta(B_BOTTOM_ROLLER, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor inserterBeta(B_INSERTER_PORT, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
 
 
 // 3 wire port declearations

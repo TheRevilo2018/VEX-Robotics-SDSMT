@@ -46,6 +46,7 @@ namespace twin
     {
         //ball controls
         // Outakes for bottom
+        
   		if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
   		{
   			if(pressButton(debounceButtonR1))
@@ -74,7 +75,7 @@ namespace twin
                   }
             }
         }
-
+		
         if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
         {
             if(pressButton(debounceButtonL1))
@@ -116,7 +117,7 @@ namespace twin
           setMotors(leftWheelMotorVector, leftMotorPercent);
           setMotors(rightWheelMotorVector, rightMotorPercent);
           setMotors(intakeMotorVector, intakePercent);
-          bottomRoller = intakePercent;
+          bottomRoller = intakeConst;
           inserterRoller = inserterPercent;
           pros::delay(loopDelay);
     }
