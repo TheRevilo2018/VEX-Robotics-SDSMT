@@ -5,6 +5,7 @@
 #include "../logger/logger.h"
 #include <vector>
 #include <sstream>
+#include <fstream>
 #include "math.h"
 
 enum DIRECTION {FORWARD, BACKWARD};
@@ -26,7 +27,7 @@ class FourWheelDrive
     double maxActualSpeed;
     double maxInstructedSpeed;
     double minSpeed;
-    double LRHandicap;
+    double LRBias = 1;
     double maxAccelerationForward;
     double maxAccelerationBackward;
     double distanceMultiplier;
@@ -45,18 +46,22 @@ public:
 
     void readCalibration();
     void writeCalibration();
-    void calibrateAll(pros::Controller & master);
+    void calibrateAll();
     void calibrateMinSpeed();
     void calibrateMaxSpeed();
-    void calibrateMaxAcceleration(pros::Controller & master, double returnSpeed);
-    void driveTillColide(double speed);
+    void calibrateMaxAcceleration(double returnSpeed);
+    void calibrateDrift();
+    void calibrateDriftLoop(double testSpeed, double &bias);
+    void waitForUser(std::string message);
 
+    void accelerate(double speed);
     void setMotorsRelative(std::vector<pros::Motor> *motors, double distance, double speed);
     void setMotorsRelative(double distance, double speed);
     void setBrakes(std::vector<pros::Motor> *motors,  pros::motor_brake_mode_e_t brakeType);
     void setBrakes(pros::motor_brake_mode_e_t brakeType);
     double getAllSpeed();
     double getAllPosition();
+    double getPosition(std::vector<pros::Motor> * motors);
 
     void driveDist(double target, DIRECTION direction, double maxSpeed = 100);
     double distReq(double speed, DIRECTION direction);
@@ -74,12 +79,13 @@ private:
 
     void correctDist (std::vector<pros::Motor> *leftMotors, std::vector<pros::Motor> *rightMotors,
         double target, double speed, DIRECTION direction);
-        bool panic(pros::Controller & master);
+    bool panic();
 
 
 
     void checkGyro();
-    void correctGyroCalibration(float accel);
+    void correctGyroCalibration(float accel, float jerk);
+    void addStream(std::stringstream &gyroStream, float speed);
 
 };
 #endif

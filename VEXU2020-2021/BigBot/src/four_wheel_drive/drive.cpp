@@ -29,14 +29,19 @@ void FourWheelDrive::setMotors(vector<Motor> *motors, double speed)
 
 void FourWheelDrive::setMotors(double speed)
 {
+    if (LRBias > 1)
+    {
+        speed *= (1 / LRBias);
+    }
+
+
     for(auto motor : *leftMotors)
     {
       motor = speed;
     }
-
     for(auto motor : *rightMotors)
     {
-      motor = speed;
+      motor = speed * LRBias;
     }
 }
 
@@ -119,6 +124,41 @@ void FourWheelDrive::setZeroPosition()
     {
         (*rightMotors)[i].set_zero_position(0);
     }
+}
+
+double FourWheelDrive::getPosition(vector<Motor> * motors)
+{
+    double averagePosition = 0;
+    for(int i = 0; i < numMotors; i++)
+    {
+        averagePosition += motors->at(i).get_position();
+    }
+
+    return averagePosition / (motors->size());
+}
+
+double FourWheelDrive::getAllPosition()
+{
+    double averagePosition = 0;
+    for(int i = 0; i < numMotors; i++)
+    {
+        averagePosition += leftMotors->at(i).get_position();
+        averagePosition += rightMotors->at(i).get_position();
+    }
+
+    return averagePosition / (numMotors * 2);
+}
+
+double FourWheelDrive::getAllSpeed()
+{
+    double averageSpeed = 0;
+    for(int i = 0; i < numMotors; i++)
+    {
+        averageSpeed += leftMotors->at(i).get_actual_velocity();
+        averageSpeed += rightMotors->at(i).get_actual_velocity();
+    }
+
+    return averageSpeed / (numMotors * 2);
 }
 
 //function used in autononomous to drive for a given distance at a given speed
@@ -367,28 +407,4 @@ void FourWheelDrive::autoTurnRelative(std::vector<pros::Motor> *leftWheelMotorVe
   setBrakes(rightWheelMotorVector, prevBrake );
 
   return;
-}
-
-double FourWheelDrive::getAllSpeed()
-{
-    double averageSpeed = 0;
-    for(int i = 0; i < numMotors; i++)
-    {
-        averageSpeed += leftMotors->at(i).get_actual_velocity();
-        averageSpeed += rightMotors->at(i).get_actual_velocity();
-    }
-
-    return averageSpeed / (numMotors * 2);
-}
-
-double FourWheelDrive::getAllPosition()
-{
-    double averagePosition = 0;
-    for(int i = 0; i < numMotors; i++)
-    {
-        averagePosition += leftMotors->at(i).get_position();
-        averagePosition += rightMotors->at(i).get_position();
-    }
-
-    return averagePosition / (numMotors * 2);
 }

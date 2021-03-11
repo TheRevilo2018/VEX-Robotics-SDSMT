@@ -92,7 +92,7 @@ void competition_initialize() {
 void calibrate()
 {
 	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
-	driveBase.calibrateAll(master);
+	driveBase.calibrateAll();
 }
 
 
