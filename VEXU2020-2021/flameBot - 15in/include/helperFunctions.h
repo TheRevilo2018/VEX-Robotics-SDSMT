@@ -10,5 +10,6 @@ void setMotors(std::vector<pros::Motor> & motors, double speed);
 void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, double speed);
 void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t brakeType);
 bool pressButton(std::uint32_t  & debounceTime);
+void unfold();
 
 #endif

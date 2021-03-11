@@ -37,3 +37,14 @@ bool pressButton(std::uint32_t  & debounceTime)
 	}
 	return false;
 }
+
+void unfold()
+{
+  // We want to run the bottom rollor to detatch its rubber band mounting
+  // Our intake is a ratchet, if we run it negative it will lock and move instead of skipping
+  bottomDrum = 100;
+  setMotors(intakeMotorVector, -100);
+  pros::delay(800);
+  bottomDrum = 0;
+  setMotors(intakeMotorVector, 0);
+}

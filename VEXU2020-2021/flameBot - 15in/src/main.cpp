@@ -58,7 +58,10 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous()
+{
+		unfold();
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -103,9 +106,6 @@ void autonomous() {}
 	std::uint32_t debounceButtonR2 = 0;
 	std::uint32_t debounceButtonL2 = 0;
  	int loopDelay = 20;
- 	bool trayLock = false;
- 	int liftIndex = 0;
- 	bool trayHitting = false;
 
  		while (true)
  		{
