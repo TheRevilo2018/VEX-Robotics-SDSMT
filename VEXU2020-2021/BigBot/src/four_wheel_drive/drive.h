@@ -6,6 +6,7 @@
 #include <vector>
 #include <sstream>
 #include "math.h"
+#include "../../include/helperfunctions.h"
 
 enum DIRECTION {FORWARD, BACKWARD};
 

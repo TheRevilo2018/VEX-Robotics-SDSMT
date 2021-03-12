@@ -37,3 +37,34 @@ bool pressButton(std::uint32_t  & debounceTime)
 	}
 	return false;
 }
+
+
+// Prevents inifinite rotation and bounding into 360 degrees
+float degreeBoundingHelper(float inDegrees)
+{
+  float inRadians = degreesToRadians(inDegrees);
+  return radiansToDegrees(atan2(sin( inRadians), cos(inRadians)));
+}
+
+float degreesToRadians(float radians)
+{
+  return radians * M_PI / 180.0;
+}
+
+float radiansToDegrees(float degrees)
+{
+  return degrees * 180.0 / M_PI;
+}
+
+float bindToMagnitude(float value, float MAX_MAGNITUDE)
+{
+  if(value > MAX_MAGNITUDE)
+  {
+    value = MAX_MAGNITUDE;
+  }
+  else if(value < -MAX_MAGNITUDE)
+  {
+    value = -MAX_MAGNITUDE;
+  }
+  return value;
+}
