@@ -37,7 +37,6 @@ bool pressButton(std::uint32_t  & debounceTime)
 	}
 	return false;
 }
-
 void unfold()
 {
   // We want to run the bottom rollor to detatch its rubber band mounting
@@ -47,4 +46,71 @@ void unfold()
   pros::delay(800);
   bottomDrum = 0;
   setMotors(intakeMotorVector, 0);
+}
+
+void setIntakeContain()
+{
+  // Set everything to an intaking but not inserting speeds
+  pooper = 0;
+  setMotors(intakeMotorVector, intakeConst);
+  bottomDrum = intakeConst;
+  topDrum = inserterRestingConst;
+}
+
+void setIntakePoop()
+{
+  // Set everything to an intaking but not inserting speeds
+  pooper = -inserterConst;
+  setMotors(intakeMotorVector, intakeConst);
+  bottomDrum = intakeConst;
+  topDrum = -inserterConst;
+}
+
+void setIntakeInsert()
+{
+  // Set everything to an intaking but not inserting speeds
+  pooper = inserterConst;
+  setMotors(intakeMotorVector, intakeConst);
+  bottomDrum = intakeConst;
+  topDrum = inserterConst;
+}
+
+bool isHoldingBall()
+{
+  return false;
+}
+Color getBallColor()
+{
+  return blue;
+}
+void autoIntake()
+{
+  setIntakeContain();
+  float MAX_TIME = 1000;
+  float currentTime = 0;
+  bool holdingBall = false;
+
+  while(!holdingBall && currentTime < MAX_TIME)
+  {
+    holdingBall = isHoldingBall();
+    currentTime += loopDelay;
+    pros::delay(loopDelay);
+  }
+
+  Color ballColor = getBallColor();
+  if(ballColor != NA)
+  {
+    // Either shoot or poop
+    if(ballColor == colorToPoop)
+    {
+      setIntakePoop();
+      pros::delay(500);
+    }
+    else
+    {
+      setIntakeInsert();
+      pros::delay(500);
+    }
+  }
+  setIntakeContain();
 }

@@ -35,7 +35,6 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
-#include "helperFunctions.h"
 
 /**
  * You should add more #includes here
@@ -155,8 +154,18 @@ static std::vector<pros::Motor> intakeMotorVector = {rightArm, leftArm};
 //pros declarations
 static std::uint32_t now = pros::millis();
 
+// Enums
+enum Color { red, blue, NA };
+
 //globals
 static bool actuatorState = false;
+static const int inserterConst = 110;
+static const int inserterRestingConst = -40;
+static const int intakeConst = 85;
+static const int pooperConst = 85;
+static const int loopDelay = 20;
+static Color colorToPoop = red;
+
 
 
 #endif  // _PROS_MAIN_H_

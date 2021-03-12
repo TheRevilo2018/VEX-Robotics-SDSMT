@@ -1,4 +1,5 @@
 #include "main.h"
+#include "helperfunctions.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -61,6 +62,10 @@ void competition_initialize() {}
 void autonomous()
 {
 		unfold();
+<<<<<<< Updated upstream
+=======
+		autoIntake();
+>>>>>>> Stashed changes
 }
 
 /**
@@ -80,10 +85,7 @@ void autonomous()
  {
  	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
 
-	const int inserterConst = 110;
-	const int inserterRestingConst = -40;
-	const int intakeConst = 85;
-	const int pooperConst = 85;
+
 
 	int turnThreshold = 10;
 	int driveThreshold = 10;
@@ -105,8 +107,6 @@ void autonomous()
 	std::uint32_t debounceButtonL1 = 0;
 	std::uint32_t debounceButtonR2 = 0;
 	std::uint32_t debounceButtonL2 = 0;
- 	int loopDelay = 20;
-
  		while (true)
  		{
 			//toggle in
