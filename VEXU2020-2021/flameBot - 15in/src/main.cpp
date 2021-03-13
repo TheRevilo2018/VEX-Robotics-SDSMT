@@ -28,6 +28,11 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
+	visionSensor.clear_led();
+	visionSensor.set_signature(RED_BALL_SIG_INDEX, &RED_BALL_SIG);
+	visionSensor.set_signature(BLUE_BALL_SIG_INDEX, &BLUE_BALL_SIG);
+	visionSensor.set_signature(BACKPLATE_SIG_INDEX, &BACKPLATE_SIG);
+
 }
 
 /**
@@ -62,10 +67,10 @@ void competition_initialize() {}
 void autonomous()
 {
 		unfold();
-<<<<<<< Updated upstream
-=======
-		autoIntake();
->>>>>>> Stashed changes
+		while(true)
+		{
+			autoIntake();
+		}
 }
 
 /**
@@ -148,7 +153,7 @@ void autonomous()
 	                if (inserterPercent <= 0)
 	                {
 	                    inserterPercent = inserterConst;
-						pooperPercent = -pooperConst;
+											pooperPercent = -pooperConst;
 	                }
 	                else
 	                {

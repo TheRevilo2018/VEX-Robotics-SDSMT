@@ -55,12 +55,13 @@ void setIntakeContain()
   setMotors(intakeMotorVector, intakeConst);
   bottomDrum = intakeConst;
   topDrum = inserterRestingConst;
+  
 }
 
 void setIntakePoop()
 {
   // Set everything to an intaking but not inserting speeds
-  pooper = -inserterConst;
+  pooper = pooperConst;
   setMotors(intakeMotorVector, intakeConst);
   bottomDrum = intakeConst;
   topDrum = -inserterConst;
@@ -69,7 +70,7 @@ void setIntakePoop()
 void setIntakeInsert()
 {
   // Set everything to an intaking but not inserting speeds
-  pooper = inserterConst;
+  pooper = -pooperConst;
   setMotors(intakeMotorVector, intakeConst);
   bottomDrum = intakeConst;
   topDrum = inserterConst;
@@ -79,14 +80,38 @@ bool isHoldingBall()
 {
   return false;
 }
+
 Color getBallColor()
 {
-  return blue;
+  int numObjects = visionSensor.get_object_count();
+  pros::vision_object_s_t biggestObject;
+  if(numObjects != 0)
+  {
+      biggestObject = visionSensor.get_by_size(0);
+  }
+  else
+  {
+    return NA;
+  }
+
+  if(biggestObject.signature == BLUE_BALL_SIG_INDEX)
+  {
+    return blue;
+  }
+  else if(biggestObject.signature == RED_BALL_SIG_INDEX)
+  {
+    return red;
+  }
+  else
+  {
+    return NA;
+  }
 }
+
 void autoIntake()
 {
   setIntakeContain();
-  float MAX_TIME = 1000;
+  float MAX_TIME = 3000;
   float currentTime = 0;
   bool holdingBall = false;
 
@@ -98,6 +123,7 @@ void autoIntake()
   }
 
   Color ballColor = getBallColor();
+  pros::lcd::set_text(3, "Got Color: " + std::to_string(ballColor));
   if(ballColor != NA)
   {
     // Either shoot or poop
