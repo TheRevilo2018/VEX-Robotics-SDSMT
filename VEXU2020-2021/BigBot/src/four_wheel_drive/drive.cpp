@@ -220,3 +220,117 @@ void FourWheelDrive::accelerate(double targetSpeed)
 		}
 	}
 }
+
+void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
+{
+  float INTEGRATOR_MAX_MAGNITUDE = 100;
+  float DELTA_T = LOOP_DELAY / 1000.0;
+  float currentDistance = 0;
+
+  float kP = 1;
+  float kI = .5;
+  float kD = .005;
+
+  float porportionalAmount = 0;
+  float integralAmount = 0;
+  float derivativeAmount = 0;
+
+  long iterations = 1;
+  float lastDistance = 0;
+  float accumulatedDistance = 0;
+
+  float lastEncoderVal = leftMotors->at(0).get_position();
+  float runTime = 0;
+  while (abs(numTiles - currentDistance) > 0.1 &&
+     runTime < ONE_SEC_IN_MS * numTiles)
+  {
+    porportionalAmount = numTiles - currentDistance;
+
+    accumulatedDistance += porportionalAmount;
+    accumulatedDistance = bindToMagnitude(accumulatedDistance, INTEGRATOR_MAX_MAGNITUDE); 
+
+    integralAmount = accumulatedDistance * DELTA_T;
+
+    derivativeAmount = (lastDistance - currentDistance) / DELTA_T;
+
+    float total = porportionalAmount * kP + integralAmount * kI + derivativeAmount * kD;
+    total = bindToMagnitude(total, 1);
+
+    float speed = total * desiredSpeed;
+
+    float currentEncoderVal = leftMotors->at(0).get_position();
+
+    currentDistance += (currentEncoderVal - lastEncoderVal) / 1000.0;
+
+
+    lcd::set_text(3, "Desired " + to_string(numTiles));
+    lcd::set_text(4, "Current: " + to_string(currentDistance));
+    lcd::set_text(5, "Raw Vals: " + to_string(porportionalAmount) + " " + to_string(integralAmount) + " " + to_string(derivativeAmount));
+    lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
+    lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance));
+
+    setMotors(rightMotors, speed);
+    setMotors(leftMotors, speed);
+
+    iterations++;
+    lastDistance = porportionalAmount;
+    lastEncoderVal = currentEncoderVal;
+    runTime += LOOP_DELAY;
+    pros::delay(LOOP_DELAY);
+  }
+}
+
+void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
+{
+  lcd::set_text(1, "turnDegrees: " + to_string(numDegrees) + " " + to_string(desiredSpeed));
+
+  float INTEGRATOR_MAX_MAGNITUDE = 100;
+  float DELTA_T = LOOP_DELAY / 1000.0;
+  float startingDegrees = degreeBoundingHelper(inertialSensor->get_heading());
+  float endingDegrees = degreeBoundingHelper(startingDegrees + numDegrees);
+  float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
+
+  lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
+
+  float kP = 1 / 90.0;
+  float kI = .1 / 90.0;
+  float kD = .02 / 90.0;
+
+  float porportionalAmount = 0;
+  float integralAmount = 0;
+  float derivativeAmount = 0;
+  float accumulatedDegrees = 0;
+
+  float lastDegrees = 0;
+  float runTime = 0;
+  while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2 
+    && runTime < ONE_SEC_IN_MS)
+  {
+    currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
+    
+    porportionalAmount = degreeBoundingHelper(endingDegrees - currentDegrees);
+
+    accumulatedDegrees += porportionalAmount;
+    accumulatedDegrees = bindToMagnitude(accumulatedDegrees, INTEGRATOR_MAX_MAGNITUDE);
+
+    derivativeAmount = (porportionalAmount - lastDegrees) / DELTA_T;
+    lastDegrees = porportionalAmount;
+
+    integralAmount = accumulatedDegrees * DELTA_T;
+
+    float total = porportionalAmount * kP + integralAmount * kI + derivativeAmount * kD;
+    total = bindToMagnitude(total, 1);
+    float speed = total * desiredSpeed;
+
+    setMotors(rightMotors, -speed);
+    setMotors(leftMotors, speed);
+
+    lcd::set_text(3, "Desired " + to_string(endingDegrees));
+    lcd::set_text(4, "Current: " + to_string(currentDegrees));
+    lcd::set_text(5, "Raw Vals: " + to_string(porportionalAmount) + " " + to_string(integralAmount) + " " + to_string(derivativeAmount));
+    lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
+
+    runTime += LOOP_DELAY;
+    pros::delay(LOOP_DELAY);
+  }
+}

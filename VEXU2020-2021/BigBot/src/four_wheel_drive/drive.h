@@ -3,6 +3,7 @@
 
 #include "../../include/api.h"
 #include "../logger/logger.h"
+#include "../../include/helperfunctions.h"
 #include <vector>
 #include <sstream>
 #include <fstream>
@@ -70,6 +71,8 @@ public:
 
     void drive(std::vector<pros::Motor> *leftWheelMotorVector,
         std::vector<pros::Motor> *rightWheelMotorVector, int distance);
+    void driveTilesPID(float numTiles, float desiredSpeed= 100);
+    void turnDegreesPID(float numDegrees, float desiredSpeed= 100);
 
 private:
     void rawSetMotors(double speed, double bias = 1);
