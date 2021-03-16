@@ -24,8 +24,6 @@ void autonomous()
 	int blue = 1;
 	int red = 2;
 
-	driveBase.driveDist(4.0, FORWARD);
-
 	rightWheelMotorVector[2].set_zero_position(0);
 
 	pros::lcd::set_text(6, "auton finished " + std::to_string(rightWheelMotorVector[2].get_position()));
