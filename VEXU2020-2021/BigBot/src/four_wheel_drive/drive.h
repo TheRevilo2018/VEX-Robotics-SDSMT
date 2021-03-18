@@ -35,14 +35,11 @@ class FourWheelDrive
     double LRBiasLowBack = 1;
     double maxAccelerationForward = 3;
     double maxAccelerationBackward = 3;
-    double distanceMultiplier;
 
     const double ROTATION_MUL = 845;
     const int STOP_AMOUNT = 100;
     const int LOOP_DELAY = 20;
 
-
-    DIRECTION direction = FORWARD;
     int numMotors; //number of motors on ONE side
 
 public:
@@ -58,6 +55,7 @@ public:
     void calibrateDrift();
     void calibrateDriftLoop(double testSpeed, double &bias);
     void waitForUser(std::string message);
+    void showOff();
 
     void accelerate(double speed);
     void setMotorsRelative(std::vector<pros::Motor> *motors, double distance, double speed);

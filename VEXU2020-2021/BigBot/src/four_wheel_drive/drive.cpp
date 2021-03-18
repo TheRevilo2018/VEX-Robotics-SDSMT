@@ -16,6 +16,8 @@ FourWheelDrive::FourWheelDrive(vector<Motor> & right, vector<Motor> & left,
     inertialSensor = inertialPointer;
     master = controllerPointer;
     numMotors = rightMotors->size();
+
+    readCalibration();
 }
 
 //take in a vector of motors, and set their speed to a value
@@ -247,7 +249,7 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     porportionalAmount = numTiles - currentDistance;
 
     accumulatedDistance += porportionalAmount;
-    accumulatedDistance = bindToMagnitude(accumulatedDistance, INTEGRATOR_MAX_MAGNITUDE); 
+    accumulatedDistance = bindToMagnitude(accumulatedDistance, INTEGRATOR_MAX_MAGNITUDE);
 
     integralAmount = accumulatedDistance * DELTA_T;
 
@@ -303,11 +305,11 @@ void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
 
   float lastDegrees = 0;
   float runTime = 0;
-  while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2 
+  while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2
     && runTime < ONE_SEC_IN_MS)
   {
     currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
-    
+
     porportionalAmount = degreeBoundingHelper(endingDegrees - currentDegrees);
 
     accumulatedDegrees += porportionalAmount;

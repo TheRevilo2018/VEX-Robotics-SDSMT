@@ -6,30 +6,54 @@ using namespace std;
 //calibration
 void FourWheelDrive::readCalibration()
 {
+	char buf[2048]; // This just needs to be larger than the contents of the file
+
 	FILE* usd_file_read = fopen("/usd/calibration.txt", "r");
     if(usd_file_read == NULL)
     {
         pros::lcd::set_text(6, "file couldn't open");
     }
-	char buf[2048]; // This just needs to be larger than the contents of the file
-	fread(buf, 1, 2048, usd_file_read); // passing 1 because a `char` is 1 byte, and 2048 b/c it's the length of buf
-	fclose(usd_file_read); // always close files when you're done with them
+	else
+	{
+		fread(buf, 1, 2048, usd_file_read); // passing 1 because a `char` is 1 byte, and 2048 b/c it's the length of buf
+		fclose(usd_file_read); // always close files when you're done with them
 
-    fileStream.str() = string(buf);
+		fileStream.str() = string(buf);
 
-    fileStream >> maxSpeed;
-    fileStream >> minSpeed;
-    fileStream >> LRBiasHigh;
-	fileStream >> LRBiasLow;
-    fileStream >> maxAccelerationForward;
-    fileStream >> maxAccelerationBackward;
-    fileStream >> distanceMultiplier;
+		fileStream >> maxSpeed;
+		fileStream >> minSpeed;
+		fileStream >> speedBias;
+
+		fileStream >> LRBiasHigh;
+		fileStream >> LRBiasLow;
+		fileStream >> LRBiasHighBack;
+		fileStream >> LRBiasLowBack;
+		fileStream >> maxAccelerationForward;
+		fileStream >> maxAccelerationBackward;
+
+		pros::lcd::set_text(6, "file input sucessful");
+	}
 
 	midSpeed = (maxSpeed + minSpeed) / 2;
 }
 
 void FourWheelDrive::writeCalibration()
 {
+	const string DELIM = " ";
+	fileStream.clear();
+
+	fileStream << maxSpeed << DELIM;
+	fileStream << minSpeed << DELIM;
+	fileStream << speedBias << DELIM;
+
+	fileStream << LRBiasHigh << DELIM;
+	fileStream << LRBiasLow << DELIM;
+	fileStream << LRBiasHighBack << DELIM;
+	fileStream << LRBiasLowBack << DELIM;
+	fileStream << maxAccelerationForward << DELIM;
+	fileStream << maxAccelerationBackward;
+
+
     FILE* usd_file_write = fopen("/usd/calibration.txt", "w");
     fputs(fileStream.str().c_str(), usd_file_write);
     fclose(usd_file_write);
@@ -51,30 +75,18 @@ void FourWheelDrive::calibrateAll()
         delay(LOOP_DELAY);
         count++;
     }
-    //master->set_text(0, 2, "calibrated drive ");
+
 	lcd::set_text(2, "status:" + to_string(inertialSensor->get_status()));
 	lcd::set_text(3,  strerror(errno));
-
-	//correctGyroCalibration(-0.02, -0.01);
-
 
 	calibrateMinSpeed();
     calibrateMaxAcceleration();
     calibrateMaxSpeed();
     calibrateDrift();
 
+    writeCalibration();
 
-
-    //writeCalibration();
-
-	waitForUser("rock back and forth");
-	while(true)
-	{
-		accelerate(maxSpeed);
-		delay(500);
-		accelerate(-maxSpeed);
-		delay(500);
-	}
+	showOff();
 }
 
 
@@ -385,6 +397,18 @@ void FourWheelDrive::calibrateDriftLoop(double testSpeed, double &bias)
 
 
 
+
+void FourWheelDrive::showOff()
+{
+	waitForUser("rock back and forth");
+	while(true)
+	{
+		accelerate(maxSpeed);
+		delay(500);
+		accelerate(-maxSpeed);
+		delay(500);
+	}
+}
 
 void FourWheelDrive::waitForUser(string message)
 {
