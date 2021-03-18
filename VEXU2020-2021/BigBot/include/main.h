@@ -94,6 +94,7 @@ void opcontrol(void);
 
 #endif
 
+#define ONE_SEC_IN_MS 1000.0
 //sensor port defines
 #define LEFT_TRAY_BUMPER_PORT 'A'
 #define RIGHT_TRAY_BUMPER_PORT 'B'
