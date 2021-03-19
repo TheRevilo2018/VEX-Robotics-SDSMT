@@ -35,7 +35,6 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
-#include "helperFunctions.h"
 
 /**
  * You should add more #includes here
@@ -98,7 +97,7 @@ void opcontrol(void);
 #define LIGHT_SENSOR_PORT 'C'
 #define ACTUATOR_PORT 'H'
 #define INERTIAL_SENSOR_PORT 3
-
+#define VISION_SENSOR_PORT 14
 //Motor port defines
 //drive
 #define RIGHT_WHEEL_FRONT_PORT 5
@@ -142,6 +141,16 @@ static pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
 static pros::ADIDigitalIn trayBumperLeft(LEFT_TRAY_BUMPER_PORT);
 static pros::ADIDigitalIn trayBumperRight(RIGHT_TRAY_BUMPER_PORT);
 static pros::ADIDigitalOut actuator(ACTUATOR_PORT);
+static pros::Vision visionSensor (VISION_SENSOR_PORT);
+
+// Vision Sensor Signatures
+#define RED_BALL_SIG_INDEX 1
+#define BLUE_BALL_SIG_INDEX 2
+#define BACKPLATE_SIG_INDEX 3
+static pros::vision_signature_s_t RED_BALL_SIG = pros::Vision::signature_from_utility(RED_BALL_SIG_INDEX, 7607, 9741, 8674, -1573, -153, -863, 0.900, 0);
+static pros::vision_signature_s_t BLUE_BALL_SIG = pros::Vision::signature_from_utility(BLUE_BALL_SIG_INDEX, -3099, -1713, -2406, 7985, 11737, 9861, 1.600, 0);
+static pros::vision_signature_s_t BACKPLATE_SIG = pros::Vision::signature_from_utility(BACKPLATE_SIG_INDEX, -1237, 1, -618, 179, 2291, 1234, 1.100, 0);
+
 
 //motor grouping declarations
 static std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelRight1, wheelRight2, wheelRight3};
@@ -156,8 +165,18 @@ static FourWheelDrive *driveBase;
 //pros declarations
 static std::uint32_t now = pros::millis();
 
+// Enums
+enum Color { red=1, blue=2, NA=-1 };
+
 //globals
 static bool actuatorState = false;
+static const int inserterConst = 110;
+static const int inserterRestingConst = -40;
+static const int intakeConst = 85;
+static const int pooperConst = 85;
+static const int loopDelay = 20;
+static Color colorToPoop = red;
+
 
 
 #endif  // _PROS_MAIN_H_

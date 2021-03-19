@@ -1,4 +1,5 @@
 #include "main.h"
+#include "helperfunctions.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -13,6 +14,14 @@ void initialize() {
 	FourWheelDrive tempBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 
 	driveBase = &tempBase;
+  
+	pros::lcd::register_btn1_cb(on_center_button);
+	visionSensor.clear_led();
+	visionSensor.set_signature(RED_BALL_SIG_INDEX, &RED_BALL_SIG);
+	visionSensor.set_signature(BLUE_BALL_SIG_INDEX, &BLUE_BALL_SIG);
+	visionSensor.set_signature(BACKPLATE_SIG_INDEX, &BACKPLATE_SIG);
+
+
 }
 
 /**
@@ -44,7 +53,14 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous()
+{
+		unfold();
+		while(true)
+		{
+			autoIntake();
+		}
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -63,10 +79,7 @@ void autonomous() {}
  {
  	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
 
-	const int inserterConst = 110;
-	const int inserterRestingConst = -40;
-	const int intakeConst = 85;
-	const int pooperConst = 85;
+
 
 	int turnThreshold = 10;
 	int driveThreshold = 10;
@@ -75,6 +88,7 @@ void autonomous() {}
 	int intakePercent = 0;
 	int pooperPercent = 0;
 	int inserterPercent = inserterRestingConst;
+
  	std::uint32_t debounceButtonA = 0;
  	std::uint32_t debounceButtonB = 0;
  	std::uint32_t debounceButtonX = 0;
@@ -87,10 +101,6 @@ void autonomous() {}
 	std::uint32_t debounceButtonL1 = 0;
 	std::uint32_t debounceButtonR2 = 0;
 	std::uint32_t debounceButtonL2 = 0;
- 	int loopDelay = 20;
- 	bool trayLock = false;
- 	int liftIndex = 0;
- 	bool trayHitting = false;
 
 
 	if (master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_R1))
@@ -145,7 +155,7 @@ void autonomous() {}
 	                if (inserterPercent <= 0)
 	                {
 	                    inserterPercent = inserterConst;
-						pooperPercent = -pooperConst;
+											pooperPercent = -pooperConst;
 	                }
 	                else
 	                {
@@ -198,7 +208,9 @@ void autonomous() {}
  			setMotors(leftWheelMotorVector, leftMotorPercent);
  			setMotors(rightWheelMotorVector, rightMotorPercent);
 			setMotors(intakeMotorVector, intakePercent);
-			bottomDrum = intakePercent;
+			// Run bottom drum idle speed
+			bottomDrum = intakeConst;
+			// Run top drum on variable speed
 			topDrum = inserterPercent;
 			pooper = pooperPercent;
  			pros::delay(loopDelay);

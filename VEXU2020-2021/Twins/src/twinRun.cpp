@@ -4,7 +4,19 @@ namespace twin
 {
   void opcontrolTask(void* param)
   {
+    // Resolve the motors we'll be using locally
     int pairIndex = (int)param;
+    auto controller = controllerPair[pairIndex];
+    auto wheelMotorVector = wheelVectorPair[pairIndex];
+    auto leftWheelMotorVector = leftWheelVectorPair[pairIndex];
+    auto rightWheelMotorVector = rightWheelVectorPair[pairIndex];
+    auto intakeMotorVector = intakeMotorVectorPair[pairIndex];
+
+    auto Imu = inertialSensorPair[pairIndex];
+
+    auto bottomRoller = bottomRollerPair[pairIndex];
+    auto inserterRoller = inserterRollerPair[pairIndex];
+
     // Screen posting might break async, check it
     pros::lcd::set_text(5, "Calling op_control: " + std::to_string(pros::millis()));
     const int inserterConst = 110;
@@ -34,7 +46,8 @@ namespace twin
     {
         //ball controls
         // Outakes for bottom
-  		if(alpha.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+        
+  		if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
   		{
   			if(pressButton(debounceButtonR1))
   			{
@@ -48,7 +61,7 @@ namespace twin
           }
   			}
   		}
-        else if (alpha.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+        else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
         {
             if(pressButton(debounceButtonR2))
             {
@@ -62,8 +75,8 @@ namespace twin
                 }
             }
         }
-
-        if(alpha.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+		
+        if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
         {
             inserterPercent = inserterConst;
         }
@@ -88,20 +101,20 @@ namespace twin
         }*/
 
     //drive controls
-      if(abs(alpha.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(alpha.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
+      if(abs(controller.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(controller.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
           {
-            leftMotorPercent = alpha.get_analog(ANALOG_LEFT_Y);
-            rightMotorPercent = alpha.get_analog(ANALOG_LEFT_Y);
+            leftMotorPercent = controller.get_analog(ANALOG_LEFT_Y);
+            rightMotorPercent = controller.get_analog(ANALOG_LEFT_Y);
 
-            if(alpha.get_analog(ANALOG_RIGHT_X) > turnThreshold)
+            if(controller.get_analog(ANALOG_RIGHT_X) > turnThreshold)
             {
-              leftMotorPercent += abs(alpha.get_analog(ANALOG_RIGHT_X));
-              rightMotorPercent -= abs(alpha.get_analog(ANALOG_RIGHT_X));
+              leftMotorPercent += abs(controller.get_analog(ANALOG_RIGHT_X));
+              rightMotorPercent -= abs(controller.get_analog(ANALOG_RIGHT_X));
             }
             else
             {
-              leftMotorPercent -= abs(alpha.get_analog(ANALOG_RIGHT_X));
-              rightMotorPercent += abs(alpha.get_analog(ANALOG_RIGHT_X));
+              leftMotorPercent -= abs(controller.get_analog(ANALOG_RIGHT_X));
+              rightMotorPercent += abs(controller.get_analog(ANALOG_RIGHT_X));
             }
           }
           else
@@ -113,8 +126,8 @@ namespace twin
           setMotors(leftWheelMotorVector, leftMotorPercent);
           setMotors(rightWheelMotorVector, rightMotorPercent);
           setMotors(intakeMotorVector, intakePercent);
-          bottomRoller = intakePercent;
-          inserter = inserterPercent;
+          bottomRoller = intakeConst;
+          inserterRoller = inserterPercent;
           pros::delay(loopDelay);
     }
   }

@@ -18,16 +18,18 @@
 void autonomous()
 {
 
-	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector);
+	auto rightWheelVectorsAlpha = rightWheelVectorPair[0];
+	auto leftWheelVectorsAlpha = leftWheelVectorPair[0];
+	FourWheelDrive driveBaseAlpha(rightWheelVectorsAlpha, leftWheelVectorsAlpha);
 
 	int blue = 1;
 	int red = 2;
 
-	driveBase.driveDist(4.0, FORWARD);
+	driveBaseAlpha.driveDist(4.0, FORWARD);
 
-	rightWheelMotorVector[2].set_zero_position(0);
+	rightWheelVectorsAlpha[2].set_zero_position(0);
 
-	pros::lcd::set_text(6, "auton finished " + std::to_string(rightWheelMotorVector[2].get_position()));
+	pros::lcd::set_text(6, "auton finished " + std::to_string(rightWheelVectorsAlpha[2].get_position()));
 
 
 	switch(blue)
@@ -63,10 +65,12 @@ void initialize()
 
 	//2911 for no ball
 	//1896 for ball
-	inertialSensor.reset();
+	inertialSensorAlpha.reset();
+	inertialSensorBeta.reset();
 	//middleLightSensor.calibrate();
 
-	inserter.set_brake_mode(MOTOR_BRAKE_HOLD);
+	inserterAlpha.set_brake_mode(MOTOR_BRAKE_HOLD);
+	inserterBeta.set_brake_mode(MOTOR_BRAKE_HOLD);
 }
 
 /**
@@ -111,4 +115,6 @@ void competition_initialize() {
 void opcontrol()
 {
 	pros::Task opControlAlpha(twin::opcontrolTask, (void*)0, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
+	pros::Task opControlBeta(twin::opcontrolTask, (void*)1, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
+
 }

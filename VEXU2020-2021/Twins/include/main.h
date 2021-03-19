@@ -97,20 +97,33 @@ void opcontrol(void);
 #endif
 
 //3 wire port defines
-#define GYRO_PORT 'G'
 
 //Motor port defines
-#define RIGHT_WHEEL_BACK_PORT 1
-#define LEFT_WHEEL_FRONT_PORT 2
-#define RIGHT_WHEEL_FRONT_PORT 9
-#define LEFT_WHEEL_BACK_PORT 10
+// Alpha
+#define A_RIGHT_WHEEL_BACK_PORT 1
+#define A_LEFT_WHEEL_FRONT_PORT 2
+#define A_RIGHT_WHEEL_FRONT_PORT 9
+#define A_LEFT_WHEEL_BACK_PORT 10
 
-#define RIGHT_INTAKE 4
-#define BOTTOM_ROLLER 5
-#define INSERTER_PORT 7
-#define LEFT_INTAKE 8
+#define A_RIGHT_INTAKE 4
+#define A_BOTTOM_ROLLER 5
+#define A_INSERTER_PORT 7
+#define A_LEFT_INTAKE 8
 
-#define INERTIAL_SENSOR_PORT 21
+#define A_INERTIAL_SENSOR_PORT 21
+
+// Beta
+#define B_RIGHT_WHEEL_BACK_PORT 18
+#define B_LEFT_WHEEL_FRONT_PORT 14
+#define B_RIGHT_WHEEL_FRONT_PORT 13
+#define B_LEFT_WHEEL_BACK_PORT 19
+
+#define B_RIGHT_INTAKE 11
+#define B_BOTTOM_ROLLER 17
+#define B_INSERTER_PORT 15
+#define B_LEFT_INTAKE 16
+
+#define B_INERTIAL_SENSOR_PORT 12
 
 #define DEBOUNCE_DELAY 200
 #define KILL_BUTTON pros::E_CONTROLLER_DIGITAL_DOWN
@@ -121,30 +134,61 @@ void opcontrol(void);
 //controller declarations
 static pros::Controller alpha(pros::E_CONTROLLER_MASTER);
 static pros::Controller beta(pros::E_CONTROLLER_PARTNER);
+static std::vector<pros::Controller> controllerPair{alpha, beta};
 
 // Standard port declarations
 //Left robot ports
-static pros::Motor wheelFrontLeft(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelBackLeft(LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelFrontRight(RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor wheelBackRight(RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelFrontLeftAlpha(A_LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelBackLeftAlpha(A_LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelFrontRightAlpha(A_RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelBackRightAlpha(A_RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
 
-static pros::Motor leftIntake(LEFT_INTAKE, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor rightIntake(RIGHT_INTAKE, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor bottomRoller(BOTTOM_ROLLER, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
-static pros::Motor inserter(INSERTER_PORT, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor leftIntakeAlpha(A_LEFT_INTAKE, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor rightIntakeAlpha(A_RIGHT_INTAKE, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor bottomRollerAlpha(A_BOTTOM_ROLLER, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor inserterAlpha(A_INSERTER_PORT, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+
+
+static pros::Motor wheelFrontLeftBeta(B_LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelBackLeftBeta(B_LEFT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelFrontRightBeta(B_RIGHT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor wheelBackRightBeta(B_RIGHT_WHEEL_BACK_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_COUNTS);
+
+static pros::Motor leftIntakeBeta(B_LEFT_INTAKE, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor rightIntakeBeta(B_RIGHT_INTAKE, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor bottomRollerBeta(B_BOTTOM_ROLLER, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_COUNTS);
+static pros::Motor inserterBeta(B_INSERTER_PORT, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
 
 
 // 3 wire port declearations
-static pros::Imu inertialSensor(INERTIAL_SENSOR_PORT);
+static pros::Imu inertialSensorAlpha(A_INERTIAL_SENSOR_PORT);
+
+static pros::Imu inertialSensorBeta(B_INERTIAL_SENSOR_PORT);
+
+static std::vector<pros::Imu> inertialSensorPair = {inertialSensorAlpha, inertialSensorBeta};
 
 // Motor grouping declarations
-static std::vector<pros::Motor> wheelMotorVector =
-    {wheelFrontLeft, wheelBackLeft, wheelFrontRight, wheelBackRight};
-static std::vector<pros::Motor> leftWheelMotorVector = {wheelFrontLeft, wheelBackLeft};
-static std::vector<pros::Motor> rightWheelMotorVector = {wheelFrontRight, wheelBackRight};
-static std::vector<pros::Motor> intakeMotorVector = {leftIntake, rightIntake};
+static std::vector<pros::Motor> wheelMotorVectorAlpha =
+    {wheelFrontLeftAlpha, wheelBackLeftAlpha, wheelFrontRightAlpha, wheelBackRightAlpha};
+static std::vector<pros::Motor> leftWheelMotorVectorAlpha = {wheelFrontLeftAlpha, wheelBackLeftAlpha};
+static std::vector<pros::Motor> rightWheelMotorVectorAlpha = {wheelFrontRightAlpha, wheelBackRightAlpha};
+static std::vector<pros::Motor> intakeMotorVectorAlpha = {leftIntakeAlpha, rightIntakeAlpha};
 
+
+static std::vector<pros::Motor> wheelMotorVectorBeta =
+    {wheelFrontLeftBeta, wheelBackLeftBeta, wheelFrontRightBeta, wheelBackRightBeta};
+static std::vector<pros::Motor> leftWheelMotorVectorBeta = {wheelFrontLeftBeta, wheelBackLeftBeta};
+static std::vector<pros::Motor> rightWheelMotorVectorBeta = {wheelFrontRightBeta, wheelBackRightBeta};
+static std::vector<pros::Motor> intakeMotorVectorBeta = {leftIntakeBeta, rightIntakeBeta};
+
+
+static std::vector<std::vector<pros::Motor>> wheelVectorPair = {wheelMotorVectorAlpha, wheelMotorVectorBeta};
+static std::vector<std::vector<pros::Motor>> leftWheelVectorPair = {leftWheelMotorVectorAlpha, leftWheelMotorVectorBeta};
+static std::vector<std::vector<pros::Motor>> rightWheelVectorPair = {rightWheelMotorVectorAlpha, rightWheelMotorVectorBeta};
+static std::vector<std::vector<pros::Motor>> intakeMotorVectorPair = {intakeMotorVectorAlpha, intakeMotorVectorBeta};
+
+static std::vector<pros::Motor> bottomRollerPair = {bottomRollerAlpha, bottomRollerBeta};
+static std::vector<pros::Motor> inserterRollerPair = {inserterAlpha, inserterBeta};
 //drive base class
 
 //position constants
@@ -153,7 +197,7 @@ static std::vector<pros::Motor> intakeMotorVector = {leftIntake, rightIntake};
 static std::uint32_t now = pros::millis();
 
 //globals
-static bool actuatorState = false;
+
 //sanity correction
 
 #endif  // _PROS_MAIN_H_
