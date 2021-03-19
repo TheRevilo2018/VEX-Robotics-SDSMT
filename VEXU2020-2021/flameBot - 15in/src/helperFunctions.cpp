@@ -52,18 +52,14 @@ void setIntakeContain()
 {
   // Set everything to an intaking but not inserting speeds
   pooper = 0;
-  setMotors(intakeMotorVector, intakeConst);
-  bottomDrum = intakeConst;
   topDrum = inserterRestingConst;
-  
+
 }
 
 void setIntakePoop()
 {
   // Set everything to an intaking but not inserting speeds
   pooper = pooperConst;
-  setMotors(intakeMotorVector, intakeConst);
-  bottomDrum = intakeConst;
   topDrum = -inserterConst;
 }
 
@@ -71,8 +67,6 @@ void setIntakeInsert()
 {
   // Set everything to an intaking but not inserting speeds
   pooper = -pooperConst;
-  setMotors(intakeMotorVector, intakeConst);
-  bottomDrum = intakeConst;
   topDrum = inserterConst;
 }
 
@@ -110,6 +104,8 @@ Color getBallColor()
 
 void autoIntake()
 {
+  setMotors(intakeMotorVector, intakeConst);
+  bottomDrum = intakeConst;
   setIntakeContain();
   float MAX_TIME = 3000;
   float currentTime = 0;

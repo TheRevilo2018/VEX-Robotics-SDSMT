@@ -80,7 +80,7 @@ extern FourWheelDrive* driveBase;
 extern  std::uint32_t now;
 
 // Enums
-enum Color { red=1, blue=2, NA=-1 };
+enum Color { red='R', blue='B', NA='N'};
 
 //globals
 extern bool actuatorState;
