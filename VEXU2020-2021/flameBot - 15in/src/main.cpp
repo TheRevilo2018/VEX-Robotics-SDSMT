@@ -1,5 +1,4 @@
 #include "main.h"
-#include "helperfunctions.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -14,8 +13,7 @@ void initialize() {
 	FourWheelDrive tempBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 
 	driveBase = &tempBase;
-  
-	pros::lcd::register_btn1_cb(on_center_button);
+
 	visionSensor.clear_led();
 	visionSensor.set_signature(RED_BALL_SIG_INDEX, &RED_BALL_SIG);
 	visionSensor.set_signature(BLUE_BALL_SIG_INDEX, &BLUE_BALL_SIG);
