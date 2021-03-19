@@ -2,22 +2,6 @@
 #include "helperfunctions.h"
 
 /**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
-
-/**
  * Runs initialization code. This occurs as soon as the program is started.
  *
  * All other competition modes are blocked by initialize; it is recommended
@@ -27,11 +11,16 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
 
+	FourWheelDrive tempBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
+
+	driveBase = &tempBase;
+  
 	pros::lcd::register_btn1_cb(on_center_button);
 	visionSensor.clear_led();
 	visionSensor.set_signature(RED_BALL_SIG_INDEX, &RED_BALL_SIG);
 	visionSensor.set_signature(BLUE_BALL_SIG_INDEX, &BLUE_BALL_SIG);
 	visionSensor.set_signature(BACKPLATE_SIG_INDEX, &BACKPLATE_SIG);
+
 
 }
 
@@ -112,6 +101,19 @@ void autonomous()
 	std::uint32_t debounceButtonL1 = 0;
 	std::uint32_t debounceButtonR2 = 0;
 	std::uint32_t debounceButtonL2 = 0;
+
+
+	if (master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_R1))
+	{
+		if(master.get_digital(DIGITAL_X))
+		{
+			driveBase->showOff();
+		}
+		{
+			driveBase->calibrateAll();
+		}
+	}
+
  		while (true)
  		{
 			//toggle in
