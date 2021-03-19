@@ -88,6 +88,7 @@ void opcontrol(void);
 #include <stack>
 #include <unordered_map>
 #include <fstream>
+#include "../src/four_wheel_drive/drive.h"
 
 #endif
 
@@ -150,7 +151,7 @@ static std::vector<pros::Motor> intakeMotorVector = {rightArm, leftArm};
 
 
 //drive base class
-
+static FourWheelDrive *driveBase;
 
 //pros declarations
 static std::uint32_t now = pros::millis();

@@ -1,14 +1,14 @@
 #ifndef _FOUR_WHEEL_DRIVE
 #define _FOUR_WHEEL_DRIVE
 
+#define ONE_SEC_IN_MS 1000.0
+
 #include "../../include/api.h"
 #include "../../include/helperFunctions.h"
 #include <vector>
 #include <sstream>
 #include <fstream>
 #include "math.h"
-
-#define ONE_SEC_IN_MS 1000.0
 
 class FourWheelDrive
 {
@@ -90,4 +90,6 @@ private:
     void addStream(std::stringstream &gyroStream, float speed);
 
 };
+
+
 #endif
