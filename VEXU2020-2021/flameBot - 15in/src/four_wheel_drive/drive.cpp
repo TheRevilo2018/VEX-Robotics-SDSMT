@@ -230,8 +230,8 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
   float currentDistance = 0;
 
   float kP = 1;
-  float kI = .5;
-  float kD = .005;
+  float kI = .4;
+  float kD = .01;
 
   float porportionalAmount = 0;
   float integralAmount = 0;
@@ -262,7 +262,8 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 
     float currentEncoderVal = leftMotors->at(0).get_position();
 
-    int encoderTicksPerTile = 1000.0;
+    // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
+    int encoderTicksPerTile = 1333.33;
     currentDistance += (currentEncoderVal - lastEncoderVal) / encoderTicksPerTile;
 
 
@@ -291,13 +292,13 @@ void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
   float DELTA_T = LOOP_DELAY / 1000.0;
   float startingDegrees = degreeBoundingHelper(inertialSensor->get_heading());
   float endingDegrees = degreeBoundingHelper(startingDegrees + numDegrees);
-  float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
+  float currentDegrees = startingDegrees;
 
   lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
 
-  float kP = 1 / 90.0;
+  float kP = 1.5 / 90.0;
   float kI = .05 / 90.0;
-  float kD = .02 / 90.0;
+  float kD = .04 / 90.0;
 
   float porportionalAmount = 0;
   float integralAmount = 0;
@@ -307,7 +308,7 @@ void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
   float lastDegrees = 0;
   float runTime = 0;
   while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2
-    && runTime < ONE_SEC_IN_MS)
+    && runTime < ONE_SEC_IN_MS * 1.5)
   {
     currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
