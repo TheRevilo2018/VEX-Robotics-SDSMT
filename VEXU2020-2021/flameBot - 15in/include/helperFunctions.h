@@ -11,7 +11,7 @@ void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, doubl
 void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t brakeType);
 bool pressButton(bool press, bool &debounce);
 void unfold();
-void autoIntake();
+void autoCycle(int time = 3000);
 Color getBallColor();
 bool isHoldingBall();
 void setIntakeInsert();

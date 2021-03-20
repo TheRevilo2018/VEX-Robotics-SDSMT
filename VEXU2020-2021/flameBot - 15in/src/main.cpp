@@ -55,10 +55,7 @@ void competition_initialize() {}
 void autonomous()
 {
 		unfold();
-		while(true)
-		{
-			autoIntake();
-		}
+		autoCycle(3000);
 }
 
 /**
@@ -91,8 +88,6 @@ void autonomous()
 	int pooperPercent = 0;
 	int inserterPercent = inserterRestingConst;
 
-	const int seenBufferSize = 6;
-	std::vector<Color> seenBuffer(seenBufferSize, NA);
 
  	bool debounceButtonA = false;
  	bool debounceButtonB = false;
@@ -174,6 +169,22 @@ void autonomous()
 					inserterPercent = inserterRestingConst;
 					pooperPercent = 0;
 				}
+			}
+
+			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+			{
+			 	if(pressButton(debounceButtonA))
+			 	{
+					driveBase->driveTilesPID(4.0, 75);
+			 	}
+			}
+
+			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+			{
+			 	if(pressButton(debounceButtonB))
+			 	{
+					driveBase->turnDegreesPID(90, 75);
+			 	}
 			}
 
  			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
