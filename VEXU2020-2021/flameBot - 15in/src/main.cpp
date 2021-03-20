@@ -55,7 +55,52 @@ void competition_initialize() {}
 void autonomous()
 {
 		unfold();
+
+		setMotors(intakeMotorVector, intakeConst);
+	  bottomDrum = intakeConst;
+	  setIntakeContain();
+
+
+		// Back ball into first goal
+		driveBase->driveTilesPID(-0.5, 75);
+		pros::delay(200);
+
+		//ove forward, grab ball, and cycle the bottom left goal
+		driveBase->driveTilesPID(1.4, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(-90, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(.75, 75);
+		pros::delay(200);
 		autoCycle(3000);
+		pros::delay(200);
+
+		// Back away from goal, turn to grab next ball, turn to left goal and cycle
+		driveBase->driveTilesPID(-.5, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(90+45);
+		pros::delay(200);
+		driveBase->driveTilesPID(2.25, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(-90, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(.5, 75);
+		autoCycle(3000);
+		pros::delay(200);
+
+		//Back away from goal, turn to get next ball, turn toward top left goal, autoCycle
+		driveBase->driveTilesPID(-1.5, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(90, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(2.25, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(-45, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(.5, 75);
+		pros::delay(200);
+		autoCycle(3000);
+		pros::delay(200);
 }
 
 /**
@@ -74,6 +119,7 @@ void autonomous()
  void opcontrol()
  {
  	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
+	unfold();
 
 	int topDrumLastVal = 0;
 	int pooperLastVal = 0;
@@ -173,7 +219,7 @@ void autonomous()
 
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
 			{
-				driveBase->driveTilesPID(4.0, 75);
+				driveBase->driveTilesPID(-1.0, 75);
 			}
 
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
@@ -203,53 +249,11 @@ void autonomous()
  				rightMotorPercent = 0;
  			}
 
-			auto lastSeenBall = getBallColor();
-			pros::lcd::set_text(4, "Got Color: " + std::to_string(lastSeenBall));
-
-			std::rotate(seenBuffer.begin(), seenBuffer.begin()+1, seenBuffer.end());
-			seenBuffer[0] = lastSeenBall;
-			int ejectTotal = 0;
-			for(int i = 0; i < seenBufferSize; i++)
-			{
-				if(seenBuffer[i] == colorToPoop)
-				{
-					ejectTotal++;
-				}
-			}
-
-			if(ejectTotal > seenBufferSize/2)
-			{
-				ejecting = true;
-				topDrumLastVal = inserterPercent;
-				pooperLastVal = pooperPercent;
-			}
-			// Check for ball to auto-poop
-			if(ejecting)
-			{
-				setIntakePoop();
-				if(currentEjectTime > MAX_EJECT_TIME)
-				{
-					ejecting = false;
-					currentEjectTime = 0;
-					inserterPercent = topDrumLastVal;
-					pooperPercent = pooperLastVal;
-				}
-				else
-				{
-					currentEjectTime += loopDelay;
-				}
-			}
-			else
-			{
-				// Run bottom drum idle speed
-				// Run top drum on variable speed
-				topDrum = inserterPercent;
-				pooper = pooperPercent;
-			}
 			setMotors(leftWheelMotorVector, leftMotorPercent);
 			setMotors(rightWheelMotorVector, rightMotorPercent);
 			setMotors(intakeMotorVector, intakePercent);
-
+			pooper = pooperPercent;
+			topDrum = inserterPercent;
 			bottomDrum = intakeConst;
  			pros::delay(loopDelay);
  		}

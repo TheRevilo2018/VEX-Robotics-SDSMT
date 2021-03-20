@@ -243,8 +243,11 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 
   float lastEncoderVal = leftMotors->at(0).get_position();
   float runTime = 0;
+
+  int maxRunTime = max(ONE_SEC_IN_MS, ONE_SEC_IN_MS * abs(numTiles));
+
   while (abs(numTiles - currentDistance) > 0.1 &&
-     runTime < ONE_SEC_IN_MS * numTiles)
+     runTime < maxRunTime)
   {
     porportionalAmount = numTiles - currentDistance;
 
@@ -265,7 +268,6 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
     int encoderTicksPerTile = 1333.33;
     currentDistance += (currentEncoderVal - lastEncoderVal) / encoderTicksPerTile;
-
 
     lcd::set_text(3, "Desired " + to_string(numTiles));
     lcd::set_text(4, "Current: " + to_string(currentDistance));
