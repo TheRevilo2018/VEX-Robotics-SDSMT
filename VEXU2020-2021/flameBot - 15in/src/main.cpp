@@ -78,8 +78,11 @@ void autonomous()
  {
  	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
 
-
-
+	int topDrumLastVal = 0;
+	int pooperLastVal = 0;
+	int currentEjectTime = 0;
+	int MAX_EJECT_TIME = 200;
+	bool ejecting = false;
 	int turnThreshold = 10;
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
@@ -87,6 +90,9 @@ void autonomous()
 	int intakePercent = 0;
 	int pooperPercent = 0;
 	int inserterPercent = inserterRestingConst;
+
+	const int seenBufferSize = 6;
+	std::vector<Color> seenBuffer(seenBufferSize, NA);
 
  	std::uint32_t debounceButtonA = 0;
  	std::uint32_t debounceButtonB = 0;
@@ -159,7 +165,7 @@ void autonomous()
 	                else
 	                {
 	                    inserterPercent = inserterRestingConst;
-						pooperPercent = 0;
+											pooperPercent = 0;
 	                }
 	            }
 	        }
@@ -204,14 +210,54 @@ void autonomous()
  				rightMotorPercent = 0;
  			}
 
- 			setMotors(leftWheelMotorVector, leftMotorPercent);
- 			setMotors(rightWheelMotorVector, rightMotorPercent);
+			auto lastSeenBall = getBallColor();
+			pros::lcd::set_text(4, "Got Color: " + std::to_string(lastSeenBall));
+
+			std::rotate(seenBuffer.begin(), seenBuffer.begin()+1, seenBuffer.end());
+			seenBuffer[0] = lastSeenBall;
+			int ejectTotal = 0;
+			for(int i = 0; i < seenBufferSize; i++)
+			{
+				if(seenBuffer[i] == colorToPoop)
+				{
+					ejectTotal++;
+				}
+			}
+
+			if(ejectTotal > seenBufferSize/2)
+			{
+				ejecting = true;
+				topDrumLastVal = inserterPercent;
+				pooperLastVal = pooperPercent;
+			}
+			// Check for ball to auto-poop
+			if(ejecting)
+			{
+				setIntakePoop();
+				if(currentEjectTime > MAX_EJECT_TIME)
+				{
+					ejecting = false;
+					currentEjectTime = 0;
+					inserterPercent = topDrumLastVal;
+					pooperPercent = pooperLastVal;
+				}
+				else
+				{
+					currentEjectTime += loopDelay;
+				}
+			}
+			else
+			{
+				// Run bottom drum idle speed
+				// Run top drum on variable speed
+				topDrum = inserterPercent;
+				pooper = pooperPercent;
+			}
+			setMotors(leftWheelMotorVector, leftMotorPercent);
+			setMotors(rightWheelMotorVector, rightMotorPercent);
 			setMotors(intakeMotorVector, intakePercent);
-			// Run bottom drum idle speed
+
 			bottomDrum = intakeConst;
-			// Run top drum on variable speed
-			topDrum = inserterPercent;
-			pooper = pooperPercent;
  			pros::delay(loopDelay);
  		}
  }
