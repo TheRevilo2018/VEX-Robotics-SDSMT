@@ -63,7 +63,7 @@ void autonomous()
 
 	  //goal 1
 		// Back ball into first goal
-		driveBase->driveTilesPID(-0.5, 75);
+		driveBase->driveTilesPID(-0.3, 75);
 		pros::delay(200);
 
 		//goal 2

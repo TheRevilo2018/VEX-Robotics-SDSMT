@@ -122,7 +122,7 @@ void autoCycle(int time)
 
   while(currentTime < MAX_TIME)
   {
-    Color lastSeenBall = getBallColor();
+    /*Color lastSeenBall = getBallColor();
     pros::lcd::set_text(3, "Got Color: " + std::to_string(lastSeenBall));
     std::rotate(seenBuffer.begin(), seenBuffer.begin()+1, seenBuffer.end());
     seenBuffer[0] = lastSeenBall;
@@ -154,9 +154,10 @@ void autoCycle(int time)
       pros::delay(500);
       currentTime += 500;
     }
-    setIntakeContain();
+    */
+    setIntakePoop();
+    pros::delay(20);
+    currentTime+= 20;
   }
-  setIntakeInsert();
-  pros::delay(500);
   setIntakeContain();
 }

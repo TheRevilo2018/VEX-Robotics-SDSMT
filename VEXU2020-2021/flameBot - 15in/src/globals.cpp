@@ -54,5 +54,5 @@ const int intakeConst = 100;
 const int pooperConst = 85;
 const int loopDelay = 20;
 Color colorToPoop = blue;
-const int seenBufferSize = 6;
+const int seenBufferSize = 4;
 std::vector<Color> seenBuffer(seenBufferSize, NA);
