@@ -171,20 +171,14 @@ void autonomous()
 				}
 			}
 
-			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
 			{
-			 	if(pressButton(debounceButtonA))
-			 	{
-					driveBase->driveTilesPID(4.0, 75);
-			 	}
+				driveBase->driveTilesPID(4.0, 75);
 			}
 
-			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
 			{
-			 	if(pressButton(debounceButtonB))
-			 	{
-					driveBase->turnDegreesPID(90, 75);
-			 	}
+				driveBase->turnDegreesPID(90, 75);
 			}
 
  			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
