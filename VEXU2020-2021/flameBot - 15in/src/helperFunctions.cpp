@@ -27,16 +27,25 @@ void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, doubl
   }
 }
 
-bool pressButton(std::uint32_t  & debounceTime)
+bool pressButton(bool press, bool &debounce)
 {
-	std::uint32_t pressTime = pros::millis();
-	if(pressTime - debounceTime >= DEBOUNCE_DELAY)
-	{
-		debounceTime = pressTime;
-		return true;
-	}
-	return false;
+	if(press)
+    {
+        if(!debounce)
+        {
+            debounce = true;
+            return true;
+        }
+    }
+    else
+    {
+        debounce = false;
+    }
+
+    return false;
 }
+
+
 void unfold()
 {
   // We want to run the bottom rollor to detatch its rubber band mounting

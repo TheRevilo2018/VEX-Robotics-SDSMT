@@ -94,18 +94,18 @@ void autonomous()
 	const int seenBufferSize = 6;
 	std::vector<Color> seenBuffer(seenBufferSize, NA);
 
- 	std::uint32_t debounceButtonA = 0;
- 	std::uint32_t debounceButtonB = 0;
- 	std::uint32_t debounceButtonX = 0;
- 	std::uint32_t debounceButtonY = 0;
- 	std::uint32_t debounceButtonDOWN = 0;
- 	std::uint32_t debounceButtonUP = 0;
- 	std::uint32_t debounceButtonLEFT = 0;
- 	std::uint32_t debounceButtonRIGHT = 0;
- 	std::uint32_t debounceButtonR1 = 0;
-	std::uint32_t debounceButtonL1 = 0;
-	std::uint32_t debounceButtonR2 = 0;
-	std::uint32_t debounceButtonL2 = 0;
+ 	bool debounceButtonA = false;
+ 	bool debounceButtonB = false;
+ 	bool debounceButtonX = false;
+ 	bool debounceButtonY = false;
+ 	bool debounceButtonDOWN = false;
+ 	bool debounceButtonUP = false;
+ 	bool debounceButtonLEFT = false;
+ 	bool debounceButtonRIGHT = false;
+ 	bool debounceButtonR1 = false;
+	bool debounceButtonL1 = false;
+	bool debounceButtonR2 = false;
+	bool debounceButtonL2 = false;
 
 
 	if (master.get_digital(DIGITAL_L1) && master.get_digital(DIGITAL_R1))
@@ -122,69 +122,57 @@ void autonomous()
  		while (true)
  		{
 			//toggle in
-			if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+			if(pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1), debounceButtonR1))
 	  		{
-	  			if(pressButton(debounceButtonR1))
-	  			{
-	          		if (intakePercent <= 0)
-	          		{
-	            		intakePercent = intakeConst;
-	          		}
-	          		else
-	          		{
-	            		intakePercent = 0;
-	          		}
-	  			}
+	          	if (intakePercent <= 0)
+	          	{
+	            	intakePercent = intakeConst;
+	          	}
+	          	else
+	          	{
+	            	intakePercent = 0;
+	          	}
 	  		}
 			//toggle out
-	        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+	        else if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2), debounceButtonR2))
 	        {
-	            if(pressButton(debounceButtonR2))
+                if ( intakePercent >= 0)
+                {
+                    intakePercent = -intakeConst;
+              	}
+	            else
 	            {
-	                if ( intakePercent >= 0)
-	                {
-	                    intakePercent = -intakeConst;
-	                  }
-	                else
-	                {
-	                    intakePercent = 0;
-	                  }
+	                intakePercent = 0;
 	            }
 	        }
 
 			// toggle score
-			if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+			if(pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1), debounceButtonL1))
 	        {
-	            if(pressButton(debounceButtonL1))
+	        	if (inserterPercent <= 0)
 	            {
-	                if (inserterPercent <= 0)
-	                {
-	                    inserterPercent = inserterConst;
-											pooperPercent = -pooperConst;
-	                }
-	                else
-	                {
-	                    inserterPercent = inserterRestingConst;
-											pooperPercent = 0;
-	                }
+	                inserterPercent = inserterConst;
+					pooperPercent = -pooperConst;
+	            }
+	            else
+	            {
+	                inserterPercent = inserterRestingConst;
+					pooperPercent = 0;
 	            }
 	        }
 
 			//toggle eject
-			else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+			else if(pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2), debounceButtonL2))
 			{
-				if(pressButton(debounceButtonL2))
+				if (pooperPercent <= 0)
 				{
-					if (pooperPercent <= 0)
-					{
-						inserterPercent = -inserterConst;
-						pooperPercent = pooperConst;
-					}
-					else
-					{
-						inserterPercent = inserterRestingConst;
-						pooperPercent = 0;
-					}
+					inserterPercent = -inserterConst;
+					pooperPercent = pooperConst;
+				}
+				else
+				{
+					inserterPercent = inserterRestingConst;
+					pooperPercent = 0;
 				}
 			}
 
