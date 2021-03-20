@@ -121,7 +121,7 @@ void FourWheelDrive::calibrateMinSpeed()
 void FourWheelDrive::calibrateMaxAcceleration()
 {
     const double PITCH_TOLERENCE = 10;
-    const int NUM_LOOPS = 50;
+    const int NUM_LOOPS = 30;
 	const int COMPLETE = 3;
     int forwardComplete = 0;
     int backwardComplete = 0;
