@@ -13,6 +13,7 @@ void initialize() {
 	driveBase = new FourWheelDrive(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 
 	visionSensor.clear_led();
+	visionSensor.set_exposure (52);
 	visionSensor.set_signature(RED_BALL_SIG_INDEX, &RED_BALL_SIG);
 	visionSensor.set_signature(BLUE_BALL_SIG_INDEX, &BLUE_BALL_SIG);
 	visionSensor.set_signature(BACKPLATE_SIG_INDEX, &BACKPLATE_SIG);
