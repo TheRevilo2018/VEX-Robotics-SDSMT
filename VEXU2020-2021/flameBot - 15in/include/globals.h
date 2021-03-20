@@ -10,7 +10,7 @@
 #define RIGHT_TRAY_BUMPER_PORT 'B'
 #define LIGHT_SENSOR_PORT 'C'
 #define ACTUATOR_PORT 'H'
-#define INERTIAL_SENSOR_PORT 3
+#define INERTIAL_SENSOR_PORT 21
 #define VISION_SENSOR_PORT 14
 //Motor port defines
 //drive

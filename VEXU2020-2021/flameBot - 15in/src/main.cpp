@@ -10,9 +10,7 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
 
-	FourWheelDrive tempBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
-
-	driveBase = &tempBase;
+	driveBase = new FourWheelDrive(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 
 	visionSensor.clear_led();
 	visionSensor.set_signature(RED_BALL_SIG_INDEX, &RED_BALL_SIG);
@@ -27,7 +25,10 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled()
+{
+	delete driveBase;
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
