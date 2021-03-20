@@ -82,6 +82,7 @@ extern  std::uint32_t now;
 // Enums
 enum Color { red='R', blue='B', NA='N'};
 
+
 //globals
 extern bool actuatorState;
 extern const int inserterConst;
@@ -90,6 +91,7 @@ extern const int intakeConst;
 extern const int pooperConst;
 extern const int loopDelay;
 extern Color colorToPoop;
-
+extern const int seenBufferSize;
+extern std::vector<Color> seenBuffer;
 
 #endif

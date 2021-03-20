@@ -53,4 +53,6 @@ const int inserterRestingConst = -40;
 const int intakeConst = 85;
 const int pooperConst = 85;
 const int loopDelay = 20;
-Color colorToPoop = red;
+Color colorToPoop = blue;
+const int seenBufferSize = 6;
+std::vector<Color> seenBuffer(seenBufferSize, NA);

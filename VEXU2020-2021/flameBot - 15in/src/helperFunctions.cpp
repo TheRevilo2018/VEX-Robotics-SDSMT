@@ -102,37 +102,50 @@ Color getBallColor()
   }
 }
 
-void autoIntake()
+
+void autoCycle(int time)
 {
   setMotors(intakeMotorVector, intakeConst);
   bottomDrum = intakeConst;
   setIntakeContain();
-  float MAX_TIME = 3000;
+  float MAX_TIME = time;
   float currentTime = 0;
-  bool holdingBall = false;
 
-  while(!holdingBall && currentTime < MAX_TIME)
+  while(currentTime < MAX_TIME)
   {
-    holdingBall = isHoldingBall();
-    currentTime += loopDelay;
-    pros::delay(loopDelay);
-  }
+    Color lastSeenBall = getBallColor();
+    pros::lcd::set_text(3, "Got Color: " + std::to_string(lastSeenBall));
+    std::rotate(seenBuffer.begin(), seenBuffer.begin()+1, seenBuffer.end());
+    seenBuffer[0] = lastSeenBall;
 
-  Color ballColor = getBallColor();
-  pros::lcd::set_text(3, "Got Color: " + std::to_string(ballColor));
-  if(ballColor != NA)
-  {
-    // Either shoot or poop
-    if(ballColor == colorToPoop)
+    int launchCount = 0;
+    int poopCount = 0;
+    for(int i = 0; i < seenBufferSize; i++)
+    {
+      if(seenBuffer[i] == colorToPoop)
+      {
+        poopCount++;
+      }
+      else if(seenBuffer[i] != colorToPoop && seenBuffer[i] != NA)
+      {
+        launchCount++;
+      }
+    }
+    if(poopCount > seenBufferSize/2)
     {
       setIntakePoop();
+      seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
     }
-    else
+    else if(launchCount > seenBufferSize/2)
     {
       setIntakeInsert();
+      seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
     }
+    setIntakeContain();
   }
+  setIntakeInsert();
+  pros::delay(500);
   setIntakeContain();
 }

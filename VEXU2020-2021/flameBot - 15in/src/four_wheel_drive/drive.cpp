@@ -262,7 +262,8 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 
     float currentEncoderVal = leftMotors->at(0).get_position();
 
-    currentDistance += (currentEncoderVal - lastEncoderVal) / 1000.0;
+    int encoderTicksPerTile = 1000.0;
+    currentDistance += (currentEncoderVal - lastEncoderVal) / encoderTicksPerTile;
 
 
     lcd::set_text(3, "Desired " + to_string(numTiles));
@@ -295,7 +296,7 @@ void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
   lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
 
   float kP = 1 / 90.0;
-  float kI = .1 / 90.0;
+  float kI = .05 / 90.0;
   float kD = .02 / 90.0;
 
   float porportionalAmount = 0;
