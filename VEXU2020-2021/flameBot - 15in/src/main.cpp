@@ -105,6 +105,72 @@ void autonomous()
 		pros::delay(200);
 		autoCycle(3000);
 		pros::delay(200);
+
+		//goal 5
+		// Back away from goal, turn to grab next ball, turn to left goal and cycle
+		driveBase->driveTilesPID(-1, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(90+70);
+		pros::delay(200);
+		driveBase->driveTilesPID(1.5, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(-90, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(.5, 75);
+		autoCycle(3000);
+		pros::delay(200);
+
+		//goal 6
+		//Back away from goal, turn to get next ball, turn toward top left goal, autoCycle
+		driveBase->driveTilesPID(-1, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(78, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(2.25, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(-60, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(1.5, 75);
+		pros::delay(200);
+		autoCycle(3000);
+		pros::delay(200);
+
+		//goal 7
+		// Back away from goal, turn to grab next ball, turn to left goal and cycle
+		driveBase->driveTilesPID(-1, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(90+70);
+		pros::delay(200);
+		driveBase->driveTilesPID(1.5, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(-90, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(.5, 75);
+		autoCycle(3000);
+		pros::delay(200);
+
+		//goal 8
+		//Back away from goal, turn to get next ball, turn toward top left goal, autoCycle
+		driveBase->driveTilesPID(-1, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(78, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(2.25, 75);
+		pros::delay(200);
+		driveBase->turnDegreesPID(-60, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(1.5, 75);
+		pros::delay(200);
+		autoCycle(3000);
+		pros::delay(200);
+
+		//goal 9
+		driveBase->turnDegreesPID(-170, 75);
+		pros::delay(200);
+		driveBase->driveTilesPID(1.8, 75);
+		pros::delay(200);
+		autoCycle(2000);
+
 }
 
 /**
