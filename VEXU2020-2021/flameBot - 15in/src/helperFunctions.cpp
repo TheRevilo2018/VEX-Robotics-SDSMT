@@ -145,12 +145,14 @@ void autoCycle(int time)
       setIntakePoop();
       seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
+      currentTime += 500;
     }
     else if(launchCount > seenBufferSize/2)
     {
       setIntakeInsert();
       seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
+      currentTime += 500;
     }
     setIntakeContain();
   }

@@ -60,27 +60,29 @@ void autonomous()
 	  bottomDrum = intakeConst;
 	  setIntakeContain();
 
-
+	  //goal 1
 		// Back ball into first goal
 		driveBase->driveTilesPID(-0.5, 75);
 		pros::delay(200);
 
-		//ove forward, grab ball, and cycle the bottom left goal
-		driveBase->driveTilesPID(1.4, 75);
+		//goal 2
+		//move forward, grab ball, and cycle the bottom left goal
+		driveBase->driveTilesPID(2.2, 75);
 		pros::delay(200);
 		driveBase->turnDegreesPID(-90, 75);
 		pros::delay(200);
 		driveBase->driveTilesPID(.75, 75);
 		pros::delay(200);
-		autoCycle(3000);
+		autoCycle(4000);
 		pros::delay(200);
 
+		//goal 3
 		// Back away from goal, turn to grab next ball, turn to left goal and cycle
-		driveBase->driveTilesPID(-.5, 75);
+		driveBase->driveTilesPID(-1, 75);
 		pros::delay(200);
-		driveBase->turnDegreesPID(90+45);
+		driveBase->turnDegreesPID(90+70);
 		pros::delay(200);
-		driveBase->driveTilesPID(2.25, 75);
+		driveBase->driveTilesPID(1.5, 75);
 		pros::delay(200);
 		driveBase->turnDegreesPID(-90, 75);
 		pros::delay(200);
@@ -88,16 +90,17 @@ void autonomous()
 		autoCycle(3000);
 		pros::delay(200);
 
+		//goal 4
 		//Back away from goal, turn to get next ball, turn toward top left goal, autoCycle
-		driveBase->driveTilesPID(-1.5, 75);
+		driveBase->driveTilesPID(-1, 75);
 		pros::delay(200);
-		driveBase->turnDegreesPID(90, 75);
+		driveBase->turnDegreesPID(78, 75);
 		pros::delay(200);
 		driveBase->driveTilesPID(2.25, 75);
 		pros::delay(200);
-		driveBase->turnDegreesPID(-45, 75);
+		driveBase->turnDegreesPID(-60, 75);
 		pros::delay(200);
-		driveBase->driveTilesPID(.5, 75);
+		driveBase->driveTilesPID(1.5, 75);
 		pros::delay(200);
 		autoCycle(3000);
 		pros::delay(200);
