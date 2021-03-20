@@ -143,20 +143,26 @@ void autoCycle(int time)
     if(poopCount > seenBufferSize/2)
     {
       setIntakePoop();
+      setMotors(intakeMotorVector, 0);
       seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
       currentTime += 500;
+      setMotors(intakeMotorVector, intakeConst);
     }
     else if(launchCount > seenBufferSize/2)
     {
       setIntakeInsert();
+      setMotors(intakeMotorVector, 0);
       seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
       currentTime += 500;
+      setMotors(intakeMotorVector, intakeConst);
     }
     setIntakeContain();
   }
   setIntakeInsert();
   pros::delay(500);
   setIntakeContain();
+  setMotors(intakeMotorVector, intakeConst);
+  bottomDrum = intakeConst;
 }

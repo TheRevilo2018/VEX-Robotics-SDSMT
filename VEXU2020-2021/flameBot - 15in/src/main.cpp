@@ -230,6 +230,11 @@ void autonomous()
 				driveBase->turnDegreesPID(90, 75);
 			}
 
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
+			{
+				autoCycle();
+			}
+
  			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
  			{
  				leftMotorPercent = master.get_analog(ANALOG_LEFT_Y);
