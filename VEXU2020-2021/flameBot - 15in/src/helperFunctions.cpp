@@ -159,5 +159,5 @@ void autoCycle(int time)
     pros::delay(20);
     currentTime+= 20;
   }
-  setIntakeContain();
+  //setIntakeContain();
 }
