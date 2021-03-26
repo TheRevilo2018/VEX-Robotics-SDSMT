@@ -64,8 +64,9 @@ public:
 
     void drive(std::vector<pros::Motor> *leftWheelMotorVector,
         std::vector<pros::Motor> *rightWheelMotorVector, int distance);
-    void driveTilesPID(float numTiles, float desiredSpeed= 100);
-    void turnDegreesPID(float numDegrees, float desiredSpeed= 100);
+    void driveTilesPID(float numTiles, float desiredSpeed= 75);
+    void turnDegreesAbsolutePID(float targetDegrees, float desiredSpeed = 40);
+    void turnDegreesPID(float numDegrees, float desiredSpeed= 55);
 
 
 

@@ -288,13 +288,18 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 
 void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
 {
-  lcd::set_text(1, "turnDegrees: " + to_string(numDegrees) + " " + to_string(desiredSpeed));
+    float startDegrees = degreeBoundingHelper(inertialSensor->get_heading());
+    turnDegreesAbsolutePID(degreeBoundingHelper(numDegrees + startDegrees), desiredSpeed);
+}
+
+void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSpeed)
+{
+  lcd::set_text(1, "target heading: " + to_string(targetDegrees) + " " + to_string(desiredSpeed));
 
   float INTEGRATOR_MAX_MAGNITUDE = 100;
   float DELTA_T = LOOP_DELAY / 1000.0;
-  float startingDegrees = degreeBoundingHelper(inertialSensor->get_heading());
-  float endingDegrees = degreeBoundingHelper(startingDegrees + numDegrees);
-  float currentDegrees = startingDegrees;
+  float endingDegrees = degreeBoundingHelper(targetDegrees);
+  float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
   lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
 
@@ -310,7 +315,7 @@ void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
   float lastDegrees = 0;
   float runTime = 0;
   while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2
-    && runTime < ONE_SEC_IN_MS * 1.5)
+  && runTime < ONE_SEC_IN_MS * 10)
   {
     currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
@@ -328,6 +333,11 @@ void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
     total = bindToMagnitude(total, 1);
     float speed = total * desiredSpeed;
 
+    if (fabs(speed) < minSpeed * 2)
+    {
+        speed = speed * minSpeed * 2 / fabs(speed);
+    }
+
     setMotors(rightMotors, -speed);
     setMotors(leftMotors, speed);
 
@@ -339,4 +349,6 @@ void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
     runTime += LOOP_DELAY;
     pros::delay(LOOP_DELAY);
   }
+
+  setMotors(0);
 }
