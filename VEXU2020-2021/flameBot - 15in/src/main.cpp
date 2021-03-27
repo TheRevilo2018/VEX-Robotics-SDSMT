@@ -339,7 +339,7 @@ void autonomous()
 			setMotors(intakeMotorVector, intakePercent);
 			pooper = pooperPercent;
 			topDrum = inserterPercent;
-			bottomDrum = intakeConst;
+			bottomDrum = bottomDrumConst;
  			pros::delay(loopDelay);
  		}
  }

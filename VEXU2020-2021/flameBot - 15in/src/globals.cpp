@@ -43,9 +43,10 @@ std::uint32_t now = pros::millis();
 //globals
 bool actuatorState = false;
 const int inserterConst = 110;
-const int inserterRestingConst = -40;
+const int bottomDrumConst = 80;
+const int inserterRestingConst = -60;
 const int intakeConst = 100;
-const int pooperConst = 85;
+const int pooperConst = 100;
 const int loopDelay = 20;
 Color colorToPoop = blue;
 const int seenBufferSize = 4;

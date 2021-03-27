@@ -17,5 +17,6 @@ bool isHoldingBall();
 void setOuttakeInsert();
 void setOuttakePoop();
 void setOuttakeContain();
+void goalApproch();
 
 #endif

@@ -77,6 +77,7 @@ enum Color { red='R', blue='B', NA='N'};
 
 //globals
 extern bool actuatorState;
+extern const int bottomDrumConst;
 extern const int inserterConst;
 extern const int inserterRestingConst;
 extern const int intakeConst;

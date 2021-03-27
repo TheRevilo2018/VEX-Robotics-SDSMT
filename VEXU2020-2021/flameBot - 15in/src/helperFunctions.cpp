@@ -110,11 +110,17 @@ Color getBallColor()
   }
 }
 
+void goalApproch(FourWheelDrive*  driveBase, float numTiles, float speed)
+{
+  setMotors(intakeMotorVector, -40);
+  driveBase->driveTilesPID(numTiles, speed);
+  setMotors(intakeMotorVector, 0);
+}
 
 void autoCycle(int time)
 {
   setMotors(intakeMotorVector, intakeConst);
-  bottomDrum = intakeConst;
+  bottomDrum = bottomDrumConst;
   setOuttakeContain();
   float MAX_TIME = time;
   float currentTime = 0;
@@ -143,7 +149,7 @@ void autoCycle(int time)
     {
       setOuttakePoop();
       seenBuffer.assign(seenBufferSize, NA);
-      pros::delay(500);
+      pros::delay(400);
       setOuttakeContain();
       currentTime += 500;
     }
@@ -151,7 +157,7 @@ void autoCycle(int time)
     {
       setOuttakeInsert();
       seenBuffer.assign(seenBufferSize, NA);
-      pros::delay(500);
+      pros::delay(400);
       setOuttakeContain();
       currentTime += 500;
     }
@@ -160,7 +166,7 @@ void autoCycle(int time)
   }
   setMotors(intakeMotorVector, 0);
   setOuttakeInsert();
-  pros::delay(800);
+  pros::delay(600);
   setMotors(intakeMotorVector, intakeConst);
   setOuttakeContain();
 }
