@@ -127,6 +127,7 @@ void autoCycle(int time)
 
   while(currentTime < MAX_TIME)
   {
+      /*
     Color lastSeenBall = getBallColor();
     pros::lcd::set_text(3, "Got Color: " + std::to_string(lastSeenBall));
     std::rotate(seenBuffer.begin(), seenBuffer.begin()+1, seenBuffer.end());
@@ -161,12 +162,15 @@ void autoCycle(int time)
       setOuttakeContain();
       currentTime += 500;
     }
+*/
+    setOuttakePoop();
+
     pros::delay(20);
     currentTime+= 20;
   }
   setMotors(intakeMotorVector, 0);
-  setOuttakeInsert();
+  //setOuttakeInsert();
   pros::delay(600);
   setMotors(intakeMotorVector, intakeConst);
-  setOuttakeContain();
+  //setOuttakeContain();
 }

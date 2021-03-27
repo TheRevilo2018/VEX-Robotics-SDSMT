@@ -298,13 +298,14 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
   float INTEGRATOR_MAX_MAGNITUDE = 100;
   float DELTA_T = LOOP_DELAY / 1000.0;
+  float MINSPEED_MOD = 2;
   float endingDegrees = degreeBoundingHelper(targetDegrees);
   float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
   lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
 
   float kP = 1.5 / 90.0;
-  float kI = .05 / 90.0;
+  float kI = .10 / 90.0;
   float kD = .04 / 90.0;
 
   float porportionalAmount = 0;
@@ -333,9 +334,9 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
     total = bindToMagnitude(total, 1);
     float speed = total * desiredSpeed;
 
-    if (fabs(speed) < minSpeed * 2)
+    if (fabs(speed) < minSpeed * MINSPEED_MOD)
     {
-        speed = speed * minSpeed * 2 / fabs(speed);
+        speed = speed * minSpeed * MINSPEED_MOD / fabs(speed);
     }
 
     setMotors(rightMotors, -speed);
