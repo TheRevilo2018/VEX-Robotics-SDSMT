@@ -57,7 +57,7 @@ void unfold()
   setMotors(intakeMotorVector, 0);
 }
 
-void setIntakeContain()
+void setOuttakeContain()
 {
   // Set everything to an intaking but not inserting speeds
   pooper = 0;
@@ -65,14 +65,14 @@ void setIntakeContain()
 
 }
 
-void setIntakePoop()
+void setOuttakePoop()
 {
   // Set everything to an intaking but not inserting speeds
   pooper = pooperConst;
   topDrum = -inserterConst;
 }
 
-void setIntakeInsert()
+void setOuttakeInsert()
 {
   // Set everything to an intaking but not inserting speeds
   pooper = -pooperConst;
@@ -81,33 +81,32 @@ void setIntakeInsert()
 
 bool isHoldingBall()
 {
+  int value = opticalSensor.get_proximity();
+  pros::lcd::set_text(5, "Proximity: " + std::to_string(value));
+  if(value > 25)
+  {
+    return true;
+  }
   return false;
 }
 
 Color getBallColor()
 {
-  int numObjects = visionSensor.get_object_count();
-  pros::vision_object_s_t biggestObject;
-  if(numObjects != 0)
-  {
-      biggestObject = visionSensor.get_by_size(0);
-  }
-  else
+  if(!isHoldingBall())
   {
     return NA;
   }
-
-  if(biggestObject.signature == BLUE_BALL_SIG_INDEX)
-  {
-    return blue;
-  }
-  else if(biggestObject.signature == RED_BALL_SIG_INDEX)
-  {
-    return red;
-  }
   else
   {
-    return NA;
+      auto colors = opticalSensor.get_rgb();
+      if(colors.red > colors.blue)
+      {
+        return red;
+      }
+      else
+      {
+        return blue;
+      }
   }
 }
 
@@ -116,13 +115,13 @@ void autoCycle(int time)
 {
   setMotors(intakeMotorVector, intakeConst);
   bottomDrum = intakeConst;
-  setIntakeContain();
+  setOuttakeContain();
   float MAX_TIME = time;
   float currentTime = 0;
 
   while(currentTime < MAX_TIME)
   {
-    /*Color lastSeenBall = getBallColor();
+    Color lastSeenBall = getBallColor();
     pros::lcd::set_text(3, "Got Color: " + std::to_string(lastSeenBall));
     std::rotate(seenBuffer.begin(), seenBuffer.begin()+1, seenBuffer.end());
     seenBuffer[0] = lastSeenBall;
@@ -142,22 +141,26 @@ void autoCycle(int time)
     }
     if(poopCount > seenBufferSize/2)
     {
-      setIntakePoop();
+      setOuttakePoop();
       seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
+      setOuttakeContain();
       currentTime += 500;
     }
     else if(launchCount > seenBufferSize/2)
     {
-      setIntakeInsert();
+      setOuttakeInsert();
       seenBuffer.assign(seenBufferSize, NA);
       pros::delay(500);
+      setOuttakeContain();
       currentTime += 500;
     }
-    */
-    setIntakePoop();
     pros::delay(20);
     currentTime+= 20;
   }
-  //setIntakeContain();
+  setMotors(intakeMotorVector, 0);
+  setOuttakeInsert();
+  pros::delay(800);
+  setMotors(intakeMotorVector, intakeConst);
+  setOuttakeContain();
 }

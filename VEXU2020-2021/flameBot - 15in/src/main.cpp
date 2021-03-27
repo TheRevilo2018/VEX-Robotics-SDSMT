@@ -12,13 +12,7 @@ void initialize() {
 
 	driveBase = new FourWheelDrive(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 
-	visionSensor.clear_led();
-	visionSensor.set_exposure (52);
-	visionSensor.set_signature(RED_BALL_SIG_INDEX, &RED_BALL_SIG);
-	visionSensor.set_signature(BLUE_BALL_SIG_INDEX, &BLUE_BALL_SIG);
-	visionSensor.set_signature(BACKPLATE_SIG_INDEX, &BACKPLATE_SIG);
-
-
+	opticalSensor.set_led_pwm(50);
 }
 
 /**
@@ -63,9 +57,7 @@ void autonomous()
 		unfold();
 
 		setMotors(intakeMotorVector, intakeConst);
-	  	bottomDrum = intakeConst;
-	  	setIntakePoop();
-
+  	bottomDrum = intakeConst;
 
 	  	//goal 1
 		// Back ball into first goal
@@ -339,6 +331,8 @@ void autonomous()
  				leftMotorPercent = 0;
  				rightMotorPercent = 0;
  			}
+
+			pros::lcd::set_text(3, "distance: " + std::to_string(opticalSensor.get_proximity()));
 
 			setMotors(leftWheelMotorVector, leftMotorPercent);
 			setMotors(rightWheelMotorVector, rightMotorPercent);

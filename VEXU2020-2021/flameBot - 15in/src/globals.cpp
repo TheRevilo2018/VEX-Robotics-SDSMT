@@ -25,13 +25,7 @@ pros::ADIAnalogIn lightSensor(LIGHT_SENSOR_PORT);
 pros::ADIDigitalIn trayBumperLeft(LEFT_TRAY_BUMPER_PORT);
 pros::ADIDigitalIn trayBumperRight(RIGHT_TRAY_BUMPER_PORT);
 pros::ADIDigitalOut actuator(ACTUATOR_PORT);
-pros::Vision visionSensor (VISION_SENSOR_PORT);
-
-// Vision Sensor Signatures
-pros::vision_signature_s_t RED_BALL_SIG = pros::Vision::signature_from_utility(RED_BALL_SIG_INDEX, 8391, 10779, 9584, -2797, -949, -1874, 2.200, 0);
-pros::vision_signature_s_t BLUE_BALL_SIG = pros::Vision::signature_from_utility(BLUE_BALL_SIG_INDEX, -3511, -1665, -2588, 7207, 11843, 9524, 3.800, 0);
-pros::vision_signature_s_t BACKPLATE_SIG = pros::Vision::signature_from_utility(BACKPLATE_SIG_INDEX, -2237, -1331, -1784, -2199, -1191, -1694, 3.600, 0);
-
+pros::Optical opticalSensor (OPTICAL_SENSOR_PORT);
 
 //motor grouping declarations
 std::vector<pros::Motor> wheelMotorVector = {wheelLeft1, wheelLeft2, wheelLeft3, wheelRight1, wheelRight2, wheelRight3};

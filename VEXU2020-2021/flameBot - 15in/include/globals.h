@@ -11,7 +11,7 @@
 #define LIGHT_SENSOR_PORT 'C'
 #define ACTUATOR_PORT 'H'
 #define INERTIAL_SENSOR_PORT 21
-#define VISION_SENSOR_PORT 14
+#define OPTICAL_SENSOR_PORT 14
 //Motor port defines
 //drive
 #define RIGHT_WHEEL_FRONT_PORT 5
@@ -55,15 +55,7 @@ extern pros::ADIAnalogIn lightSensor;
 extern pros::ADIDigitalIn trayBumperLeft;
 extern pros::ADIDigitalIn trayBumperRight;
 extern pros::ADIDigitalOut actuator;
-extern pros::Vision visionSensor;
-
-// Vision Sensor Signatures
-#define RED_BALL_SIG_INDEX 1
-#define BLUE_BALL_SIG_INDEX 2
-#define BACKPLATE_SIG_INDEX 3
-extern pros::vision_signature_s_t RED_BALL_SIG;
-extern pros::vision_signature_s_t BLUE_BALL_SIG;
-extern pros::vision_signature_s_t BACKPLATE_SIG;
+extern pros::Optical opticalSensor;
 
 
 //motor grouping declarations

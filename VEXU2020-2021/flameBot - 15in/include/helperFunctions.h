@@ -14,8 +14,8 @@ void unfold();
 void autoCycle(int time = 3000);
 Color getBallColor();
 bool isHoldingBall();
-void setIntakeInsert();
-void setIntakePoop();
-void setIntakeContain();
+void setOuttakeInsert();
+void setOuttakePoop();
+void setOuttakeContain();
 
 #endif
