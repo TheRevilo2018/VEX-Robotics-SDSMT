@@ -2,8 +2,8 @@
 
 namespace twin
 {
-  void opcontrolTask(void* param)
-  {
+void opcontrolTask(void* param)
+{
     // Resolve the motors we'll be using locally
     int pairIndex = (int)param;
     auto controller = controllerPair[pairIndex];
@@ -29,106 +29,89 @@ namespace twin
     int rightMotorPercent = 0;
     int intakePercent = 0;
     int inserterPercent = inserterRestingConst;
-    std::uint32_t debounceButtonA = 0;
-    std::uint32_t debounceButtonB = 0;
-    std::uint32_t debounceButtonX = 0;
-    std::uint32_t debounceButtonY = 0;
-    std::uint32_t debounceButtonDOWN = 0;
-    std::uint32_t debounceButtonUP = 0;
-    std::uint32_t debounceButtonLEFT = 0;
-    std::uint32_t debounceButtonRIGHT = 0;
-    std::uint32_t debounceButtonR1 = 0;
-    std::uint32_t debounceButtonR2 = 0;
-    std::uint32_t debounceButtonL1 = 0;
+    bool debounceButtonA = false;
+    bool debounceButtonB = false;
+    bool debounceButtonX = false;
+    bool debounceButtonY = false;
+    bool debounceButtonDOWN = false;
+    bool debounceButtonUP = false;
+    bool debounceButtonLEFT = false;
+    bool debounceButtonRIGHT = false;
+    bool debounceButtonR1 = false;
+    bool debounceButtonR2 = false;
+    bool debounceButtonL1 = false;
     int loopDelay = 20;
 
     while (true)
     {
         //ball controls
         // Outakes for bottom
-        
-  		if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-  		{
-  			if(pressButton(debounceButtonR1))
-  			{
-          if (intakePercent <= 0)
+
+        if(pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1), debounceButtonR1))
+        {
+            if (intakePercent <= 0)
+            {
+                intakePercent = intakeConst;
+            }
+            else
+            {
+                intakePercent = 0;
+            }
+        }
+        else if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2), debounceButtonR2))
+        {
+            if ( intakePercent >= 0)
+            {
+                intakePercent = -intakeConst;
+            }
+            else
+            {
+                intakePercent = 0;
+            }
+        }
+
+
+        if(pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1), debounceButtonL1))
+        {
+          if(inserterPercent == inserterConst)
           {
-            intakePercent = intakeConst;
+            inserterPercent = inserterRestingConst;
           }
           else
           {
-          intakePercent = 0;
-          }
-  			}
-  		}
-        else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-        {
-            if(pressButton(debounceButtonR2))
-            {
-                if ( intakePercent >= 0)
-                {
-                    intakePercent = -intakeConst;
-                }
-                else
-                {
-                    intakePercent = 0;
-                }
-            }
-        }
-		
-        if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-        {
             inserterPercent = inserterConst;
-        }
-        else
-        {
-            inserterPercent = inserterRestingConst;
+          }
         }
 
-        /*if(alpha.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+        //drive controls
+        if(abs(controller.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(controller.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
         {
-            if(pressButton(debounceButtonL1))
-            {
-                if (inserterPercent <= 0)
-                {
-                    inserterPercent = inserterConst;
-                }
-                else
-                {
-                    inserterPercent = inserterRestingConst;
-                }
-            }
-        }*/
-
-    //drive controls
-      if(abs(controller.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(controller.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
-          {
             leftMotorPercent = controller.get_analog(ANALOG_LEFT_Y);
             rightMotorPercent = controller.get_analog(ANALOG_LEFT_Y);
 
             if(controller.get_analog(ANALOG_RIGHT_X) > turnThreshold)
             {
-              leftMotorPercent += abs(controller.get_analog(ANALOG_RIGHT_X));
-              rightMotorPercent -= abs(controller.get_analog(ANALOG_RIGHT_X));
+                leftMotorPercent += abs(controller.get_analog(ANALOG_RIGHT_X));
+                rightMotorPercent -= abs(controller.get_analog(ANALOG_RIGHT_X));
             }
             else
             {
-              leftMotorPercent -= abs(controller.get_analog(ANALOG_RIGHT_X));
-              rightMotorPercent += abs(controller.get_analog(ANALOG_RIGHT_X));
+                leftMotorPercent -= abs(controller.get_analog(ANALOG_RIGHT_X));
+                rightMotorPercent += abs(controller.get_analog(ANALOG_RIGHT_X));
             }
-          }
-          else
-          {
+        }
+        else
+        {
             leftMotorPercent = 0;
             rightMotorPercent = 0;
-          }
+        }
 
-          setMotors(leftWheelMotorVector, leftMotorPercent);
-          setMotors(rightWheelMotorVector, rightMotorPercent);
-          setMotors(intakeMotorVector, intakePercent);
-          bottomRoller = intakeConst;
-          inserterRoller = inserterPercent;
-          pros::delay(loopDelay);
+        setMotors(leftWheelMotorVector, leftMotorPercent);
+        setMotors(rightWheelMotorVector, rightMotorPercent);
+        setMotors(intakeMotorVector, intakePercent);
+        bottomRoller = intakePercent;
+        inserterRoller = inserterPercent;
+        pros::delay(loopDelay);
     }
-  }
+}
 }

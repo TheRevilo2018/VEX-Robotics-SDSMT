@@ -1,40 +1,46 @@
-#include "../include/helperfunctions.h"
+#include "../include/helperFunctions.h"
 
-// Take in a vecor of motors, and set their speed to a value
+//take in a vecor of motors, and set their speed to a value
 void setMotors(std::vector<pros::Motor> & motors, double speed)
 {
-  for(auto motor : motors)
-  {
-    motor = speed;
-  }
+    for(auto motor : motors)
+    {
+        motor = speed;
+    }
 }
 
-// Take in a vector of motors, and set their brake type to a given type
+//take in a vector of motors, and set their brake type to a given type
 void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t brakeType)
 {
-  for(auto motor: motors)
-  {
-    motor.set_brake_mode(brakeType);
-  }
+    for(auto motor: motors)
+    {
+        motor.set_brake_mode(brakeType);
+    }
 }
 
-// Take in a vector of motors, and call the move relative function for all of them with a given distance and speed
+//tqke in a vector of motors, and call the move relative function for all of them with a given distance and speed
 void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, double speed)
 {
-  for(auto motor : motors)
-  {
-    motor.move_relative(distance, speed);
-  }
+    for(auto motor : motors)
+    {
+        motor.move_relative(distance, speed);
+    }
 }
 
-// Make sure that buttons aren't pressed multiple times
-bool pressButton(std::uint32_t  & debounceTime)
+bool pressButton(bool press, bool &debounce)
 {
-	std::uint32_t pressTime = pros::millis();
-	if(pressTime - debounceTime >= DEBOUNCE_DELAY)
-	{
-		debounceTime = pressTime;
-		return true;
-	}
-	return false;
+    if(press)
+    {
+        if(!debounce)
+        {
+            debounce = true;
+            return true;
+        }
+    }
+    else
+    {
+        debounce = false;
+    }
+
+    return false;
 }
