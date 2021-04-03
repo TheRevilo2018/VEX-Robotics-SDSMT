@@ -5,7 +5,9 @@
 
 namespace twin
 {
-    void opcontrolTask(void* param);
+void opcontrolTask(void* param);
+void autonomousTaskAlpha(void * param);
+void autonomousTaskBeta(void * param);
 }
 
 #endif

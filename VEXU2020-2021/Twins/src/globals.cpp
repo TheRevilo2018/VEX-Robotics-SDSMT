@@ -4,9 +4,9 @@
 
 
 //controller declarations
-pros::Controller alpha(pros::E_CONTROLLER_MASTER);
-pros::Controller beta(pros::E_CONTROLLER_PARTNER);
-std::vector<pros::Controller> controllerPair{alpha, beta};
+pros::Controller controllerAlpha(pros::E_CONTROLLER_MASTER);
+pros::Controller controllerBeta(pros::E_CONTROLLER_PARTNER);
+std::vector<pros::Controller> controllerPair{controllerAlpha, controllerBeta};
 
 // Standard port declarations
 //Left robot ports
@@ -63,7 +63,17 @@ std::vector<pros::Motor> bottomRollerPair = {bottomRollerAlpha, bottomRollerBeta
 std::vector<pros::Motor> inserterRollerPair = {inserterAlpha, inserterBeta};
 //drive base class
 
-//position constants
+FourWheelDrive* driveBaseAlpha;
+FourWheelDrive* driveBaseBeta;
+
+// Needs to be set in initialize
+std::vector<FourWheelDrive*> driveBasePair = {driveBaseAlpha, driveBaseBeta};
+
+//Constants
+const int inserterConst = 110;
+const int inserterRestingConst = -40;
+const int intakeConst = 85;
+const int loopDelay = 20;
 
 //pros declarations
 std::uint32_t now = pros::millis();

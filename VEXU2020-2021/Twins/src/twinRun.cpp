@@ -2,7 +2,7 @@
 
 namespace twin
 {
-void opcontrolTask(void* param)
+void autonomousTaskAlpha(void * param)
 {
     // Resolve the motors we'll be using locally
     int pairIndex = (int)param;
@@ -17,11 +17,62 @@ void opcontrolTask(void* param)
     auto bottomRoller = bottomRollerPair[pairIndex];
     auto inserterRoller = inserterRollerPair[pairIndex];
 
-    // Screen posting might break async, check it
-    pros::lcd::set_text(5, "Calling op_control: " + std::to_string(pros::millis()));
-    const int inserterConst = 110;
-    const int inserterRestingConst = -40;
-    const int intakeConst = 85;
+    auto driveBase = driveBasePair[pairIndex];
+
+    driveBase->driveTilesPID(1.0);
+
+    int temp = 0;
+    while(true)
+    {
+        pros::lcd::set_text(5, "Alpha" + std::to_string(temp));
+        temp++;
+        pros::delay(loopDelay);
+    }
+
+
+}
+void autonomousTaskBeta(void * param)
+{
+    // Resolve the motors we'll be using locally
+    int pairIndex = (int)param;
+    auto controller = controllerPair[pairIndex];
+    auto wheelMotorVector = wheelVectorPair[pairIndex];
+    auto leftWheelMotorVector = leftWheelVectorPair[pairIndex];
+    auto rightWheelMotorVector = rightWheelVectorPair[pairIndex];
+    auto intakeMotorVector = intakeMotorVectorPair[pairIndex];
+
+    auto Imu = inertialSensorPair[pairIndex];
+
+    auto bottomRoller = bottomRollerPair[pairIndex];
+    auto inserterRoller = inserterRollerPair[pairIndex];
+
+    auto driveBase = driveBasePair[pairIndex];
+
+    driveBase->driveTilesPID(-1.0);
+    int temp = 0;
+    while(true)
+    {
+        pros::lcd::set_text(7, "Beta" + std::to_string(temp));
+        temp++;
+        pros::delay(loopDelay);
+    }
+
+
+}
+void opcontrolTask(void* param)
+{
+    // Resolve the motors we'll be using locally
+    int pairIndex = (int)param;
+    auto controller = controllerPair[pairIndex];
+    auto wheelMotorVector = wheelVectorPair[pairIndex];
+    auto leftWheelMotorVector = leftWheelVectorPair[pairIndex];
+    auto rightWheelMotorVector = rightWheelVectorPair[pairIndex];
+    auto intakeMotorVector = intakeMotorVectorPair[pairIndex];
+
+    auto Imu = inertialSensorPair[pairIndex];
+
+    auto bottomRoller = bottomRollerPair[pairIndex];
+    auto inserterRoller = inserterRollerPair[pairIndex];
 
     int turnThreshold = 10;
     int driveThreshold = 10;
@@ -40,7 +91,6 @@ void opcontrolTask(void* param)
     bool debounceButtonR1 = false;
     bool debounceButtonR2 = false;
     bool debounceButtonL1 = false;
-    int loopDelay = 20;
 
     while (true)
     {
@@ -73,14 +123,14 @@ void opcontrolTask(void* param)
 
         if(pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1), debounceButtonL1))
         {
-          if(inserterPercent == inserterConst)
-          {
-            inserterPercent = inserterRestingConst;
-          }
-          else
-          {
-            inserterPercent = inserterConst;
-          }
+            if(inserterPercent == inserterConst)
+            {
+                inserterPercent = inserterRestingConst;
+            }
+            else
+            {
+                inserterPercent = inserterConst;
+            }
         }
 
         //drive controls

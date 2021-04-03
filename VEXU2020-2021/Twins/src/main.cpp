@@ -15,37 +15,12 @@
 
 void autonomous()
 {
+    pros::Task autonAlpha(twin::autonomousTaskAlpha, (void*)0,
+                          TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha auton");
+    pros::Task autonBeta(twin::autonomousTaskBeta, (void*)1,
+                         TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Beta auton");
+    pros::lcd::set_text(6, "Finsished?");
 
-    auto rightWheelVectorsAlpha = rightWheelVectorPair[0];
-    auto leftWheelVectorsAlpha = leftWheelVectorPair[0];
-    FourWheelDrive driveBaseAlpha(rightWheelVectorsAlpha, leftWheelVectorsAlpha);
-
-    int blue = 1;
-    int red = 2;
-
-    driveBaseAlpha.driveDist(4.0, FORWARD);
-
-    rightWheelVectorsAlpha[2].set_zero_position(0);
-
-    pros::lcd::set_text(6, "auton finished " + std::to_string(rightWheelVectorsAlpha[2].get_position()));
-
-
-    switch(blue)
-    {
-    case(0):
-    {
-    }
-    //blue auton
-    case (1):
-    {
-        break;
-    }
-    //red auton
-    case(2):
-    {
-        break;
-    }
-    }
 }
 
 
@@ -69,6 +44,12 @@ void initialize()
 
     inserterAlpha.set_brake_mode(MOTOR_BRAKE_HOLD);
     inserterBeta.set_brake_mode(MOTOR_BRAKE_HOLD);
+
+    //    driveBase = new FourWheelDrive(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
+    driveBaseAlpha = new FourWheelDrive(rightWheelMotorVectorAlpha, leftWheelMotorVectorAlpha, inertialSensorAlpha, controllerAlpha);
+    driveBaseBeta = new FourWheelDrive(rightWheelMotorVectorBeta, leftWheelMotorVectorBeta, inertialSensorBeta, controllerBeta);
+    driveBasePair[0] = driveBaseAlpha;
+    driveBasePair[1] = driveBaseBeta;
 }
 
 /**
@@ -79,6 +60,8 @@ void initialize()
 void disabled()
 {
     pros::lcd::set_text(3, "Calling disabled: " + std::to_string(pros::millis()));
+    delete driveBaseAlpha;
+    delete driveBaseBeta;
 }
 
 /**

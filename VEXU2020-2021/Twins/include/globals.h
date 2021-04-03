@@ -41,8 +41,8 @@
 
 
 //controller declarations
-extern pros::Controller alpha;
-extern pros::Controller beta;
+extern pros::Controller controllerAlpha;
+extern pros::Controller controllerBeta;
 extern std::vector<pros::Controller> controllerPair;
 
 // Standard port declarations
@@ -94,9 +94,19 @@ extern std::vector<std::vector<pros::Motor>> intakeMotorVectorPair;
 
 extern std::vector<pros::Motor> bottomRollerPair;
 extern std::vector<pros::Motor> inserterRollerPair;
-//drive base class
 
-//position constants
+
+//drive base class
+extern FourWheelDrive* driveBaseAlpha;
+extern FourWheelDrive* driveBaseBeta;
+
+extern std::vector<FourWheelDrive*> driveBasePair;
+
+//Constants
+extern const int inserterConst;
+extern const int inserterRestingConst;
+extern const int intakeConst;
+extern const int loopDelay;
 
 //pros declarations
 extern std::uint32_t now;
