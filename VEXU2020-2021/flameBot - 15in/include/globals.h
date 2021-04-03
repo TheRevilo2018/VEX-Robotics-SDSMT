@@ -81,6 +81,7 @@ extern const int bottomDrumConst;
 extern const int inserterConst;
 extern const int inserterRestingConst;
 extern const int intakeConst;
+extern const int intakeRest;
 extern const int pooperConst;
 extern const int loopDelay;
 extern Color colorToPoop;

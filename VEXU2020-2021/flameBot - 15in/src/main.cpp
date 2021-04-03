@@ -149,43 +149,6 @@ void autonomous()
 		pros::delay(DELAY_TIME);
 
 		driveBase->driveTilesPID(-1);
-/*
-		//goal 7
-		// Back away from goal, turn to grab next ball, turn to left goal and cycle
-		driveBase->driveTilesPID(-1 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(90+70);
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(1.5 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(-90 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(.5 );
-		autoCycle(3000);
-		pros::delay(DELAY_TIME);
-
-		//goal 8
-		//Back away from goal, turn to get next ball, turn toward top left goal, autoCycle
-		driveBase->driveTilesPID(-1 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(78 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(2.25 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(-60 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(1.5 );
-		pros::delay(DELAY_TIME);
-		autoCycle(3000);
-		pros::delay(DELAY_TIME);
-
-		//goal 9
-		driveBase->turnDegreesPID(-170 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(1.8 );
-		pros::delay(DELAY_TIME);
-		autoCycle(2000);
-*/
 }
 
 /**
@@ -215,7 +178,7 @@ void autonomous()
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
-	int intakePercent = 0;
+	int intakePercent = -intakeRest;
 	int pooperPercent = 0;
 	int inserterPercent = inserterRestingConst;
 
@@ -254,21 +217,9 @@ void autonomous()
 	          	{
 	            	intakePercent = intakeConst;
 	          	}
-	          	else
-	          	{
-	            	intakePercent = 0;
-	          	}
-	  		}
-			//toggle out
-	        else if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2), debounceButtonR2))
-	        {
-                if ( intakePercent >= 0)
-                {
-                    intakePercent = -intakeConst;
-              	}
 	            else
 	            {
-	                intakePercent = 0;
+	                intakePercent = -intakeRest;
 	            }
 	        }
 

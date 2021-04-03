@@ -46,6 +46,7 @@ const int inserterConst = 110;
 const int bottomDrumConst = 80;
 const int inserterRestingConst = -60;
 const int intakeConst = 100;
+const int intakeRest = 30;
 const int pooperConst = 100;
 const int loopDelay = 20;
 Color colorToPoop = blue;
