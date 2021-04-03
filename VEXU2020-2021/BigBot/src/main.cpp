@@ -24,8 +24,6 @@ void autonomous()
 	int blue = 1;
 	int red = 2;
 
-	driveBase.driveDist(4.0, FORWARD);
-
 	rightWheelMotorVector[2].set_zero_position(0);
 
 	pros::lcd::set_text(6, "auton finished " + std::to_string(rightWheelMotorVector[2].get_position()));
@@ -60,10 +58,9 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(0, "Calling initialize: " + std::to_string(pros::millis()));
 	//visionSensor.clear_led();
-
 	//2911 for no ball
 	//1896 for ball
-	lightSensor.calibrate();
+	//lightSensor.calibrate();
 	//middleLightSensor.calibrate();
 	}
 
@@ -92,7 +89,14 @@ void competition_initialize() {
 void calibrate()
 {
 	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
-	driveBase.calibrateAll(master);
+
+	if(master.get_digital(DIGITAL_A))
+	{
+		driveBase.showOff();
+	}
+	{
+		driveBase.calibrateAll();
+	}
 }
 
 
@@ -112,6 +116,7 @@ void calibrate()
 
 void opcontrol()
 {
+	FourWheelDrive driveBase(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
 	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
 	int turnThreshold = 10;
 	int driveThreshold = 10;
@@ -160,6 +165,31 @@ void opcontrol()
 				leftMotorPercent = 0;
 				rightMotorPercent = 0;
 			}
+
+			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
+			{
+			 	if(pressButton(debounceButtonA))
+			 	{
+					driveBase.driveTilesPID(4.0, 75);
+			 	}
+			}
+
+			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+			{
+			 	if(pressButton(debounceButtonB))
+			 	{
+					driveBase.turnDegreesPID(90, 75);
+			 	}
+			}
+
+			if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+			{
+			 	if(pressButton(debounceButtonX))
+			 	{
+					driveBase.turnDegreesPID(-90, 75);
+			 	}
+			}
+
 
 			setMotors(leftWheelMotorVector, leftMotorPercent);
 			setMotors(rightWheelMotorVector, rightMotorPercent);
