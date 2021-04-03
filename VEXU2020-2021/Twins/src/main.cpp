@@ -114,7 +114,8 @@ void competition_initialize() {
 
 void opcontrol()
 {
-	pros::Task opControlAlpha(twin::opcontrolTask, (void*)0, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
-	pros::Task opControlBeta(twin::opcontrolTask, (void*)1, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
-
+	pros::Task opControlAlpha(twin::opcontrolTask, (void*)0,
+	 TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
+	pros::Task opControlBeta(twin::opcontrolTask, (void*)1,
+	TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Beta op control");
 }
