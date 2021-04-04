@@ -44,3 +44,34 @@ bool pressButton(bool press, bool &debounce)
 
     return false;
 }
+
+void setOuttakeContain(pros::Motor inserterRoller)
+{
+  // Set everything to an intaking but not inserting speeds
+  inserterRoller = inserterRestingConst;
+}
+
+
+void setOuttakeInsert(pros::Motor inserterRoller)
+{
+  // Set everything to an intaking but not inserting speeds
+  inserterRoller = inserterConst;
+}
+
+void setIntakeIn(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller)
+{
+  setMotors(intakeMotorVector, intakeConst);
+  bottomRoller = intakeConst;
+}
+
+void setIntakeOut(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller)
+{
+  setMotors(intakeMotorVector, -intakeConst);
+  bottomRoller = -intakeConst;
+}
+
+void setIntakeContain(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller)
+{
+  setMotors(intakeMotorVector, 0);
+  bottomRoller = 0;
+}

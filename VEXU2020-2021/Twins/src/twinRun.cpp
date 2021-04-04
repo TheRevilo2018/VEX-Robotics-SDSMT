@@ -19,7 +19,18 @@ void autonomousTaskAlpha(void * param)
 
     auto driveBase = driveBasePair[pairIndex];
 
-    driveBase->driveTilesPID(1.0);
+    setIntakeIn(intakeMotorVector, bottomRoller);
+    driveBase->driveTilesPID(0.75);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(-90);
+    pros::delay(100);
+    driveBase->driveTilesPID(3.0);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(-90 - 45);
+    pros::delay(100);
+    driveBase->driveTilesPID(0.75);
+    setOuttakeInsert(inserterRoller);
+    pros::delay(300);
 
     int temp = 0;
     while(true)
@@ -48,7 +59,16 @@ void autonomousTaskBeta(void * param)
 
     auto driveBase = driveBasePair[pairIndex];
 
-    driveBase->driveTilesPID(-1.0);
+    setIntakeIn(intakeMotorVector, bottomRoller);
+    driveBase->driveTilesPID(2.0);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(90 + 25);
+    pros::delay(100);
+    driveBase->driveTilesPID(0.5);
+    pros::delay(100);
+    setOuttakeInsert(inserterRoller);
+    pros::delay(300);
+
     int temp = 0;
     while(true)
     {

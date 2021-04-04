@@ -15,8 +15,8 @@
 
 void autonomous()
 {
-    pros::Task autonAlpha(twin::autonomousTaskAlpha, (void*)0,
-                          TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha auton");
+    //pros::Task autonAlpha(twin::autonomousTaskAlpha, (void*)0,
+    //                      TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha auton");
     pros::Task autonBeta(twin::autonomousTaskBeta, (void*)1,
                          TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Beta auton");
     pros::lcd::set_text(6, "Finsished?");

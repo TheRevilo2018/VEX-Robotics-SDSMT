@@ -245,8 +245,11 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     float runTime = 0;
 
     int maxRunTime = max(ONE_SEC_IN_MS, ONE_SEC_IN_MS * abs(numTiles));
+    porportionalAmount = numTiles - currentDistance;
 
-    while (abs(numTiles - currentDistance) > 0.1 &&
+    // While not at destination and not out of time
+    while ((abs(porportionalAmount) > 0.1 ||
+            derivativeAmount > 0.1 * kD) &&
             runTime < maxRunTime)
     {
         porportionalAmount = numTiles - currentDistance;
@@ -262,7 +265,10 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
         total = bindToMagnitude(total, 1);
 
         float speed = total * desiredSpeed;
-
+        if(abs(speed) <= minSpeed)
+        {
+          speed = speed / abs(speed) * minSpeed;
+        }
         float currentEncoderVal = leftMotors->at(0).get_position();
 
         // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
@@ -316,8 +322,13 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
     float lastDegrees = 0;
     float runTime = 0;
-    while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2
-            && runTime < ONE_SEC_IN_MS * 10)
+
+    porportionalAmount = degreeBoundingHelper(endingDegrees - currentDegrees);
+
+    // While not at destination and not out of time
+    while( (abs(porportionalAmount) >= 2 ||
+     abs(derivativeAmount) >= (1 / DELTA_T)) &&
+     runTime < ONE_SEC_IN_MS * 10)
     {
         currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
