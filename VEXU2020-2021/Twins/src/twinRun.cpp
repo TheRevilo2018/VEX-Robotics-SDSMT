@@ -32,6 +32,7 @@ void autonomousTaskAlpha(void * param)
     setOuttakeInsert(inserterRoller);
     pros::delay(300);
 
+
     int temp = 0;
     while(true)
     {
@@ -141,16 +142,13 @@ void opcontrolTask(void* param)
         }
 
 
-        if(pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1), debounceButtonL1))
+        if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
         {
-            if(inserterPercent == inserterConst)
-            {
-                inserterPercent = inserterRestingConst;
-            }
-            else
-            {
-                inserterPercent = inserterConst;
-            }
+          inserterPercent = inserterConst;
+        }
+        else
+        {
+          inserterPercent = inserterRestingConst;
         }
 
         //drive controls
