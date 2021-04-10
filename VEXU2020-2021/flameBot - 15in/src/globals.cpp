@@ -2,7 +2,7 @@
 
 //controller declarations
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::Controller partner(pros::E_CONTROLLER_PARTNER);
+pros::Controller partner(pros::E_CONTROLLER_PARTNER); 
 
 //motor declarations
 pros::Motor wheelLeft1(LEFT_WHEEL_FRONT_PORT, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);

@@ -296,17 +296,25 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 {
   lcd::set_text(1, "target heading: " + to_string(targetDegrees) + " " + to_string(desiredSpeed));
 
-  float INTEGRATOR_MAX_MAGNITUDE = 100;
+  float INTEGRATOR_MAX_MAGNITUDE = 1000;
   float DELTA_T = LOOP_DELAY / 1000.0;
-  float MINSPEED_MOD = 2;
+  const int STOP_LOOPS = 20;
+  const float TURN_TOLERANCE = 2;
+  const float DESIRED_SPEED = 70;
   float endingDegrees = degreeBoundingHelper(targetDegrees);
   float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
+  //This is here to keep all of the tuning constants in the same place
+  if(desiredSpeed == -1)
+  {
+      desiredSpeed = DESIRED_SPEED;
+  }
+
   lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
 
-  float kP = 1.5 / 90.0;
-  float kI = .10 / 90.0;
-  float kD = .04 / 90.0;
+  float kP = 0.8 / 90.0; //speed to goal
+  float kI = 1.5 / 90.0; //adds speed if too slow
+  float kD = 0.08 / 90.0; //prevents overshoot
 
   float porportionalAmount = 0;
   float integralAmount = 0;
@@ -315,8 +323,8 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
   float lastDegrees = 0;
   float runTime = 0;
-  while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2
-  && runTime < ONE_SEC_IN_MS * 10)
+  int stopLoopCount = 0;
+  while( stopLoopCount <= STOP_LOOPS)
   {
     currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
@@ -334,10 +342,6 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
     total = bindToMagnitude(total, 1);
     float speed = total * desiredSpeed;
 
-    if (fabs(speed) < minSpeed * MINSPEED_MOD)
-    {
-        speed = speed * minSpeed * MINSPEED_MOD / fabs(speed);
-    }
 
     setMotors(rightMotors, -speed);
     setMotors(leftMotors, speed);
@@ -349,6 +353,15 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
     runTime += LOOP_DELAY;
     pros::delay(LOOP_DELAY);
+
+    if(abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) <= TURN_TOLERANCE)
+    {
+        stopLoopCount++;
+    }
+    else
+    {
+        stopLoopCount = 0;
+    }
   }
 
   setMotors(0);

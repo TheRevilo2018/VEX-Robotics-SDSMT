@@ -255,7 +255,7 @@ void autonomous()
 
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
 			{
-				driveBase->driveTilesPID(-1.0 );
+				driveBase->turnDegreesAbsolutePID(90);
 			}
 
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
