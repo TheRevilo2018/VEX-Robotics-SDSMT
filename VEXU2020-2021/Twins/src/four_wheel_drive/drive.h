@@ -21,7 +21,7 @@ class FourWheelDrive
     //they will work if the file input fails, but not as well
     double maxSpeed = 128;
     double midSpeed = 69;
-    double minSpeed = 10;
+    double minSpeed = 20;
     double speedBias = 1;
 
     double LRBiasHigh = 1;

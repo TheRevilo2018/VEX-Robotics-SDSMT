@@ -249,7 +249,7 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 
     // While not at destination and not out of time
     while ((abs(porportionalAmount) > 0.1 ||
-            derivativeAmount > 0.1 * kD) &&
+            derivativeAmount > 0.2 * kD) &&
             runTime < maxRunTime)
     {
         porportionalAmount = numTiles - currentDistance;
@@ -310,9 +310,10 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
     float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
     lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
+    lcd::set_text(3, "turnDegrees: " + to_string(inertialSensor->get_heading()));
 
     float kP = 1.5 / 90.0;
-    float kI = .10 / 90.0;
+    float kI = .20 / 90.0;
     float kD = .04 / 90.0;
 
     float porportionalAmount = 0;
@@ -327,7 +328,7 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
     // While not at destination and not out of time
     while( (abs(porportionalAmount) >= 2 ||
-     abs(derivativeAmount) >= (3 / DELTA_T)) &&
+     abs(derivativeAmount) >= (5 / DELTA_T)) &&
      runTime < ONE_SEC_IN_MS * 10)
     {
         currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());

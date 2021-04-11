@@ -15,11 +15,11 @@
 
 void autonomous()
 {
-    //pros::Task autonAlpha(twin::autonomousTaskAlpha, (void*)0,
-    //                      TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha auton");
-    pros::Task autonBeta(twin::autonomousTaskBeta, (void*)1,
+    pros::Task autonAlpha(twin::autonomousTaskAlpha, (void*)0,
+                          TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha auton");
+   pros::Task autonBeta(twin::autonomousTaskBeta, (void*)1,
                          TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Beta auton");
-    pros::lcd::set_text(6, "Finsished?");
+    pros::lcd::set_text(7, "Finsished?");
 
 }
 
@@ -36,20 +36,21 @@ void initialize()
     pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
     //visionSensor.clear_led();
 
-    //2911 for no ball
-    //1896 for ball
     inertialSensorAlpha.reset();
     inertialSensorBeta.reset();
-    //middleLightSensor.calibrate();
+
+    // Delay to allow inertial sensors to reset properly
+    pros::delay(1300 * 2);
 
     inserterAlpha.set_brake_mode(MOTOR_BRAKE_HOLD);
     inserterBeta.set_brake_mode(MOTOR_BRAKE_HOLD);
 
-    //    driveBase = new FourWheelDrive(rightWheelMotorVector, leftWheelMotorVector, inertialSensor, master);
     driveBaseAlpha = new FourWheelDrive(rightWheelMotorVectorAlpha, leftWheelMotorVectorAlpha, inertialSensorAlpha, controllerAlpha);
     driveBaseBeta = new FourWheelDrive(rightWheelMotorVectorBeta, leftWheelMotorVectorBeta, inertialSensorBeta, controllerBeta);
     driveBasePair[0] = driveBaseAlpha;
     driveBasePair[1] = driveBaseBeta;
+
+
 }
 
 /**

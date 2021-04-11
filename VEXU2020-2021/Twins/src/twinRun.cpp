@@ -23,20 +23,18 @@ void autonomousTaskAlpha(void * param)
     driveBase->driveTilesPID(0.75);
     pros::delay(100);
     driveBase->turnDegreesAbsolutePID(-90);
-    pros::delay(100);
-    driveBase->driveTilesPID(3.0);
+    pros::delay(400);
+    driveBase->driveTilesPID(4.75);
     pros::delay(100);
     driveBase->turnDegreesAbsolutePID(-90 - 45);
     pros::delay(100);
     driveBase->driveTilesPID(0.75);
     setOuttakeInsert(inserterRoller);
     pros::delay(300);
-
-
     int temp = 0;
     while(true)
     {
-        pros::lcd::set_text(5, "Alpha" + std::to_string(temp));
+        pros::lcd::set_text(7, "Alpha" + std::to_string(temp));
         temp++;
         pros::delay(loopDelay);
     }
@@ -61,19 +59,19 @@ void autonomousTaskBeta(void * param)
     auto driveBase = driveBasePair[pairIndex];
 
     setIntakeIn(intakeMotorVector, bottomRoller);
-    driveBase->driveTilesPID(2.0);
+    driveBase->driveTilesPID(2.75);
     pros::delay(100);
-    driveBase->turnDegreesAbsolutePID(90 + 25);
+    driveBase->turnDegreesAbsolutePID(90 + 65);
     pros::delay(100);
-    driveBase->driveTilesPID(0.5);
+    driveBase->driveTilesPID(3.25);
     pros::delay(100);
     setOuttakeInsert(inserterRoller);
     pros::delay(300);
-
     int temp = 0;
+
     while(true)
     {
-        pros::lcd::set_text(7, "Beta" + std::to_string(temp));
+        pros::lcd::set_text(8, "Beta" + std::to_string(temp));
         temp++;
         pros::delay(loopDelay);
     }
