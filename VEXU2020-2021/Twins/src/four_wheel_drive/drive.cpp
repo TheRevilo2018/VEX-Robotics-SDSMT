@@ -314,7 +314,7 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
     float kP = 1.5 / 90.0;
     float kI = .20 / 90.0;
-    float kD = .04 / 90.0;
+    float kD = .05 / 90.0;
 
     float porportionalAmount = 0;
     float integralAmount = 0;
@@ -328,7 +328,7 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
     // While not at destination and not out of time
     while( (abs(porportionalAmount) >= 2 ||
-     abs(derivativeAmount) >= (5 / DELTA_T)) &&
+     abs(derivativeAmount) >= (6 / DELTA_T)) &&
      runTime < ONE_SEC_IN_MS * 10)
     {
         currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
