@@ -79,6 +79,24 @@ void setOuttakeInsert()
   topDrum = inserterConst;
 }
 
+void setIntakeRun()
+{
+    double intakeSpeed = intakeConst;
+    setMotors(intakeMotorVector, intakeSpeed);
+}
+
+void setIntakeHold()
+{
+    double intakeSpeed = -intakeRest;
+    setMotors(intakeMotorVector, intakeSpeed);
+}
+
+void setIntakeStop()
+{
+    double intakeSpeed = 0;
+    setMotors(intakeMotorVector, intakeSpeed);
+}
+
 bool isHoldingBall()
 {
   int value = opticalSensor.get_proximity();

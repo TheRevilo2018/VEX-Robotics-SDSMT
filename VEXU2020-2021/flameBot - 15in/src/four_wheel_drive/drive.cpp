@@ -312,9 +312,9 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
   lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
 
-  float kP = 0.8 / 90.0; //speed to goal
-  float kI = 1.5 / 90.0; //adds speed if too slow
-  float kD = 0.08 / 90.0; //prevents overshoot
+  float kP = 1 / 90.0; //speed to goal
+  float kI = 1 / 90.0; //adds speed if too slow
+  float kD = 0.15 / 90.0; //prevents overshoot
 
   float porportionalAmount = 0;
   float integralAmount = 0;

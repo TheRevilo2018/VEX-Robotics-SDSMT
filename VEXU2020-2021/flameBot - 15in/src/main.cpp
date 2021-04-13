@@ -49,18 +49,21 @@ void competition_initialize() {}
  */
 void autonomous()
 {
-		const double DELAY_TIME = 20;
-		const double CYCLE_TIME = 1800;
+	const double DELAY_TIME = 20;
+	const double CYCLE_TIME = 1800;
+	bool skills = false;
 
-		//lets the sensor calibrate
-		pros::delay(2000);
+	//lets the sensor calibrate
+	pros::delay(2000);
 
-		unfold();
+	unfold();
 
+	setMotors(intakeMotorVector, intakeConst);
+	bottomDrum = intakeConst;
+
+	if(skills)
+	{
 		setOuttakePoop();
-
-		setMotors(intakeMotorVector, intakeConst);
-  		bottomDrum = intakeConst;
 
 	  	//goal 1
 		// Back ball into first goal
@@ -149,6 +152,88 @@ void autonomous()
 		pros::delay(DELAY_TIME);
 
 		driveBase->driveTilesPID(-1);
+	}
+	else
+	{
+
+		setOuttakeContain();
+
+		//grab first ball
+		setIntakeRun();
+		driveBase->driveTilesPID(2.4);
+
+		//grab second ball
+		driveBase->turnDegreesAbsolutePID(-86);
+		driveBase->driveTilesPID(-1);
+		setIntakeHold();
+		driveBase->turnDegreesAbsolutePID(0);
+
+		//line up the goal
+		setIntakeStop();
+		driveBase->driveTilesPID(-0.5);
+		driveBase->turnDegreesAbsolutePID(-90);
+		driveBase->driveTilesPID(-0.7);
+		driveBase->turnDegreesAbsolutePID(0);
+		setIntakeHold();
+		driveBase->driveTilesPID(0.6);
+		setOuttakeInsert();
+		pros::delay(2000);
+		setOuttakeContain();
+
+		//pick up last ball
+		driveBase->driveTilesPID(-0.4);
+		setIntakeRun();
+		driveBase->turnDegreesAbsolutePID(-121);
+		driveBase->driveTilesPID(2.8);
+
+		//shoot last goal
+		driveBase->turnDegreesAbsolutePID(-135);
+		setIntakeHold();
+		driveBase->driveTilesPID(0.5);
+		setOuttakeInsert();
+		pros::delay(2000);
+		setOuttakeContain();
+
+		//set for driver control
+		driveBase->driveTilesPID(-1);
+		driveBase->turnDegreesAbsolutePID(0);
+
+		/*//grab second ball
+		driveBase->driveTilesPID(-0.9);
+		driveBase->turnDegreesAbsolutePID(43);
+		driveBase->driveTilesPID(1.3);
+		driveBase->driveTilesPID(-0.2);
+
+		//line up the goal
+		driveBase->turnDegreesAbsolutePID(0);
+		setIntakeStop();
+		driveBase->driveTilesPID(-0.5);
+		driveBase->turnDegreesAbsolutePID(90);
+		driveBase->driveTilesPID(0.8);
+		driveBase->turnDegreesAbsolutePID(0);
+		setIntakeHold();
+		driveBase->driveTilesPID(0.5);
+		setOuttakeInsert();
+		pros::delay(2000);
+		setOuttakeContain();
+
+		//pick up last ball
+		driveBase->driveTilesPID(-0.4);
+		setIntakeRun();
+		driveBase->turnDegreesAbsolutePID(-120);
+		driveBase->driveTilesPID(2.5);
+
+		//shoot last goal
+		setIntakeHold();
+		driveBase->driveTilesPID(0.3);
+		setOuttakeInsert();
+		pros::delay(2000);
+		setOuttakeContain();
+
+		//set for driver control
+		driveBase->driveTilesPID(-1);
+		driveBase->turnDegreesAbsolutePID(0);*/
+	}
 }
 
 /**
