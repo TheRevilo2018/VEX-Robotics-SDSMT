@@ -62,7 +62,6 @@ void setOuttakeContain()
   // Set everything to an intaking but not inserting speeds
   pooper = 0;
   topDrum = inserterRestingConst;
-
 }
 
 void setOuttakePoop()
@@ -191,4 +190,14 @@ void autoCycle(int time)
   pros::delay(600);
   setMotors(intakeMotorVector, intakeConst);
   //setOuttakeContain();
+}
+
+void setOuttakeTwo()
+{
+    bottomDrum = -bottomDrumConst;
+    pros::delay(350);
+    bottomDrum = bottomDrumConst;
+    setOuttakeInsert();
+    pros::delay(1500);
+    setOuttakeContain();
 }

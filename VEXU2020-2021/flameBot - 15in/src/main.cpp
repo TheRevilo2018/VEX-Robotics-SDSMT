@@ -155,7 +155,6 @@ void autonomous()
 	}
 	else
 	{
-
 		setOuttakeContain();
 
 		//grab first ball
@@ -164,7 +163,7 @@ void autonomous()
 
 		//grab second ball
 		driveBase->turnDegreesAbsolutePID(-86);
-		driveBase->driveTilesPID(-1);
+		driveBase->driveTilesPID(-1.07);
 		setIntakeHold();
 		driveBase->turnDegreesAbsolutePID(0);
 
@@ -175,64 +174,28 @@ void autonomous()
 		driveBase->driveTilesPID(-0.7);
 		driveBase->turnDegreesAbsolutePID(0);
 		setIntakeHold();
+		pros::delay(500);
 		driveBase->driveTilesPID(0.6);
-		setOuttakeInsert();
-		pros::delay(2000);
-		setOuttakeContain();
+		setOuttakeTwo();
 
 		//pick up last ball
 		driveBase->driveTilesPID(-0.4);
-		setIntakeRun();
-		driveBase->turnDegreesAbsolutePID(-121);
+		driveBase->turnDegreesAbsolutePID(-123);
 		driveBase->driveTilesPID(2.8);
-
-		//shoot last goal
-		driveBase->turnDegreesAbsolutePID(-135);
-		setIntakeHold();
-		driveBase->driveTilesPID(0.5);
-		setOuttakeInsert();
-		pros::delay(2000);
-		setOuttakeContain();
-
-		//set for driver control
-		driveBase->driveTilesPID(-1);
-		driveBase->turnDegreesAbsolutePID(0);
-
-		/*//grab second ball
-		driveBase->driveTilesPID(-0.9);
-		driveBase->turnDegreesAbsolutePID(43);
-		driveBase->driveTilesPID(1.3);
-		driveBase->driveTilesPID(-0.2);
-
-		//line up the goal
-		driveBase->turnDegreesAbsolutePID(0);
-		setIntakeStop();
-		driveBase->driveTilesPID(-0.5);
-		driveBase->turnDegreesAbsolutePID(90);
-		driveBase->driveTilesPID(0.8);
-		driveBase->turnDegreesAbsolutePID(0);
-		setIntakeHold();
-		driveBase->driveTilesPID(0.5);
-		setOuttakeInsert();
-		pros::delay(2000);
-		setOuttakeContain();
-
-		//pick up last ball
-		driveBase->driveTilesPID(-0.4);
 		setIntakeRun();
-		driveBase->turnDegreesAbsolutePID(-120);
-		driveBase->driveTilesPID(2.5);
+		pros::delay(1000);
 
 		//shoot last goal
+		//driveBase->turnDegreesAbsolutePID(-135);
 		setIntakeHold();
-		driveBase->driveTilesPID(0.3);
+		driveBase->driveTilesPID(0.5);
 		setOuttakeInsert();
 		pros::delay(2000);
 		setOuttakeContain();
 
 		//set for driver control
 		driveBase->driveTilesPID(-1);
-		driveBase->turnDegreesAbsolutePID(0);*/
+		driveBase->turnDegreesAbsolutePID(0);
 	}
 }
 
