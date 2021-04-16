@@ -241,11 +241,15 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     float lastDistance = 0;
     float accumulatedDistance = 0;
 
-    float lastEncoderVal = leftMotors->at(0).get_position();
+    float lastEncoderVal = (leftMotors->at(0).get_position() + rightMotors->at(0).get_position())/2.0;
     float runTime = 0;
 
     int maxRunTime = max(ONE_SEC_IN_MS, ONE_SEC_IN_MS * abs(numTiles));
     porportionalAmount = numTiles - currentDistance;
+
+    float initialHeading = degreeBoundingHelper(inertialSensor->get_heading());
+    float initialEncoderLeft = leftMotors->at(0).get_position();
+    float initialEncoderRight = rightMotors->at(0).get_position();
 
     // While not at destination and not out of time
     while ((abs(porportionalAmount) > 0.1 ||
@@ -269,7 +273,7 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
         {
           speed = speed / abs(speed) * minSpeed;
         }
-        float currentEncoderVal = leftMotors->at(0).get_position();
+        float currentEncoderVal = (leftMotors->at(0).get_position() + rightMotors->at(0).get_position())/2.0;
 
         // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
         double encoderTicksPerTile = 1333.33;
@@ -281,8 +285,82 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
         lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
         lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance));
 
-        setMotors(rightMotors, speed);
-        setMotors(leftMotors, speed);
+        float currentHeading = degreeBoundingHelper(inertialSensor->get_heading());
+
+        float speedLeft = speed;
+        float speedRight = speed;
+
+        bool correctedLeft = false;
+        bool correctedRight = false;
+        // If we've turned too far, adjust
+        float degreeDeviation = degreeBoundingHelper(initialHeading - currentHeading);
+        if(abs(degreeDeviation) > 3)
+        {
+          // We're facing more right than we want
+          if(degreeDeviation > 0 && degreeDeviation < 180)
+          {
+            if(speed > 0)
+            {
+              correctedRight = true;
+            }
+            else
+            {
+              correctedLeft = true;
+            }
+          }
+          // We're facing more left than we want
+          else
+          {
+            if(speed > 0)
+            {
+              correctedLeft = true;
+            }
+            else
+            {
+              correctedRight = true;
+            }
+          }
+        }
+
+        float leftEncoderDiff = leftMotors->at(0).get_position() - initialEncoderLeft;
+        float rightEncoderDiff = rightMotors->at(0).get_position() - initialEncoderRight;
+        if(abs(leftEncoderDiff - rightEncoderDiff) > 50)
+        {
+          if(leftEncoderDiff > rightEncoderDiff)
+          {
+            if(speed > 0)
+            {
+                correctedLeft = true;
+            }
+            else
+            {
+              correctedRight = true;
+            }
+          }
+          else
+          {
+            if(speed > 0)
+            {
+              correctedRight = true;
+            }
+            else
+            {
+              correctedLeft = true;
+            }
+          }
+        }
+
+        if(correctedLeft && !correctedRight)
+        {
+          speedLeft *= 0.90;
+        }
+        else if(!correctedLeft && correctedRight)
+        {
+          speedRight *= 0.90;
+        }
+
+        setMotors(rightMotors, speedRight);
+        setMotors(leftMotors, speedLeft);
 
         iterations++;
         lastDistance = porportionalAmount;

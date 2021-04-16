@@ -22,33 +22,24 @@ void autonomousTaskAlpha(void * param)
     // Insert into center red goal
     setIntakeIn(intakeMotorVector, bottomRoller);
     driveBase->driveTilesPID(0.75);
-    pros::delay(100);
+    pros::delay(2000);
     driveBase->turnDegreesAbsolutePID(-90);
     pros::delay(100);
     driveBase->turnDegreesAbsolutePID(-90);
     pros::delay(100);
-    driveBase->driveTilesPID(1.55);
+    setIntakeContain(intakeMotorVector, bottomRoller);
+    driveBase->driveTilesPID(1.65);
     pros::delay(100);
     driveBase->turnDegreesAbsolutePID(-180);
     pros::delay(100);
-    driveBase->driveTilesPID(0.6);
+    driveBase->turnDegreesAbsolutePID(-180);
+    pros::delay(100);
+    driveBase->driveTilesPID(0.7);
     setOuttakeInsert(inserterRoller);
+    pros::delay(300);
+    bottomRoller = inserterConst;
     pros::delay(2000);
     setOuttakeContain(inserterRoller);
-
-
-    driveBase->driveTilesPID(-1.0, 50);
-    pros::delay(100);
-    driveBase->turnDegreesAbsolutePID(-90);
-    pros::delay(100);
-    driveBase->driveTilesPID(3.85);
-    pros::delay(100);
-    driveBase->turnDegreesAbsolutePID(-90 - 45);
-    pros::delay(100);
-    driveBase->driveTilesPID(0.65);
-    driveBase->driveTilesPID(0.15);
-    setOuttakeInsert(inserterRoller);
-    pros::delay(2000);
 
     int temp = 0;
     while(true)
@@ -78,16 +69,29 @@ void autonomousTaskBeta(void * param)
     auto driveBase = driveBasePair[pairIndex];
 
     setIntakeIn(intakeMotorVector, bottomRoller);
-    driveBase->driveTilesPID(2.75);
+    driveBase->driveTilesPID(1.75);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(0);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(0);
+    pros::delay(100);
+    driveBase->driveTilesPID(1.0);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(90);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(90);
     pros::delay(100);
     driveBase->turnDegreesAbsolutePID(90 + 65);
     pros::delay(100);
-    driveBase->driveTilesPID(3.15);
+    driveBase->turnDegreesAbsolutePID(90 + 65);
+    pros::delay(100);
+    driveBase->driveTilesPID(3.05);
     pros::delay(100);
     setOuttakeInsert(inserterRoller);
     pros::delay(2000);
     setOuttakeContain(inserterRoller);
-    driveBase->driveTilesPID(-1.5);
+    setIntakeContain(intakeMotorVector, bottomRoller);
+    driveBase->driveTilesPID(-1.8);
     int temp = 0;
 
     while(true)
@@ -113,6 +117,8 @@ void opcontrolTask(void* param)
 
     auto bottomRoller = bottomRollerPair[pairIndex];
     auto inserterRoller = inserterRollerPair[pairIndex];
+
+    auto driveBase = driveBasePair[pairIndex];
 
     int turnThreshold = 10;
     int driveThreshold = 10;
@@ -169,6 +175,13 @@ void opcontrolTask(void* param)
         {
           inserterPercent = inserterRestingConst;
         }
+
+        /*
+        if(pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
+        {
+          driveBase->driveTilesPID(3.0);
+        }
+        */
 
         //drive controls
         if(abs(controller.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(controller.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
