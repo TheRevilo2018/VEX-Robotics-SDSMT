@@ -41,6 +41,31 @@ void autonomousTaskAlpha(void * param)
     pros::delay(2000);
     setOuttakeContain(inserterRoller);
 
+    // Back up and approach bottom right goal
+    driveBase->driveTilesPID(-1.0);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(90);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(90);
+    pros::delay(100);
+    driveBase->driveTilesPID(2.75);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(90 + 45);
+    pros::delay(100);
+    driveBase->turnDegreesAbsolutePID(90 + 45, 40);
+    pros::delay(100);
+    setIntakeIn(intakeMotorVector, bottomRoller);
+    driveBase->driveTilesPID(1.25);
+    pros::delay(100);
+    driveBase->driveTilesPID(-0.3);
+    pros::delay(100);
+    driveBase->driveTilesPID(0.3);
+    pros::delay(100);
+    setOuttakeInsert(inserterRoller);
+    pros::delay(300);
+    bottomRoller = inserterConst;
+    pros::delay(2000);
+    driveBase->driveTilesPID(-1.0);
     int temp = 0;
     while(true)
     {
