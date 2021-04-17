@@ -88,6 +88,10 @@ void autonomousTaskBeta(void * param)
     pros::delay(100);
     driveBase->driveTilesPID(3.05);
     pros::delay(100);
+    driveBase->driveTilesPID(-0.3);
+    pros::delay(100);
+    driveBase->driveTilesPID(0.3);
+    pros::delay(100);
     setOuttakeInsert(inserterRoller);
     pros::delay(2000);
     setOuttakeContain(inserterRoller);
