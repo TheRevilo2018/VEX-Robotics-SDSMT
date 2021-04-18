@@ -17,7 +17,7 @@ void autonomous()
 {
     pros::Task autonAlpha(twin::autonomousTaskAlpha, (void*)0,
                           TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha auton");
-   pros::Task autonBeta(twin::autonomousTaskBeta, (void*)1,
+    pros::Task autonBeta(twin::autonomousTaskBeta, (void*)1,
                          TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Beta auton");
     pros::lcd::set_text(7, "Finsished?");
 
@@ -42,15 +42,15 @@ void initialize()
     // Delay to allow inertial sensors to reset properly
     pros::delay(1300 * 2);
 
-    inserterAlpha.set_brake_mode(MOTOR_BRAKE_HOLD);
-    inserterBeta.set_brake_mode(MOTOR_BRAKE_HOLD);
+    inserterAlpha.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    inserterBeta.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    pros::lcd::set_text(4, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
+    pros::lcd::set_text(5, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
 
     driveBaseAlpha = new FourWheelDrive(rightWheelMotorVectorAlpha, leftWheelMotorVectorAlpha, inertialSensorAlpha, controllerAlpha);
     driveBaseBeta = new FourWheelDrive(rightWheelMotorVectorBeta, leftWheelMotorVectorBeta, inertialSensorBeta, controllerBeta);
     driveBasePair[0] = driveBaseAlpha;
     driveBasePair[1] = driveBaseBeta;
-
-
 }
 
 /**
@@ -75,7 +75,13 @@ void disabled()
  * starts.
  */
 void competition_initialize() {
-    pros::lcd::set_text(4, "Calling competition_initialize: " + std::to_string(pros::millis()));
+    pros::lcd::set_text(4, "Calling comp_init: " + std::to_string(pros::millis()));
+    /*
+    inserterAlpha.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    inserterBeta.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    pros::lcd::set_text(5, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
+    pros::lcd::set_text(6, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
+    */
 }
 
 

@@ -77,21 +77,26 @@ void autonomousTaskBeta(void * param)
     pros::delay(100);
     driveBase->driveTilesPID(1.0);
     pros::delay(100);
+    inserterRoller = -inserterConst;
     driveBase->turnDegreesAbsolutePID(90);
     pros::delay(100);
     driveBase->turnDegreesAbsolutePID(90);
     pros::delay(100);
-    driveBase->turnDegreesAbsolutePID(90 + 65);
+    driveBase->turnDegreesAbsolutePID(90 + 62);
     pros::delay(100);
-    driveBase->turnDegreesAbsolutePID(90 + 65);
+    driveBase->turnDegreesAbsolutePID(90 + 62);
     pros::delay(100);
     driveBase->driveTilesPID(3.05);
+    pros::delay(100);
+    driveBase->driveTilesPID(-0.3);
+    pros::delay(100);
+    driveBase->driveTilesPID(0.3);
     pros::delay(100);
     setOuttakeInsert(inserterRoller);
     pros::delay(2000);
     setOuttakeContain(inserterRoller);
     setIntakeContain(intakeMotorVector, bottomRoller);
-    driveBase->driveTilesPID(-1.8);
+    driveBase->driveTilesPID(-1.0);
     int temp = 0;
 
     while(true)
@@ -169,11 +174,11 @@ void opcontrolTask(void* param)
 
         if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
         {
-          inserterPercent = inserterConst;
+            inserterPercent = inserterConst;
         }
         else
         {
-          inserterPercent = inserterRestingConst;
+            inserterPercent = inserterRestingConst;
         }
 
         /*
@@ -209,7 +214,7 @@ void opcontrolTask(void* param)
         setMotors(leftWheelMotorVector, leftMotorPercent);
         setMotors(rightWheelMotorVector, rightMotorPercent);
         setMotors(intakeMotorVector, intakePercent);
-        bottomRoller = intakePercent;
+        bottomRoller = 60;
         inserterRoller = inserterPercent;
         pros::delay(loopDelay);
     }
