@@ -107,17 +107,21 @@ void autonomousTaskBeta(void * param)
     pros::delay(100);
     driveBase->turnDegreesAbsolutePID(90);
     pros::delay(100);
-    driveBase->turnDegreesAbsolutePID(90 + 70);
+    driveBase->turnDegreesAbsolutePID(90 + 62);
     pros::delay(100);
-    driveBase->turnDegreesAbsolutePID(90 + 70);
+    driveBase->turnDegreesAbsolutePID(90 + 62);
     pros::delay(100);
     driveBase->driveTilesPID(3.05);
+    pros::delay(100);
+    driveBase->driveTilesPID(-0.3);
+    pros::delay(100);
+    driveBase->driveTilesPID(0.3);
     pros::delay(100);
     setOuttakeInsert(inserterRoller);
     pros::delay(2000);
     setOuttakeContain(inserterRoller);
     setIntakeContain(intakeMotorVector, bottomRoller);
-    driveBase->driveTilesPID(-1.8);
+    driveBase->driveTilesPID(-1.0);
     int temp = 0;
 
     while(true)
