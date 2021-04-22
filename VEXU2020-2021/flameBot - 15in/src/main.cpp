@@ -303,6 +303,12 @@ void autonomous()
 
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
 			{
+				unfold();
+			}
+			//for testing only
+			/*
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
+			{
 				driveBase->turnDegreesAbsolutePID(90);
 			}
 
@@ -315,6 +321,7 @@ void autonomous()
 			{
 				autoCycle();
 			}
+			*/
 
  			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
  			{
