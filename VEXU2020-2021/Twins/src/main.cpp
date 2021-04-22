@@ -1,7 +1,5 @@
-#include "../include/main.h"
-#include "../include/helperfunctions.h"
-#include "../include/twinRun.h"
-#include "four_wheel_drive/drive.h"
+#include "main.h"
+
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -17,38 +15,13 @@
 
 void autonomous()
 {
+    pros::Task autonAlpha(twin::autonomousTaskAlpha, (void*)0,
+                          TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha auton");
+    //pros::Task autonBeta(twin::autonomousTaskBeta, (void*)1,
+    //                     TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Beta auton");
+    pros::lcd::set_text(7, "Finsished?");
 
-	auto rightWheelVectorsAlpha = rightWheelVectorPair[0];
-	auto leftWheelVectorsAlpha = leftWheelVectorPair[0];
-	FourWheelDrive driveBaseAlpha(rightWheelVectorsAlpha, leftWheelVectorsAlpha);
-
-	int blue = 1;
-	int red = 2;
-
-	driveBaseAlpha.driveDist(4.0, FORWARD);
-
-	rightWheelVectorsAlpha[2].set_zero_position(0);
-
-	pros::lcd::set_text(6, "auton finished " + std::to_string(rightWheelVectorsAlpha[2].get_position()));
-
-
-	switch(blue)
-	{
-			case(0):
-			{
-			}
-			//blue auton
-			case (1):
-			{
-				break;
-			}
-			//red auton
-			case(2):
-			{
-				break;
-			}
-		}
-	}
+}
 
 
 /**
@@ -59,18 +32,25 @@ void autonomous()
  */
 void initialize()
 {
-	pros::lcd::initialize();
-	pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
-	//visionSensor.clear_led();
+    pros::lcd::initialize();
+    pros::lcd::set_text(2, "Calling initialize: " + std::to_string(pros::millis()));
+    //visionSensor.clear_led();
 
-	//2911 for no ball
-	//1896 for ball
-	inertialSensorAlpha.reset();
-	inertialSensorBeta.reset();
-	//middleLightSensor.calibrate();
+    inertialSensorAlpha.reset();
+    inertialSensorBeta.reset();
 
-	inserterAlpha.set_brake_mode(MOTOR_BRAKE_HOLD);
-	inserterBeta.set_brake_mode(MOTOR_BRAKE_HOLD);
+    // Delay to allow inertial sensors to reset properly
+    pros::delay(1300 * 2);
+
+    inserterAlpha.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    inserterBeta.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    pros::lcd::set_text(4, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
+    pros::lcd::set_text(5, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
+
+    driveBaseAlpha = new FourWheelDrive(rightWheelMotorVectorAlpha, leftWheelMotorVectorAlpha, inertialSensorAlpha, controllerAlpha);
+    driveBaseBeta = new FourWheelDrive(rightWheelMotorVectorBeta, leftWheelMotorVectorBeta, inertialSensorBeta, controllerBeta);
+    driveBasePair[0] = driveBaseAlpha;
+    driveBasePair[1] = driveBaseBeta;
 }
 
 /**
@@ -80,7 +60,9 @@ void initialize()
  */
 void disabled()
 {
-	pros::lcd::set_text(3, "Calling disabled: " + std::to_string(pros::millis()));
+    pros::lcd::set_text(3, "Calling disabled: " + std::to_string(pros::millis()));
+    delete driveBaseAlpha;
+    delete driveBaseBeta;
 }
 
 /**
@@ -93,7 +75,13 @@ void disabled()
  * starts.
  */
 void competition_initialize() {
-	pros::lcd::set_text(4, "Calling competition_initialize: " + std::to_string(pros::millis()));
+    pros::lcd::set_text(4, "Calling comp_init: " + std::to_string(pros::millis()));
+    /*
+    inserterAlpha.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    inserterBeta.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD );
+    pros::lcd::set_text(5, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
+    pros::lcd::set_text(6, "Mode" + std::to_string(inserterAlpha.get_brake_mode()));
+    */
 }
 
 
@@ -114,7 +102,8 @@ void competition_initialize() {
 
 void opcontrol()
 {
-	pros::Task opControlAlpha(twin::opcontrolTask, (void*)0, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
-	pros::Task opControlBeta(twin::opcontrolTask, (void*)1, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
-
+    pros::Task opControlAlpha(twin::opcontrolTask, (void*)0,
+                              TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Alpha op control");
+    //pros::Task opControlBeta(twin::opcontrolTask, (void*)1,
+    //                         TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Beta op control");
 }

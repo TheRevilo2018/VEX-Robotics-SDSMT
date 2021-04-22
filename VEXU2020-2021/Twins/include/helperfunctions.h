@@ -9,6 +9,11 @@ const int STOP_AMOUNT = 100;
 void setMotors(std::vector<pros::Motor> & motors, double speed);
 void setMotorsRelative(std::vector<pros::Motor> & motors, double distance, double speed);
 void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t brakeType);
-bool pressButton(std::uint32_t  & debounceTime);
+bool pressButton(bool press, bool &debounce);
+void setOuttakeContain(pros::Motor inserterRoller);
+void setOuttakeInsert(pros::Motor inserterRoller);
+void setIntakeIn(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller);
+void setIntakeOut(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller);
+void setIntakeContain(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller);
 
 #endif
