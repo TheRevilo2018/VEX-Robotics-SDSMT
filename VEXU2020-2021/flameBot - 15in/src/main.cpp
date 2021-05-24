@@ -301,27 +301,28 @@ void autonomous()
 				}
 			}
 
-			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
+			/*if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
 			{
 				unfold();
-			}
+			}*/
 			//for testing only
-			/*
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
+			{
+				driveBase->driveTilesPID(2);
+			}
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
+			{
+				driveBase->driveTilesPID(-2);
+			}
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
+			{
+				driveBase->turnDegreesAbsolutePID(0);
+			}
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y), debounceButtonY))
 			{
 				driveBase->turnDegreesAbsolutePID(90);
 			}
 
-			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
-			{
-				driveBase->turnDegreesAbsolutePID(0);
-			}
-
-			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
-			{
-				autoCycle();
-			}
-			*/
 
  			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
  			{

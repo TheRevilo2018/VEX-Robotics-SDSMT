@@ -83,6 +83,9 @@ private:
     float degreesToRadians(float radians);
     float radiansToDegrees(float degrees);
     float bindToMagnitude(float value, float MAX_MAGNITUDE);
+    void setAllBrakeMode(std::vector<pros::Motor> *motors, pros::motor_brake_mode_e_t mode);
+    void setAllBrakeMode(pros::motor_brake_mode_e_t mode);
+
 
     void checkGyro();
     void correctGyroCalibration(float accel, float jerk);
