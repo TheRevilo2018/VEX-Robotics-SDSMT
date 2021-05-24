@@ -225,65 +225,81 @@ void FourWheelDrive::accelerate(double targetSpeed)
 
 void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 {
-  float INTEGRATOR_MAX_MAGNITUDE = 100;
-  float DELTA_T = LOOP_DELAY / 1000.0;
-  float currentDistance = 0;
-
-  float kP = 1;
-  float kI = .4;
-  float kD = .01;
-
-  float porportionalAmount = 0;
-  float integralAmount = 0;
-  float derivativeAmount = 0;
-
-  long iterations = 1;
-  float lastDistance = 0;
-  float accumulatedDistance = 0;
-
-  float lastEncoderVal = leftMotors->at(0).get_position();
-  float runTime = 0;
-
-  int maxRunTime = max(ONE_SEC_IN_MS, ONE_SEC_IN_MS * abs(numTiles));
-
-  while (abs(numTiles - currentDistance) > 0.1 &&
-     runTime < maxRunTime)
-  {
-    porportionalAmount = numTiles - currentDistance;
-
-    accumulatedDistance += porportionalAmount;
-    accumulatedDistance = bindToMagnitude(accumulatedDistance, INTEGRATOR_MAX_MAGNITUDE);
-
-    integralAmount = accumulatedDistance * DELTA_T;
-
-    derivativeAmount = (lastDistance - currentDistance) / DELTA_T;
-
-    float total = porportionalAmount * kP + integralAmount * kI + derivativeAmount * kD;
-    total = bindToMagnitude(total, 1);
-
-    float speed = total * desiredSpeed;
-
-    float currentEncoderVal = leftMotors->at(0).get_position();
-
+    float INTEGRATOR_MAX_MAGNITUDE = 1000;
+    float DELTA_T = LOOP_DELAY / 1000.0;
+    const int STOP_LOOPS = 20;
+    const float TILE_TOLERANCE = 0.02;
+    const float DESIRED_SPEED = 70;
     // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
-    double encoderTicksPerTile = 1333.33;
-    currentDistance += (currentEncoderVal - lastEncoderVal) / encoderTicksPerTile;
+    const double TICKS_PER_TILE = 1270;
+    float currentDistance = 0;
 
-    lcd::set_text(3, "Desired " + to_string(numTiles));
-    lcd::set_text(4, "Current: " + to_string(currentDistance));
-    lcd::set_text(5, "Raw Vals: " + to_string(porportionalAmount) + " " + to_string(integralAmount) + " " + to_string(derivativeAmount));
-    lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
-    lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance));
+    float kP = 1;
+    float kI = .4;
+    float kD = .0058;
 
-    setMotors(rightMotors, speed);
-    setMotors(leftMotors, speed);
+    float porportionalAmount = 0;
+    float integralAmount = 0;
+    float derivativeAmount = 0;
 
-    iterations++;
-    lastDistance = porportionalAmount;
-    lastEncoderVal = currentEncoderVal;
-    runTime += LOOP_DELAY;
-    pros::delay(LOOP_DELAY);
-  }
+    long iterations = 1;
+    float lastDistance = 0;
+    float accumulatedDistance = 0;
+
+    float lastEncoderVal = leftMotors->at(0).get_position();
+    pros::motor_brake_mode_e_t startingMode = leftMotors->at(0).get_brake_mode();
+    setAllBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
+    float runTime = 0;
+    int stopLoopCount = 0;
+
+    int maxRunTime = max(ONE_SEC_IN_MS * 5, ONE_SEC_IN_MS * abs(numTiles) * 2);
+
+    while( stopLoopCount <= STOP_LOOPS && runTime < maxRunTime)
+    {
+        porportionalAmount = numTiles - currentDistance;
+
+        accumulatedDistance += porportionalAmount;
+        accumulatedDistance = bindToMagnitude(accumulatedDistance, INTEGRATOR_MAX_MAGNITUDE);
+
+        integralAmount = accumulatedDistance * DELTA_T;
+
+        derivativeAmount = (lastDistance - currentDistance) / DELTA_T;
+
+        float total = porportionalAmount * kP + integralAmount * kI + derivativeAmount * kD;
+        total = bindToMagnitude(total, 1);
+
+        float speed = total * desiredSpeed;
+
+        float currentEncoderVal = leftMotors->at(0).get_position();
+
+        currentDistance += (currentEncoderVal - lastEncoderVal) / TICKS_PER_TILE;
+
+        /*lcd::set_text(3, "Desired " + to_string(numTiles));
+        lcd::set_text(4, "Current: " + to_string(currentDistance));
+        lcd::set_text(5, "Raw Vals: " + to_string(porportionalAmount) + " " + to_string(integralAmount) + " " + to_string(derivativeAmount));
+        lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
+        lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance));*/
+
+        setMotors(rightMotors, speed);
+        setMotors(leftMotors, speed);
+
+        iterations++;
+        lastDistance = porportionalAmount;
+        lastEncoderVal = currentEncoderVal;
+
+        runTime += LOOP_DELAY;
+        pros::delay(LOOP_DELAY);
+
+        if(abs(degreeBoundingHelper(currentDistance) - degreeBoundingHelper(numTiles))
+                <= TILE_TOLERANCE)
+            { stopLoopCount++;}
+        else
+            {stopLoopCount = 0;}
+    }
+
+    setMotors(rightMotors, 0);
+    setMotors(leftMotors, 0);
+    setAllBrakeMode(startingMode);
 }
 
 void FourWheelDrive::turnDegreesPID(float numDegrees, float desiredSpeed)
@@ -296,17 +312,26 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 {
   lcd::set_text(1, "target heading: " + to_string(targetDegrees) + " " + to_string(desiredSpeed));
 
-  float INTEGRATOR_MAX_MAGNITUDE = 100;
+  float INTEGRATOR_MAX_MAGNITUDE = 1000;
   float DELTA_T = LOOP_DELAY / 1000.0;
-  float MINSPEED_MOD = 2;
+  const int STOP_LOOPS = 20;
+  const float TURN_TOLERANCE = 2;
+  const float DESIRED_SPEED = 70;
+  const int MAX_RUN_TIME = ONE_SEC_IN_MS * 5;
   float endingDegrees = degreeBoundingHelper(targetDegrees);
   float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
+  //This is here to keep all of the tuning constants in the same place
+  if(desiredSpeed == -1)
+  {
+      desiredSpeed = DESIRED_SPEED;
+  }
+
   lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
 
-  float kP = 1.5 / 90.0;
-  float kI = .10 / 90.0;
-  float kD = .04 / 90.0;
+  float kP = 1 / 90.0; //speed to goal
+  float kI = 1 / 90.0; //adds speed if too slow
+  float kD = 0.15 / 90.0; //prevents overshoot
 
   float porportionalAmount = 0;
   float integralAmount = 0;
@@ -315,8 +340,12 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
   float lastDegrees = 0;
   float runTime = 0;
-  while( abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) >= 2
-  && runTime < ONE_SEC_IN_MS * 10)
+  int stopLoopCount = 0;
+
+  pros::motor_brake_mode_e_t startingMode = leftMotors->at(0).get_brake_mode();
+  setAllBrakeMode(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_BRAKE);
+
+  while( stopLoopCount <= STOP_LOOPS && runTime < MAX_RUN_TIME)
   {
     currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
 
@@ -334,10 +363,6 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
     total = bindToMagnitude(total, 1);
     float speed = total * desiredSpeed;
 
-    if (fabs(speed) < minSpeed * MINSPEED_MOD)
-    {
-        speed = speed * minSpeed * MINSPEED_MOD / fabs(speed);
-    }
 
     setMotors(rightMotors, -speed);
     setMotors(leftMotors, speed);
@@ -349,7 +374,17 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
     runTime += LOOP_DELAY;
     pros::delay(LOOP_DELAY);
+
+    if(abs(degreeBoundingHelper(currentDegrees) - degreeBoundingHelper(endingDegrees)) <= TURN_TOLERANCE)
+    {
+        stopLoopCount++;
+    }
+    else
+    {
+        stopLoopCount = 0;
+    }
   }
 
   setMotors(0);
+  setAllBrakeMode(startingMode);
 }

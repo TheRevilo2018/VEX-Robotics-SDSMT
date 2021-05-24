@@ -62,7 +62,6 @@ void setOuttakeContain()
   // Set everything to an intaking but not inserting speeds
   pooper = 0;
   topDrum = inserterRestingConst;
-
 }
 
 void setOuttakePoop()
@@ -77,6 +76,24 @@ void setOuttakeInsert()
   // Set everything to an intaking but not inserting speeds
   pooper = -pooperConst;
   topDrum = inserterConst;
+}
+
+void setIntakeRun()
+{
+    double intakeSpeed = intakeConst;
+    setMotors(intakeMotorVector, intakeSpeed);
+}
+
+void setIntakeHold()
+{
+    double intakeSpeed = -intakeRest;
+    setMotors(intakeMotorVector, intakeSpeed);
+}
+
+void setIntakeStop()
+{
+    double intakeSpeed = 0;
+    setMotors(intakeMotorVector, intakeSpeed);
 }
 
 bool isHoldingBall()
@@ -173,4 +190,14 @@ void autoCycle(int time)
   pros::delay(600);
   setMotors(intakeMotorVector, intakeConst);
   //setOuttakeContain();
+}
+
+void setOuttakeTwo()
+{
+    bottomDrum = -bottomDrumConst;
+    pros::delay(350);
+    bottomDrum = bottomDrumConst;
+    setOuttakeInsert();
+    pros::delay(1500);
+    setOuttakeContain();
 }

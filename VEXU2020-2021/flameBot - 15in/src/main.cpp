@@ -49,18 +49,21 @@ void competition_initialize() {}
  */
 void autonomous()
 {
-		const double DELAY_TIME = 20;
-		const double CYCLE_TIME = 1800;
+	const double DELAY_TIME = 20;
+	const double CYCLE_TIME = 1800;
+	bool skills = false;
 
-		//lets the sensor calibrate
-		pros::delay(2000);
+	//lets the sensor calibrate
+	pros::delay(2000);
 
-		unfold();
+	unfold();
 
+	setMotors(intakeMotorVector, intakeConst);
+	bottomDrum = intakeConst;
+
+	if(skills)
+	{
 		setOuttakePoop();
-
-		setMotors(intakeMotorVector, intakeConst);
-  		bottomDrum = intakeConst;
 
 	  	//goal 1
 		// Back ball into first goal
@@ -149,43 +152,51 @@ void autonomous()
 		pros::delay(DELAY_TIME);
 
 		driveBase->driveTilesPID(-1);
-/*
-		//goal 7
-		// Back away from goal, turn to grab next ball, turn to left goal and cycle
-		driveBase->driveTilesPID(-1 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(90+70);
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(1.5 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(-90 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(.5 );
-		autoCycle(3000);
-		pros::delay(DELAY_TIME);
+	}
+	else
+	{
+		setOuttakeContain();
 
-		//goal 8
-		//Back away from goal, turn to get next ball, turn toward top left goal, autoCycle
-		driveBase->driveTilesPID(-1 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(78 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(2.25 );
-		pros::delay(DELAY_TIME);
-		driveBase->turnDegreesPID(-60 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(1.5 );
-		pros::delay(DELAY_TIME);
-		autoCycle(3000);
-		pros::delay(DELAY_TIME);
+		//grab first ball
+		setIntakeRun();
+		driveBase->driveTilesPID(2.4);
 
-		//goal 9
-		driveBase->turnDegreesPID(-170 );
-		pros::delay(DELAY_TIME);
-		driveBase->driveTilesPID(1.8 );
-		pros::delay(DELAY_TIME);
-		autoCycle(2000);
-*/
+		//grab second ball
+		driveBase->turnDegreesAbsolutePID(-86);
+		driveBase->driveTilesPID(-1.07);
+		setIntakeHold();
+		driveBase->turnDegreesAbsolutePID(0);
+
+		//line up the goal
+		setIntakeStop();
+		driveBase->driveTilesPID(-0.5);
+		driveBase->turnDegreesAbsolutePID(-90);
+		driveBase->driveTilesPID(-0.7);
+		driveBase->turnDegreesAbsolutePID(0);
+		setIntakeHold();
+		pros::delay(500);
+		driveBase->driveTilesPID(0.6);
+		setOuttakeTwo();
+
+		//pick up last ball
+		driveBase->driveTilesPID(-0.4);
+		driveBase->turnDegreesAbsolutePID(-123);
+		driveBase->driveTilesPID(2.8);
+		setIntakeRun();
+		pros::delay(1000);
+
+		//shoot last goal
+		//driveBase->turnDegreesAbsolutePID(-135);
+		setIntakeHold();
+		driveBase->driveTilesPID(0.5);
+		setOuttakeInsert();
+		pros::delay(2000);
+		setOuttakeContain();
+
+		//set for driver control
+		driveBase->driveTilesPID(-1);
+		driveBase->turnDegreesAbsolutePID(0);
+	}
 }
 
 /**
@@ -215,7 +226,7 @@ void autonomous()
 	int driveThreshold = 10;
 	int leftMotorPercent = 0;
 	int rightMotorPercent = 0;
-	int intakePercent = 0;
+	int intakePercent = -intakeRest;
 	int pooperPercent = 0;
 	int inserterPercent = inserterRestingConst;
 
@@ -254,21 +265,9 @@ void autonomous()
 	          	{
 	            	intakePercent = intakeConst;
 	          	}
-	          	else
-	          	{
-	            	intakePercent = 0;
-	          	}
-	  		}
-			//toggle out
-	        else if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2), debounceButtonR2))
-	        {
-                if ( intakePercent >= 0)
-                {
-                    intakePercent = -intakeConst;
-              	}
 	            else
 	            {
-	                intakePercent = 0;
+	                intakePercent = -intakeRest;
 	            }
 	        }
 
@@ -302,20 +301,28 @@ void autonomous()
 				}
 			}
 
+			/*if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
+			{
+				unfold();
+			}*/
+			//for testing only
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
 			{
-				driveBase->driveTilesPID(-1.0 );
+				driveBase->driveTilesPID(2);
 			}
-
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
+			{
+				driveBase->driveTilesPID(-2);
+			}
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
 			{
 				driveBase->turnDegreesAbsolutePID(0);
 			}
-
-			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
+			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y), debounceButtonY))
 			{
-				autoCycle();
+				driveBase->turnDegreesAbsolutePID(90);
 			}
+
 
  			if(abs(master.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(master.get_analog(ANALOG_RIGHT_X)) > turnThreshold)
  			{

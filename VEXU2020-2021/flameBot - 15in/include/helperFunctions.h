@@ -17,6 +17,10 @@ bool isHoldingBall();
 void setOuttakeInsert();
 void setOuttakePoop();
 void setOuttakeContain();
+void setIntakeRun();
+void setIntakeStop();
+void setIntakeHold();
+void setOuttakeTwo();
 void goalApproch(FourWheelDrive*  driveBase, float numTiles, float speed);
 
 #endif

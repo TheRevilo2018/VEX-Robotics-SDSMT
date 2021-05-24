@@ -65,7 +65,7 @@ public:
     void drive(std::vector<pros::Motor> *leftWheelMotorVector,
         std::vector<pros::Motor> *rightWheelMotorVector, int distance);
     void driveTilesPID(float numTiles, float desiredSpeed= 75);
-    void turnDegreesAbsolutePID(float targetDegrees, float desiredSpeed = 40);
+    void turnDegreesAbsolutePID(float targetDegrees, float desiredSpeed = -1);
     void turnDegreesPID(float numDegrees, float desiredSpeed= 55);
 
 
@@ -83,6 +83,9 @@ private:
     float degreesToRadians(float radians);
     float radiansToDegrees(float degrees);
     float bindToMagnitude(float value, float MAX_MAGNITUDE);
+    void setAllBrakeMode(std::vector<pros::Motor> *motors, pros::motor_brake_mode_e_t mode);
+    void setAllBrakeMode(pros::motor_brake_mode_e_t mode);
+
 
     void checkGyro();
     void correctGyroCalibration(float accel, float jerk);
