@@ -206,12 +206,22 @@ void opcontrolTask(void* param)
             inserterPercent = inserterRestingConst;
         }
 
-        /*
-        if(pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
+        if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
         {
-          driveBase->driveTilesPID(3.0);
+            driveBase->driveTilesPID(2);
         }
-        */
+        if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
+        {
+            driveBase->driveTilesPID(-2);
+        }
+        if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
+        {
+            driveBase->turnDegreesAbsolutePID(0);
+        }
+        if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y), debounceButtonY))
+        {
+            driveBase->turnDegreesAbsolutePID(90);
+        }
 
         //drive controls
         if(abs(controller.get_analog(ANALOG_LEFT_Y)) > driveThreshold || abs(controller.get_analog(ANALOG_RIGHT_X)) > turnThreshold)

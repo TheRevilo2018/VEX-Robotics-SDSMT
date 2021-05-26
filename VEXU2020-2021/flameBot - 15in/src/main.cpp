@@ -1,4 +1,4 @@
-#include "main.h"
+#include "../include/main.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
