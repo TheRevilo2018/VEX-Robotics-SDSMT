@@ -157,6 +157,25 @@ void autonomous()
 	{
 		setOuttakeContain();
 
+		setIntakeRun();
+		driveBase->driveTilesPID(1.2);
+		driveBase->turnDegreesAbsolutePID(135);
+		driveBase->driveTilesPID(1);
+
+		setIntakeHold();
+		driveBase->driveTilesPID(0.33);
+		setOuttakeOne();
+		setIntakeRun();
+		pros::delay(400);
+		driveBase->driveTilesPID(-0.3);
+		driveBase->turnDegreesAbsolutePID(0);
+		driveBase->driveTilesPID(1.5);
+		driveBase->turnDegreesAbsolutePID(45);
+		driveBase->driveTilesPID(0.5);
+		setOuttakeTwo();
+		setIntakeStop();
+
+/*
 		//grab first ball
 		setIntakeRun();
 		driveBase->driveTilesPID(2.4);
@@ -196,6 +215,7 @@ void autonomous()
 		//set for driver control
 		driveBase->driveTilesPID(-1);
 		driveBase->turnDegreesAbsolutePID(0);
+		*/
 	}
 }
 
@@ -312,7 +332,7 @@ void autonomous()
 			}
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
 			{
-				driveBase->driveTilesPID(-2);
+				setOuttakeOne();
 			}
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
 			{

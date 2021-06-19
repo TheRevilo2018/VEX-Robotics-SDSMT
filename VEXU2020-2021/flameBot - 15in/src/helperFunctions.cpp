@@ -194,10 +194,19 @@ void autoCycle(int time)
 
 void setOuttakeTwo()
 {
-    bottomDrum = -bottomDrumConst;
-    pros::delay(350);
-    bottomDrum = bottomDrumConst;
+  bottomDrum = -bottomDrumConst;
+  pros::delay(250);
+  bottomDrum = bottomDrumConst;
+  setOuttakeInsert();
+  pros::delay(750);
+  setOuttakeContain();
+}
+
+void setOuttakeOne()
+{
     setOuttakeInsert();
-    pros::delay(1500);
+    bottomDrum = 0;
+    pros::delay(1000);
+    bottomDrum = bottomDrumConst;
     setOuttakeContain();
 }

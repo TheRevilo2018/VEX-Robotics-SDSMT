@@ -231,11 +231,11 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     const float TILE_TOLERANCE = 0.02;
     const float DESIRED_SPEED = 70;
     // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
-    const double TICKS_PER_TILE = 1270;
+    const double TICKS_PER_TILE = 1333.3;
     float currentDistance = 0;
 
     float kP = 1;
-    float kI = .4;
+    float kI = .45;
     float kD = .0058;
 
     float porportionalAmount = 0;

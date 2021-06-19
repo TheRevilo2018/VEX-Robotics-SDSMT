@@ -21,6 +21,7 @@ void setIntakeRun();
 void setIntakeStop();
 void setIntakeHold();
 void setOuttakeTwo();
+void setOuttakeOne();
 void goalApproch(FourWheelDrive*  driveBase, float numTiles, float speed);
 
 #endif
