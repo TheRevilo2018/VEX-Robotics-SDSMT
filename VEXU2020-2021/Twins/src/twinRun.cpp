@@ -212,7 +212,7 @@ void opcontrolTask(void* param)
         }
         if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
         {
-            driveBase->swingDrivePID(-3, 0);
+            driveBase->driveTilesPID(3);
         }
         if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
         {

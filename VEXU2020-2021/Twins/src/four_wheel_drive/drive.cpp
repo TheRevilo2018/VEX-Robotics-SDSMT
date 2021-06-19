@@ -243,10 +243,10 @@ void FourWheelDrive::swingDriveAbsolutePID(float numTiles, float degrees, float 
     float const dkP = 0.0025;
     float const dkI = 0.0012;
     float const dkD = 0;
-    float const rkP = 0.02;
+    float const rkP = 0.05;
     //float const rkI = .4;
     float const rkI = 0;
-    float const rkD = 0;
+    float const rkD = 0.001;
 
     float proportionalAmountDrive = 0;
     float integralAmountDrive = 0;
