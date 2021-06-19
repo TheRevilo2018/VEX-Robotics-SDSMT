@@ -67,6 +67,8 @@ public:
     void driveTilesPID(float numTiles, float desiredSpeed= 75);
     void turnDegreesAbsolutePID(float targetDegrees, float desiredSpeed = 40);
     void turnDegreesPID(float numDegrees, float desiredSpeed= 55);
+    void swingDrivePID(float numTiles, float degrees, float desiredSpeed = 75);
+    void swingDriveAbsolutePID(float numTiles, float degrees, float desiredSpeed);
 
 
 

@@ -208,19 +208,19 @@ void opcontrolTask(void* param)
 
         if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
         {
-            driveBase->driveTilesPID(2);
+            driveBase->swingDrivePID(3, 90);
         }
         if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
         {
-            driveBase->driveTilesPID(-2);
+            driveBase->swingDrivePID(-3, 0);
         }
         if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_X), debounceButtonX))
         {
-            driveBase->turnDegreesAbsolutePID(0);
+            driveBase->swingDrivePID(3, 0);
         }
         if (pressButton(controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y), debounceButtonY))
         {
-            driveBase->turnDegreesAbsolutePID(90);
+            driveBase->swingDrivePID(3, -90);
         }
 
         //drive controls

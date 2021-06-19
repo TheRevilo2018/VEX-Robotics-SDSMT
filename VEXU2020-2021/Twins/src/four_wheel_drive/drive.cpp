@@ -223,6 +223,164 @@ void FourWheelDrive::accelerate(double targetSpeed)
     }
 }
 
+void FourWheelDrive::swingDrivePID(float numTiles, float degrees, float desiredSpeed)
+{
+    float startDegrees = degreeBoundingHelper(inertialSensor->get_heading());
+    swingDriveAbsolutePID(numTiles, degreeBoundingHelper(degrees + startDegrees), desiredSpeed);
+}
+
+void FourWheelDrive::swingDriveAbsolutePID(float numTiles, float degrees, float desiredSpeed)
+{
+    float DRIVE_INTEGRATOR_MAX_MAGNITUDE = 100;
+    float TURN_INTEGRATOR_MAX_MAGNITUDE = 100;
+    float DELTA_T = LOOP_DELAY / 1000.0;
+    float MINSPEED_MOD = 2;
+    int const LOOPS_REQUIRED_CORRECT = 50;
+    float const TOLERANCE = 40;
+    // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
+    double const TICKS_PER_TILE = 1333.33;
+
+    float const dkP = 0.0025;
+    float const dkI = 0.0012;
+    float const dkD = 0;
+    float const rkP = 0.02;
+    //float const rkI = .4;
+    float const rkI = 0;
+    float const rkD = 0;
+
+    float proportionalAmountDrive = 0;
+    float integralAmountDrive = 0;
+    float derivativeAmountDrive = 0;
+    float proportionalAmountTurn = 0;
+    float integralAmountTurn = 0;
+    float derivativeAmountTurn = 0;
+
+    float targetTicks = numTiles * TICKS_PER_TILE;
+    long iterations = 1;
+    int loopsCorrect = 0;
+    float currentDistance = 0;
+    float lastDistance = 0;
+    float accumulatedDistance = 0;
+    float accumulatedDegrees = 0;
+    float lastDegrees = 0;
+
+    float firstEncoderValue = 0;
+    float lastEncoderVal = 0;
+
+    if(degrees <= 0)
+    {
+        //turn left
+        lastEncoderVal = firstEncoderValue = getPosition(leftMotors);
+	  }
+    else
+    {
+        lastEncoderVal = firstEncoderValue = getPosition(rightMotors);
+	  }
+
+    float runTime = 0;
+
+    int maxRunTime = max(ONE_SEC_IN_MS, ONE_SEC_IN_MS * abs(numTiles) * 2);
+    proportionalAmountDrive = targetTicks;
+
+    float initialHeading = degreeBoundingHelper(inertialSensor->get_heading());
+    float degreeDif = degreeBoundingHelper(degrees - initialHeading);
+    float initialEncoderLeft = leftMotors->at(0).get_position();
+    float initialEncoderRight = rightMotors->at(0).get_position();
+
+    lcd::set_text(3, "Desired: " + to_string(targetTicks));
+    lcd::set_text(4, "Current: " + to_string(currentDistance));
+    lcd::set_text(5, "loopsCorrect: " + to_string(loopsCorrect));
+
+    // While not at destination and not out of time
+    while (loopsCorrect <= LOOPS_REQUIRED_CORRECT && runTime < maxRunTime)
+    {
+        proportionalAmountDrive = targetTicks - currentDistance;
+
+        accumulatedDistance += proportionalAmountDrive;
+        accumulatedDistance = bindToMagnitude(accumulatedDistance, DRIVE_INTEGRATOR_MAX_MAGNITUDE);
+
+        integralAmountDrive = accumulatedDistance * DELTA_T;
+
+        derivativeAmountDrive = (lastDistance - currentDistance) / DELTA_T;
+
+        float totalDrive = proportionalAmountDrive * dkP + integralAmountDrive * dkI + derivativeAmountDrive * dkD;
+        totalDrive = bindToMagnitude(totalDrive, 1);
+
+        float speed = totalDrive * desiredSpeed;
+
+        float currentEncoderVal = 0;
+        if(degrees <= 0)
+          {currentEncoderVal = getPosition(leftMotors);} //turn left
+        else
+          {currentEncoderVal = getPosition(rightMotors);} //turn right
+
+        currentDistance += (currentEncoderVal - lastEncoderVal);
+
+        lastDistance = proportionalAmountDrive;
+        lastEncoderVal = currentEncoderVal;
+
+        //------------------------------------------------------------------------------------------------
+        //turn pid time
+        //------------------------------------------------------------------------------------------------
+        float distPercent = currentDistance / targetTicks;
+        float targetDegrees = degreeBoundingHelper(initialHeading + distPercent * degreeDif);
+        float currentDegrees = degreeBoundingHelper(inertialSensor->get_heading());
+
+        proportionalAmountTurn = degreeBoundingHelper(targetDegrees - currentDegrees);
+
+        accumulatedDegrees += proportionalAmountTurn;
+        accumulatedDegrees = bindToMagnitude(accumulatedDegrees, TURN_INTEGRATOR_MAX_MAGNITUDE);
+
+        derivativeAmountTurn = (proportionalAmountTurn - lastDegrees) / DELTA_T;
+        lastDegrees = proportionalAmountTurn;
+
+        integralAmountTurn = accumulatedDegrees * DELTA_T;
+
+        float totalTurn = proportionalAmountTurn * rkP + integralAmountTurn * rkI + derivativeAmountTurn * rkD;
+        totalTurn = bindToMagnitude(totalTurn, 1);
+        float turnSpeed = totalTurn * desiredSpeed;
+
+        if (fabs(turnSpeed) < minSpeed * MINSPEED_MOD)
+        {
+            turnSpeed = turnSpeed * minSpeed * MINSPEED_MOD / fabs(speed);
+        }
+
+        //TODO This wll allow the pid to go over the max motor speed
+        float speedLeft = speed + turnSpeed;
+        float speedRight = speed - turnSpeed;
+
+        //--------------------------------------------------------------------
+        //set motors
+        // -------------------------------------------------------------------
+
+        setMotors(rightMotors, speedRight);
+        setMotors(leftMotors, speedLeft);
+
+        float distanceAway = fabs(currentDistance - targetTicks);
+
+        lcd::set_text(2, "Dis: " + to_string(currentDistance) + " tar: " + to_string(targetTicks));
+        lcd::set_text(3, "Distance away: " + to_string(distanceAway));
+        lcd::set_text(4, "Deg: " + to_string(currentDegrees) + " tar: " + to_string(targetDegrees));
+        lcd::set_text(5, "Raw Vals: " + to_string(proportionalAmountDrive) + " " + to_string(integralAmountDrive) + " " + to_string(derivativeAmountDrive));
+        lcd::set_text(6, "New Vals: " + to_string(proportionalAmountDrive * dkP) + " " + to_string(integralAmountDrive * dkI) + " " + to_string(derivativeAmountDrive * dkD));
+        lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance) + " " + to_string(speed));
+
+        if (distanceAway <= TOLERANCE)
+        {
+            loopsCorrect++;
+        }
+        else
+        {
+            loopsCorrect = 0;
+        }
+
+        iterations++;
+        runTime += LOOP_DELAY;
+        pros::delay(LOOP_DELAY);
+    }
+    setMotors(0);
+}
+
 void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 {
     float INTEGRATOR_MAX_MAGNITUDE = 100;
@@ -245,7 +403,7 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     float runTime = 0;
 
     int maxRunTime = max(ONE_SEC_IN_MS, ONE_SEC_IN_MS * abs(numTiles));
-    porportionalAmount = numTiles - currentDistance;
+    porportionalAmount = numTiles;
 
     float initialHeading = degreeBoundingHelper(inertialSensor->get_heading());
     float initialEncoderLeft = leftMotors->at(0).get_position();
