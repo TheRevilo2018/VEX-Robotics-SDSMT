@@ -338,7 +338,7 @@ void FourWheelDrive::swingDriveAbsolutePID(float numTiles, float degrees, float 
 
         float totalTurn = proportionalAmountTurn * rkP + integralAmountTurn * rkI + derivativeAmountTurn * rkD;
         totalTurn = bindToMagnitude(totalTurn, 1);
-        float turnSpeed = totalTurn * desiredSpeed;
+        float turnSpeed = totalTurn * fabs(speed);
 
         if (fabs(turnSpeed) < minSpeed * MINSPEED_MOD)
         {

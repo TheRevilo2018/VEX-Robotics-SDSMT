@@ -58,6 +58,12 @@ void setOuttakeInsert(pros::Motor inserterRoller)
     inserterRoller = inserterConst;
 }
 
+void setOuttakeInsertAll(pros::Motor inserterRoller, pros::Motor bottomRoller)
+{
+    inserterRoller = inserterConst;
+    bottomRoller = inserterConst;
+}
+
 void setIntakeIn(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller)
 {
     setMotors(intakeMotorVector, intakeConst);
@@ -74,4 +80,23 @@ void setIntakeContain(std::vector<pros::Motor> intakeMotorVector, pros::Motor bo
 {
     setMotors(intakeMotorVector, 0);
     bottomRoller = 0;
+}
+
+void setIntakeHold(std::vector<pros::Motor> intakeMotorVector)
+{
+    setMotors(intakeMotorVector, intakeHold);
+}
+
+void setOuttakeUnlock(pros::Motor inserterRoller)
+{
+  double encoderPos = inserterRoller.get_position();
+  int startSpeed = inserterRestingConst;
+  //TODO find a way to get rid of this const number
+  while (fabs(encoderPos - inserterRoller.get_position()) < 1000)
+  {
+    startSpeed--;
+    inserterRoller = startSpeed;
+    pros::delay(loopDelay);
+  }
+  inserterRoller = 0;
 }

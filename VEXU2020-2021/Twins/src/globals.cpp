@@ -73,6 +73,7 @@ std::vector<FourWheelDrive*> driveBasePair = {driveBaseAlpha, driveBaseBeta};
 const int inserterConst = 110;
 const int inserterRestingConst = -40;
 const int intakeConst = 85;
+const int intakeHold = -30;
 const int loopDelay = 20;
 
 //pros declarations

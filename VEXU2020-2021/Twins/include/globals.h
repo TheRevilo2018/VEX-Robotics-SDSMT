@@ -106,6 +106,7 @@ extern std::vector<FourWheelDrive*> driveBasePair;
 extern const int inserterConst;
 extern const int inserterRestingConst;
 extern const int intakeConst;
+extern const int intakeHold;
 extern const int loopDelay;
 
 //pros declarations

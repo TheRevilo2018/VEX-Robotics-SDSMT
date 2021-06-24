@@ -12,8 +12,11 @@ void setBrakes(std::vector<pros::Motor> & motors,  pros::motor_brake_mode_e_t br
 bool pressButton(bool press, bool &debounce);
 void setOuttakeContain(pros::Motor inserterRoller);
 void setOuttakeInsert(pros::Motor inserterRoller);
+void setOuttakeInsertAll(pros::Motor inserterRoller, pros::Motor bottomRoller);
 void setIntakeIn(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller);
 void setIntakeOut(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller);
 void setIntakeContain(std::vector<pros::Motor> intakeMotorVector, pros::Motor bottomRoller);
+void setIntakeHold(std::vector<pros::Motor> intakeMotorVector);
+void setOuttakeUnlock(pros::Motor inserterRoller);
 
 #endif
