@@ -23,5 +23,6 @@ void setIntakeHold();
 void setOuttakeTwo();
 void setOuttakeOne();
 void goalApproch(FourWheelDrive*  driveBase, float numTiles, float speed);
+void findBallOfColor(Color color);
 
 #endif

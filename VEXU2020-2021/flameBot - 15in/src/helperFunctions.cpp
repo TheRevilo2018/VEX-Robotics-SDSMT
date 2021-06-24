@@ -195,10 +195,10 @@ void autoCycle(int time)
 void setOuttakeTwo()
 {
   bottomDrum = -bottomDrumConst;
-  pros::delay(250);
+  pros::delay(350);
   bottomDrum = bottomDrumConst;
   setOuttakeInsert();
-  pros::delay(750);
+  pros::delay(1000);
   setOuttakeContain();
 }
 
@@ -209,4 +209,14 @@ void setOuttakeOne()
     pros::delay(1000);
     bottomDrum = bottomDrumConst;
     setOuttakeContain();
+}
+
+void findBallOfColor(Color color)
+{
+  setIntakeRun();
+  while(getBallColor() != color)
+  {
+    pros::delay(loopDelay);
+  }
+  setIntakeHold();
 }

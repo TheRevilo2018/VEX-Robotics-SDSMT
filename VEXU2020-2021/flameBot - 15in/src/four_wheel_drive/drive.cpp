@@ -235,8 +235,8 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     float currentDistance = 0;
 
     float kP = 1;
-    float kI = .45;
-    float kD = .0058;
+    float kI = .47;
+    float kD = .004;
 
     float porportionalAmount = 0;
     float integralAmount = 0;

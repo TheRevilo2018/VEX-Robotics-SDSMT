@@ -159,21 +159,41 @@ void autonomous()
 
 		setIntakeRun();
 		driveBase->driveTilesPID(1.2);
+
+		Color homeColor = getBallColor();
+		Color awayColor;
+		if(homeColor == Color::red)
+		 		awayColor = Color::blue;
+		if(homeColor == Color::blue)
+				awayColor = Color::red;
+
 		driveBase->turnDegreesAbsolutePID(135);
 		driveBase->driveTilesPID(1);
 
 		setIntakeHold();
 		driveBase->driveTilesPID(0.33);
 		setOuttakeOne();
-		setIntakeRun();
-		pros::delay(400);
+		//setIntakeRun();
+		//pros::delay(400);
 		driveBase->driveTilesPID(-0.3);
 		driveBase->turnDegreesAbsolutePID(0);
+		driveBase->driveTilesPID(1);
+		driveBase->turnDegreesAbsolutePID(28);
+		setIntakeStop();
+		driveBase->driveTilesPID(0.8);
+		driveBase->driveTilesPID(0.2);
+		/*
 		driveBase->driveTilesPID(1.5);
 		driveBase->turnDegreesAbsolutePID(45);
+		setIntakeRun();
 		driveBase->driveTilesPID(0.5);
-		setOuttakeTwo();
+		*/
+		setIntakeRun();
+		pros::delay(1000);
 		setIntakeStop();
+		//findBallOfColor(awayColor);
+		setOuttakeTwo();
+
 
 /*
 		//grab first ball
@@ -235,6 +255,7 @@ void autonomous()
  void opcontrol()
  {
  	pros::lcd::set_text(2, "Calling op_control: " + std::to_string(pros::millis()));
+
 	unfold();
 
 	int topDrumLastVal = 0;
@@ -328,7 +349,7 @@ void autonomous()
 			//for testing only
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_A), debounceButtonA))
 			{
-				driveBase->driveTilesPID(2);
+				setOuttakeTwo();
 			}
 			if (pressButton(master.get_digital(pros::E_CONTROLLER_DIGITAL_B), debounceButtonB))
 			{
