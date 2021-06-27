@@ -173,26 +173,23 @@ void autonomous()
 		setIntakeHold();
 		driveBase->driveTilesPID(0.33);
 		setOuttakeOne();
-		//setIntakeRun();
-		//pros::delay(400);
+		setIntakeRun();
+		pros::delay(400);
 		driveBase->driveTilesPID(-0.3);
+
 		driveBase->turnDegreesAbsolutePID(0);
+		setIntakeHold();
 		driveBase->driveTilesPID(1);
 		driveBase->turnDegreesAbsolutePID(28);
 		setIntakeStop();
 		driveBase->driveTilesPID(0.8);
 		driveBase->driveTilesPID(0.2);
-		/*
-		driveBase->driveTilesPID(1.5);
-		driveBase->turnDegreesAbsolutePID(45);
-		setIntakeRun();
-		driveBase->driveTilesPID(0.5);
-		*/
 		setIntakeRun();
 		pros::delay(1000);
 		setIntakeStop();
-		//findBallOfColor(awayColor);
-		setOuttakeTwo();
+		setOuttakeOne();
+
+
 
 
 /*

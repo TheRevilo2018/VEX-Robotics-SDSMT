@@ -234,9 +234,12 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     const double TICKS_PER_TILE = 1333.3;
     float currentDistance = 0;
 
-    float kP = 1;
-    float kI = .47;
-    float kD = .004;
+    //float kP = 1;
+    //float kI = .47;
+    //float kD = 0.004;
+    float kP = 3;
+    float kI = 0;
+    float kD = 0;
 
     float porportionalAmount = 0;
     float integralAmount = 0;
