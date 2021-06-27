@@ -5,7 +5,7 @@
 
 //controller declarations
 pros::Controller controllerAlpha(pros::E_CONTROLLER_MASTER);
-pros::Controller controllerBeta(pros::E_CONTROLLER_PARTNER);
+pros::Controller controllerBeta(pros::E_CONTROLLER_PARTNER); 
 std::vector<pros::Controller> controllerPair{controllerAlpha, controllerBeta};
 
 // Standard port declarations
