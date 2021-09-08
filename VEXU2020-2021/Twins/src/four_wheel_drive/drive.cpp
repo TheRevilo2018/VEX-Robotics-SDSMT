@@ -1,4 +1,4 @@
-#include "drive.h"
+TurnKPos#include "drive.h"
 
 using namespace pros;
 using namespace std;
@@ -237,16 +237,6 @@ void FourWheelDrive::swingDriveAbsolutePID(float numTiles, float degrees, float 
     float MINSPEED_MOD = 2;
     int const LOOPS_REQUIRED_CORRECT = 50;
     float const TOLERANCE = 40;
-    // 4 Inches wheels, 600RPM motors, measured 222.22 ticks/rotation
-    double const TICKS_PER_TILE = 1333.33;
-
-    float const dkP = 0.0025;
-    float const dkI = 0.0012;
-    float const dkD = 0;
-    float const rkP = 0.05;
-    //float const rkI = .4;
-    float const rkI = 0;
-    float const rkD = 0.001;
 
     float proportionalAmountDrive = 0;
     float integralAmountDrive = 0;
@@ -303,7 +293,7 @@ void FourWheelDrive::swingDriveAbsolutePID(float numTiles, float degrees, float 
 
         derivativeAmountDrive = (lastDistance - currentDistance) / DELTA_T;
 
-        float totalDrive = proportionalAmountDrive * dkP + integralAmountDrive * dkI + derivativeAmountDrive * dkD;
+        float totalDrive = proportionalAmountDrive * swingDriveKPos + integralAmountDrive * swingDriveKInt + derivativeAmountDrive * swingDriveKDev;
         totalDrive = bindToMagnitude(totalDrive, 1);
 
         float speed = totalDrive * desiredSpeed;
@@ -336,7 +326,7 @@ void FourWheelDrive::swingDriveAbsolutePID(float numTiles, float degrees, float 
 
         integralAmountTurn = accumulatedDegrees * DELTA_T;
 
-        float totalTurn = proportionalAmountTurn * rkP + integralAmountTurn * rkI + derivativeAmountTurn * rkD;
+        float totalTurn = proportionalAmountTurn * swingTurnKPos + integralAmountTurn * swingTurnKInt + derivativeAmountTurn * swingTurnKDev;
         totalTurn = bindToMagnitude(totalTurn, 1);
         float turnSpeed = totalTurn * fabs(speed);
 
@@ -362,7 +352,7 @@ void FourWheelDrive::swingDriveAbsolutePID(float numTiles, float degrees, float 
         lcd::set_text(3, "Distance away: " + to_string(distanceAway));
         lcd::set_text(4, "Deg: " + to_string(currentDegrees) + " tar: " + to_string(targetDegrees));
         lcd::set_text(5, "Raw Vals: " + to_string(proportionalAmountDrive) + " " + to_string(integralAmountDrive) + " " + to_string(derivativeAmountDrive));
-        lcd::set_text(6, "New Vals: " + to_string(proportionalAmountDrive * dkP) + " " + to_string(integralAmountDrive * dkI) + " " + to_string(derivativeAmountDrive * dkD));
+        lcd::set_text(6, "New Vals: " + to_string(proportionalAmountDrive * swingDriveKDev) + " " + to_string(integralAmountDrive * swingDriveKInt) + " " + to_string(derivativeAmountDrive * swingDriveKDev));
         lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance) + " " + to_string(speed));
 
         if (distanceAway <= TOLERANCE)
@@ -387,10 +377,6 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
     float DELTA_T = LOOP_DELAY / 1000.0;
     float currentDistance = 0;
 
-    float kP = 1;
-    float kI = .4;
-    float kD = .01;
-
     float porportionalAmount = 0;
     float integralAmount = 0;
     float derivativeAmount = 0;
@@ -411,7 +397,7 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 
     // While not at destination and not out of time
     while ((abs(porportionalAmount) > 0.1 ||
-            derivativeAmount > 0.2 * kD) &&
+            derivativeAmount > 0.2 * driveKDev) &&
             runTime < maxRunTime)
     {
         porportionalAmount = numTiles - currentDistance;
@@ -423,7 +409,7 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
 
         derivativeAmount = (lastDistance - currentDistance) / DELTA_T;
 
-        float total = porportionalAmount * kP + integralAmount * kI + derivativeAmount * kD;
+        float total = porportionalAmount * driveKPos + integralAmount * driveKInt + derivativeAmount * driveKDev;
         total = bindToMagnitude(total, 1);
 
         float speed = total * desiredSpeed;
@@ -440,7 +426,7 @@ void FourWheelDrive::driveTilesPID(float numTiles, float desiredSpeed)
         lcd::set_text(3, "Desired " + to_string(numTiles));
         lcd::set_text(4, "Current: " + to_string(currentDistance));
         lcd::set_text(5, "Raw Vals: " + to_string(porportionalAmount) + " " + to_string(integralAmount) + " " + to_string(derivativeAmount));
-        lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
+        lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * driveKPos) + " " + to_string(integralAmount * driveKInt) + " " + to_string(derivativeAmount * driveKDev));
         lcd::set_text(7, to_string(lastDistance) + " " + to_string(currentDistance));
 
         float currentHeading = degreeBoundingHelper(inertialSensor->get_heading());
@@ -548,10 +534,6 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
     lcd::set_text(2, "turnDegrees: " + to_string(currentDegrees) + " " + to_string(endingDegrees));
     lcd::set_text(3, "turnDegrees: " + to_string(inertialSensor->get_heading()));
 
-    float kP = 1.4 / 90.0;
-    float kI = .15 / 90.0;
-    float kD = .19 / 90.0;
-
     float porportionalAmount = 0;
     float integralAmount = 0;
     float derivativeAmount = 0;
@@ -579,7 +561,7 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
 
         integralAmount = accumulatedDegrees * DELTA_T;
 
-        float total = porportionalAmount * kP + integralAmount * kI + derivativeAmount * kD;
+        float total = porportionalAmount * TurnKPos + integralAmount * TurnKInt + derivativeAmount * TurnKDev;
         total = bindToMagnitude(total, 1);
         float speed = total * desiredSpeed;
 
@@ -594,7 +576,7 @@ void FourWheelDrive::turnDegreesAbsolutePID(float targetDegrees, float desiredSp
         lcd::set_text(3, "Desired " + to_string(endingDegrees));
         lcd::set_text(4, "Current: " + to_string(currentDegrees));
         lcd::set_text(5, "Raw Vals: " + to_string(porportionalAmount) + " " + to_string(integralAmount) + " " + to_string(derivativeAmount));
-        lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * kP) + " " + to_string(integralAmount * kI) + " " + to_string(derivativeAmount * kD));
+        lcd::set_text(6, "New Vals: " + to_string(porportionalAmount * TurnKPos) + " " + to_string(integralAmount * TurnKInt) + " " + to_string(derivativeAmount * TurnKDev));
 
         runTime += LOOP_DELAY;
         pros::delay(LOOP_DELAY);

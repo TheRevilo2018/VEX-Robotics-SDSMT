@@ -31,6 +31,27 @@ class FourWheelDrive
     double maxAccelerationForward = 3;
     double maxAccelerationBackward = 3;
 
+    //drive tiles PID
+    float driveKPos = 1;
+    float driveKInt = .4;
+    float driveKDev = .01;
+    //turn degrees PID
+    float TurnKPos = 1.4 / 90.0;
+    float TurnKInt = .15 / 90.0;
+    float TurnKDev = .19 / 90.0;
+    //swing drive PID
+    float swingDriveKPos = 0.0025;
+    float swingDriveKInt = 0.0012;
+    float swingDriveKDev = 0;
+    //swing turn PID
+    float swingTurnKPos = 0.05;
+    float swingTurnKInt = 0;
+    float swingTurnKDev = 0.001;
+
+    double const TICKS_PER_TILE = 1333.33;
+
+
+
     const double ROTATION_MUL = 845;
     const int STOP_AMOUNT = 100;
     const int LOOP_DELAY = 20;
