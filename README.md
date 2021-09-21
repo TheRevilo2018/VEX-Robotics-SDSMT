@@ -9,7 +9,9 @@ This season, we are playing a game called Tipping Point. Each team has 2 robots 
 # Resources - 2021-2022
 
 tipping point rules video: https://www.youtube.com/watch?v=H8XcvADUXTE
+
 This season's github: https://github.com/TheRevilo2018/VEX-Robotics-SDSMT/tree/master/VEXU2021-2022
+
 VEXcode Pro documentation: https://api.vexcode.cloud/v5/
 
 The file structure documentation for this season's code will be in it's root folder.
