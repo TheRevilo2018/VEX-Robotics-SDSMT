@@ -34,6 +34,9 @@ class FourWheelDrive
     const double ROTATION_MUL = 845;
     const int STOP_AMOUNT = 100;
     const int LOOP_DELAY = 20;
+    const rotationUnits ROT_UNIT = rotationUnits::deg;
+    const velocityUnits VEL_UNIT = velocityUnits::dps;
+    const brakeType BRAKE_MODE = brakeType::brake;
 
     int numMotors; //number of motors on ONE side
 

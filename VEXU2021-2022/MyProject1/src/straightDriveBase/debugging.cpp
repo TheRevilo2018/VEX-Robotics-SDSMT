@@ -2,11 +2,12 @@
 
 using namespace std;
 
-void FourWheelDrive::checkGyro()
+/*void FourWheelDrive::checkGyro()
 {
 	int count = 0;
 	double pitch = 0;
-	lcd::set_text(5, "Starting Gyro Checks");
+  Brain.Screen.setCursor(5, 0);
+  Brain.Screen.print("Starting Gyro Checks");
 
 	lcd::set_text(6, strerror(errno));
 
@@ -68,11 +69,11 @@ void FourWheelDrive::correctGyroCalibration(float accel, float jerk)
 
 	//gyroStream << "Stationary, pitch, x, y, z\n";
 
-	/*for(int i = 0; i < stationary; i++)
-	{
-		addStream(gyroStream);
-		delay(LOOP_DELAY);
-	}*/
+	//for(int i = 0; i < stationary; i++)
+	//{
+		//addStream(gyroStream);
+		//delay(LOOP_DELAY);
+	//}
 	intercept = intercept / stationary;
 	lcd::set_text(2, "intercept: " + to_string(intercept));
 	lcd::set_text(0, "accel: " + to_string(accel));
@@ -120,4 +121,4 @@ void FourWheelDrive::correctGyroCalibration(float accel, float jerk)
 
 
 	lcd::set_text(7, "finished output");
-}
+}*/

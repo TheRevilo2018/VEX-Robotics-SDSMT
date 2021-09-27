@@ -10,7 +10,8 @@ void FourWheelDrive::readCalibration()
 	FILE* usd_file_read = fopen("/usd/calibration.txt", "r");
     if(usd_file_read == NULL)
     {
-        lcd::set_text(6, "file couldn't open");
+      Brain.Screen.setCursor(0, 0);
+      Brain.Screen.print("File couldn't be opened");
     }
 	else
 	{
@@ -30,7 +31,8 @@ void FourWheelDrive::readCalibration()
 		fileStream >> maxAccelerationForward;
 		fileStream >> maxAccelerationBackward;
 
-		pros::lcd::set_text(6, "file input sucessful");
+    Brain.Screen.setCursor(6, 0);
+    Brain.Screen.print("file input sucessful");
 	}
 
 	midSpeed = (maxSpeed + minSpeed) / 2;
@@ -58,10 +60,12 @@ void FourWheelDrive::writeCalibration()
     fclose(usd_file_write);
 }
 
-void FourWheelDrive::calibrateAll()
+/*void FourWheelDrive::calibrateAll()
 {
     int count = 0;
-    lcd::set_text(2, "Calling calibration");
+      Brain.Screen.setCursor(6, 0);
+      Brain.Screen.print("Calling calibration");
+    lcd::set_text(2, );
     inertialSensor->reset();
 	lcd::set_text(2, "status: " + to_string(inertialSensor->get_status()));
 	lcd::set_text(3,  strerror(errno));
@@ -429,3 +433,4 @@ bool FourWheelDrive::panic()
 {
     return master->get_digital(E_CONTROLLER_DIGITAL_A) || master->get_digital(E_CONTROLLER_DIGITAL_B);
 }
+*/
